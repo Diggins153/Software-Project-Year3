@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { login } from "@/lib/actions/authentication";
 import { loginFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,7 +22,7 @@ export default function LoginPage() {
         <h1>Login page yippee!</h1>
 
         <Form { ...form }>
-            <form onSubmit={ form.handleSubmit(onSubmit) }>
+            <form onSubmit={ form.handleSubmit(login) }>
                 <FormField
                     control={ form.control } name="email" render={ ({ field }) => (
                     <FormItem>

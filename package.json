@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@lucide/lab": "^0.1.2",
+    "@mikro-orm/core": "^6.4.5",
+    "@mikro-orm/mysql": "^6.4.5",
+    "dotenv-flow": "^4.1.0",
     "lucide-react": "^0.474.0",
     "next": "15.1.6",
     "react": "^19.0.0",

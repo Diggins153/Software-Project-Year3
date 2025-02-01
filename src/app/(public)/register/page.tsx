@@ -22,8 +22,7 @@ export default function RegisterPage() {
         },
     });
 
-    return <>
-        <h1>Registration page yippee!</h1>
+    return <div className="mx-auto flex flex-col gap-8">
 
         <Form { ...form }>
             <form onSubmit={ form.handleSubmit(register) } className="space-y-8">

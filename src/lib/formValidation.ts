@@ -1,10 +1,10 @@
 export function hasSpecialCharacter(text: string): boolean {
-    const pattern = /\\D\\W"/;
+    const pattern = /\W/;
     return pattern.test(text);
 }
 
 export function hasDigits(text: string): boolean {
-    const pattern = /\\d/;
+    const pattern = /\d/;
     return pattern.test(text);
 }
 

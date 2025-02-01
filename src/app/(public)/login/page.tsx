@@ -18,8 +18,7 @@ export default function LoginPage() {
         },
     });
 
-    return <>
-        <h1>Login page yippee!</h1>
+    return <div className="mx-auto flex flex-col gap-8">
 
         <Form { ...form }>
             <form onSubmit={ form.handleSubmit(login) }>
@@ -50,5 +49,5 @@ export default function LoginPage() {
                 <Button type="submit">Submit</Button>
             </form>
         </Form>
-    </>;
+    </div>;
 }

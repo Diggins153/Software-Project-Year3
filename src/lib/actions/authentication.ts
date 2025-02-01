@@ -22,7 +22,7 @@ export async function login(formValues: z.infer<typeof loginFormSchema>) {
     return { success: true };
 }
 
-type User = {
+export type User = {
     id: number;
     display_name: string;
     email: string;

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Alike_Angular, Artifika } from "next/font/google";
 import "./globals.css";
-import Sidebar from "../components/Sidebar";
 
 const alikeAngular = Alike_Angular({
     variable: "--font-alike-angular",
@@ -27,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             className={ `${ alikeAngular.variable } ${ artifika.variable } antialiased` }
         >
         <div className="container">
-            {children}
+            { children }
         </div>
         </body>
         </html>

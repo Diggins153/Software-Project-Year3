@@ -1,5 +1,6 @@
 import { fetchUser, User } from "@/lib/actions/authentication";
 import { loginFormSchema } from "@/lib/formSchemas";
+import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ZodError } from "zod";
@@ -41,8 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                     console.log("User:", user);
 
-                    // if (!!user && await bcrypt.compare(password, user.password)) {
-                    if (!!user && user.password === password) {
+                    if (!!user && await bcrypt.compare(password, user.password)) {
                         return user;
                     }
 

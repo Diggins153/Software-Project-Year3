@@ -6,6 +6,16 @@ import { loginFormSchema, registerFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
+export type User = {
+    id: number;
+    display_name: string;
+    email: string;
+    password: string;
+    role: "USER" | "ADMIN";
+    is_paying: boolean;
+    last_consent_date: Date;
+}
+
 export async function register(formValues: z.infer<typeof registerFormSchema>) {
     const parseResult = await registerFormSchema.safeParseAsync(formValues);
 
@@ -39,16 +49,6 @@ export async function login(formValues: z.infer<typeof loginFormSchema>) {
     await signIn("credentials", { email, password, redirectTo: "/" });
 
     return { success: true };
-}
-
-export type User = {
-    id: number;
-    display_name: string;
-    email: string;
-    password: string;
-    role: "USER" | "ADMIN";
-    is_paying: boolean;
-    last_consent_date: Date;
 }
 
 export async function fetchUser(email: string): Promise<User | null> {

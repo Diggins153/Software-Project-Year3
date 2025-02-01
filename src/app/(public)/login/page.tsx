@@ -1,11 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { login } from "@/lib/actions/authentication";
 import { loginFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -47,7 +48,10 @@ export default function LoginPage() {
                 ) }
                 />
 
-                <Button type="submit">Submit</Button>
+                <Link href={ "/register" } className={ buttonVariants({ variant: "outline" }) }>
+                    I want to register
+                </Link>
+                <Button type="submit">Log in</Button>
             </form>
         </Form>
     </div>;

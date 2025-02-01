@@ -19,4 +19,8 @@ export const registerFormSchema = z.object({
     password: z
         .string()
         .min(10, "Password must be at least 10 characters long."),
+    gdpr: z
+        .boolean({ required_error: "You need to accept the terms to continue." })
+        .default(false)
+        .refine(value => value === true, "You need to accept the terms to continue."),
 });

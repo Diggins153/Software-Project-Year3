@@ -23,6 +23,7 @@ export default function RegisterPage() {
     });
 
     return <div className="mx-auto flex flex-col gap-8">
+        <h2 className="text-2xl">Register</h2>
 
         <Form { ...form }>
             <form onSubmit={ form.handleSubmit(register) } className="space-y-8">

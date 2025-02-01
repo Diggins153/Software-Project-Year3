@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { register } from "@/lib/actions/authentication";
 import { registerFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleHelp } from "lucide-react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -71,7 +72,12 @@ export default function RegisterPage() {
                                 <FormLabel>Password</FormLabel>
                                 <TooltipProvider>
                                     <Tooltip>
-                                        <TooltipTrigger className="text-accent-foreground" type="button"><CircleHelp size={20} className="ml-2"/></TooltipTrigger>
+                                        <TooltipTrigger className="text-accent-foreground" type="button">
+                                            <CircleHelp
+                                                size={ 20 }
+                                                className="ml-2"
+                                            />
+                                        </TooltipTrigger>
                                         <TooltipContent onClick={ () => undefined }>
                                             <ul className="list-disc list-inside">
                                                 Make sure your password has
@@ -116,10 +122,12 @@ export default function RegisterPage() {
                 />
 
                 <div className="flex gap-2">
-                    <Button type="button" variant="outline">Go to Login</Button>
+                    <Link href="/login" className={ buttonVariants({ variant: "outline" }) }>
+                        I want to log in
+                    </Link>
                     <Button type="submit">Register</Button>
                 </div>
             </form>
         </Form>
-    </>;
+    </div>;
 }

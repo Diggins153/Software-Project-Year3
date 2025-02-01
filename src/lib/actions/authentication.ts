@@ -3,6 +3,7 @@
 import { signIn } from "@/auth";
 import { db } from "@/lib/db";
 import { loginFormSchema, registerFormSchema } from "@/lib/formSchemas";
+import bcrypt from "bcryptjs";
 import { z } from "zod";
 
 export async function register(values: z.infer<typeof registerFormSchema>) {

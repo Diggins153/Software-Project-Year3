@@ -11,7 +11,7 @@ export default function Sidebar() {
             <div className="sidebar-header">BeyonD&D</div>
             <nav>
                 <ul>
-                    <li><Link href="">Home</Link></li>
+                    <li><Link href="/">Home</Link></li>
                     <li><Link href="/campaigns">Campaigns</Link></li>
 
                     {/* Characters Dropdown */}

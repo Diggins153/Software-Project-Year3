@@ -1,4 +1,4 @@
-"use client";  // Add this line at the top
+"use client";
 
 import Link from "next/link";
 import { useState } from "react";

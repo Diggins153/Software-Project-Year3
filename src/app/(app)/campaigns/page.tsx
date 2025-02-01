@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '@/components/Card';
+import CampaignCard from '@/components/CampaignCard';
 import {db} from "@/lib/db";
 
 async function fetchCardData() {
@@ -16,7 +16,7 @@ const Page: React.FC = async () => {
     console.log(cardData);
     return (
         <div>
-            {cardData.map(campaign => <Card {...campaign}/>)}
+            {cardData.map(campaign => <CampaignCard {...campaign} key={campaign.id}/>)}
         </div>
     );
 };

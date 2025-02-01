@@ -6,8 +6,27 @@ import { loginFormSchema, registerFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-export async function register(values: z.infer<typeof registerFormSchema>) {
-    console.log(values);
+export async function register(formValues: z.infer<typeof registerFormSchema>) {
+    const parseResult = await registerFormSchema.safeParseAsync(formValues);
+
+    if (!parseResult.success) return { success: false, errors: parseResult.error.format() };
+
+    let { displayName, email, password, gdpr } = parseResult.data;
+
+    const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt(12));
+
+    await db("users").insert({
+        display_name: displayName,
+        email: email,
+        password: passwordHash,
+        role: "USER",
+        is_paying: false,
+        last_consent_date: new Date(),
+    });
+
+    await signIn("credentials", { email, password, redirectTo: "/" });
+
+    return { success: true };
 }
 
 export async function login(formValues: z.infer<typeof loginFormSchema>) {

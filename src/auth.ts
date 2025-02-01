@@ -53,10 +53,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     } else {
                         console.error("UnknownError", error);
                     }
-
-                    return null;
                 }
+                return null;
             },
         }),
     ],
+    callbacks: {
+        async session({ session }) {
+            const user = await fetchUser(session.user.email);
+            if (!user) {
+                return session;
+            }
+
+            session.user.email = user.email;
+            session.user.displayName = user.display_name;
+            session.user.email = user.email;
+            session.user.role = user.role;
+            session.user.isPaying = user.is_paying;
+            session.user.lastConsentDate = user.last_consent_date;
+
+            return session;
+        },
+    },
 });

@@ -11,7 +11,7 @@ export async function register(formValues: z.infer<typeof registerFormSchema>) {
 
     if (!parseResult.success) return { success: false, errors: parseResult.error.format() };
 
-    let { displayName, email, password, gdpr } = parseResult.data;
+    let { displayName, email, password } = parseResult.data;
 
     const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt(12));
 

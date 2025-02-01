@@ -27,8 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             className={ `${ alikeAngular.variable } ${ artifika.variable } antialiased` }
         >
         <div className="container">
-            <Sidebar /> {/* Sidebar on the left */}
-            <main className="content">{children}</main> {/* Main content */}
+            {children}
         </div>
         </body>
         </html>

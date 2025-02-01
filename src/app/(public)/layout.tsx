@@ -1,7 +1,13 @@
-export default function NoLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
-    return (
-        <>
-            { children }
-        </>
-    );
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+
+export default async function NoLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+    const session = await auth();
+    if (!!session?.user) {
+        redirect("/");
+    }
+
+    return <>
+        { children }
+    </>;
 }

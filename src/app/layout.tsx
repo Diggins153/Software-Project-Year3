@@ -25,7 +25,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <body
             className={ `${ alikeAngular.variable } ${ artifika.variable } antialiased` }
         >
-        { children }
+        <div className="container">
+            { children }
+        </div>
         </body>
         </html>
     );

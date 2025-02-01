@@ -1,9 +1,25 @@
-export default function Campaigns() {
+import React from 'react';
+import Card from '@/components/Card';
+import {db} from "@/lib/db";
+
+async function fetchCardData() {
+    const response = db('campaign').select('*');
     return (
-        <div className="flex">
-            <main className="main-content flex items-center justify-center min-h-screen bg-red-600 text-white">
-                <h1 className="text-6xl font-bold">CAMPAIGNS PAGE</h1>
-            </main>
+        response
+    )
+
+
+}
+
+const Page: React.FC = async () => {
+    const cardData = await fetchCardData();
+    console.log(cardData);
+    return (
+        <div>
+            {cardData.map(campaign => <Card {...campaign}/>)}
         </div>
     );
-}
+};
+
+export default Page;
+

@@ -125,3 +125,15 @@ h1 {
   font-weight: bold;
   color: white;
 }
+
+.card {
+  border: 1px solid hsl(0, 0%, 80%);
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
+  padding: 20px;
+  margin: 20px;
+  text-align: center;
+  max-width: 250px;
+  max-height: 250px;
+  display: inline-block;
+}

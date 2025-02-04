@@ -4,15 +4,15 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { login } from "@/lib/actions/authentication";
-import { loginFormSchema } from "@/lib/formSchemas";
+import { LoginFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function LoginPage() {
-    const form = useForm<z.infer<typeof loginFormSchema>>({
-        resolver: zodResolver(loginFormSchema),
+    const form = useForm<z.infer<typeof LoginFormSchema>>({
+        resolver: zodResolver(LoginFormSchema),
         defaultValues: {
             email: "",
             password: "",

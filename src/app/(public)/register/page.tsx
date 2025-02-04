@@ -6,7 +6,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { register } from "@/lib/actions/authentication";
-import { registerFormSchema } from "@/lib/formSchemas";
+import { RegisterFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleHelp } from "lucide-react";
 import Link from "next/link";
@@ -14,8 +14,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function RegisterPage() {
-    const form = useForm<z.infer<typeof registerFormSchema>>({
-        resolver: zodResolver(registerFormSchema),
+    const form = useForm<z.infer<typeof RegisterFormSchema>>({
+        resolver: zodResolver(RegisterFormSchema),
         defaultValues: {
             displayName: "",
             email: "",

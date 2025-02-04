@@ -1,5 +1,5 @@
 import { fetchUser, User } from "@/lib/actions/authentication";
-import { loginFormSchema } from "@/lib/formSchemas";
+import { LoginFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -36,7 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 try {
                     let user: User | null = null;
 
-                    const { email, password } = await loginFormSchema.parseAsync(credentials);
+                    const { email, password } = await LoginFormSchema.parseAsync(credentials);
 
                     user = await fetchUser(email);
 

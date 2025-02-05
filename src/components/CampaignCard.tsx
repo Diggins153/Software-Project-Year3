@@ -1,5 +1,6 @@
 // CampaignCard.tsx (Server Component)
 import React from 'react';
+import styles from "./CampaignCard.module.css";
 
 interface CardProps {
     id: number;
@@ -12,9 +13,9 @@ interface CardProps {
 
 const CampaignCard: React.FC<CardProps> = ({ id, name, created_at, dungeon_master, max_players, outline }) => {
     return (
-        <div className="card">
+        <div className={styles.card}>
             <h2>{name}</h2>
-            <img className="card-image" src = "https://placehold.co/400" alt="Placeholder"/>
+            <img className={styles.cardImage} src = "https://placehold.co/400" alt="Placeholder"/>
             <p><strong>ID:</strong> {id}</p>
             <p><strong>Created At:</strong> {new Date(created_at).toLocaleDateString()}</p>
             <p><strong>Dungeon Master:</strong> {dungeon_master}</p>

@@ -6,10 +6,8 @@ export default async function SettingsPage() {
         await signIn();
     }
 
-    return <div className="flex">
-        <main className="main-content flex items-center justify-center min-h-screen">
-            User: <br/>
-            { JSON.stringify(session) }
-        </main>
-    </div>;
+    return <main>
+        User: <br/>
+        { JSON.stringify(session) }
+    </main>;
 }

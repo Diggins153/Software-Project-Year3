@@ -1,13 +1,5 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-
 export default async function NoLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
-    const session = await auth();
-    if (!!session?.user) {
-        redirect("/");
-    }
-
-    return <>
+    return <div className="content h-dvh mr-0 mx-1.5 w-auto">
         { children }
-    </>;
+    </div>;
 }

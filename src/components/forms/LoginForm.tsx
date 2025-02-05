@@ -6,15 +6,10 @@ import { Input } from "@/components/ui/input";
 import { login } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Metadata } from "next";
+import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-export const metadata: Metadata = {
-    title: "Log into BYonD&D",
-};
 
 export default function LoginForm() {
     const form = useForm<z.infer<typeof LoginFormSchema>>({
@@ -25,10 +20,8 @@ export default function LoginForm() {
         },
     });
 
-    useEffect(() => {}, )
-
     return <Form { ...form }>
-        <form onSubmit={ form.handleSubmit(login) }>
+        <form onSubmit={ form.handleSubmit(login) } className="space-y-8">
             <FormField
                 control={ form.control } name="email" render={ ({ field }) => (
                 <FormItem>
@@ -53,10 +46,12 @@ export default function LoginForm() {
             ) }
             />
 
-            <Link href={ "/register" } className={ buttonVariants({ variant: "outline" }) }>
-                I want to register
-            </Link>
-            <Button type="submit">Log in</Button>
+            <div className="flex justify-between">
+                <Link href={ "/register" } className={ buttonVariants({ variant: "outline" }) }>
+                    I want to register
+                </Link>
+                <Button type="submit">Log in <ArrowRightIcon/></Button>
+            </div>
         </form>
     </Form>;
 }

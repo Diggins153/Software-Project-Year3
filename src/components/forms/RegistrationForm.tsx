@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { register } from "@/lib/actions/authentication";
 import { RegisterFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleHelp } from "lucide-react";
+import { ArrowRightIcon, CircleHelp } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,6 +20,7 @@ export default function RegistrationForm() {
             displayName: "",
             email: "",
             password: "",
+            gdpr: false,
         },
     });
 
@@ -118,11 +119,11 @@ export default function RegistrationForm() {
                 ) }
             />
 
-            <div className="flex gap-2">
+            <div className="flex justify-between">
                 <Link href="/login" className={ buttonVariants({ variant: "outline" }) }>
                     I want to log in
                 </Link>
-                <Button type="submit">Register</Button>
+                <Button type="submit">Register <ArrowRightIcon/></Button>
             </div>
         </form>
     </Form>;

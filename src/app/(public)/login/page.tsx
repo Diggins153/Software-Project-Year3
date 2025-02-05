@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-    return <div className="mx-auto flex flex-col gap-8">
+    return <div className="m-auto flex flex-col gap-8">
         <h2 className="text-2xl">Login</h2>
         <LoginForm/>
     </div>;

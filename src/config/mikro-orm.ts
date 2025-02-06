@@ -5,8 +5,10 @@ import { User } from "@/entities/User";
 import { VerificationCode } from "@/entities/VerificationCode";
 import { Options } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
+import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
 
 const config: Options = {
+    metadataProvider: TsMorphMetadataProvider,
     dbName: process.env.MYSQL_DB,
     driver: MySqlDriver,
     entities: [

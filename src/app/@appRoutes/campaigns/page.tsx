@@ -15,9 +15,11 @@ const Page: React.FC = async () => {
     const cardData = await fetchCardData();
     console.log(cardData);
     return (
-        <div>
-            {cardData.map(campaign => <CampaignCard {...campaign} key={campaign.id}/>)}
-        </div>
+        <main>
+            <div>
+                {cardData.map(campaign => <CampaignCard {...campaign} key={campaign.id}/>)}
+            </div>
+        </main>
     );
 };
 

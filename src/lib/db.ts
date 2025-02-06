@@ -9,4 +9,8 @@ export const db = knex({
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DB,
     },
+    pool: {
+        max: 1,
+        min: 0,
+    },
 });

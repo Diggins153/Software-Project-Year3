@@ -2,14 +2,14 @@ import { hasDigits, hasLowercase, hasSpecialCharacter, hasUppercase } from "@/li
 import { userExists } from "@/lib/formValidationServer";
 import { z } from "zod";
 
-export const loginFormSchema = z.object({
+export const LoginFormSchema = z.object({
     email: z
         .string()
         .email("Please enter an email address."),
     password: z.string(),
 });
 
-export const registerFormSchema = z.object({
+export const RegisterFormSchema = z.object({
     displayName: z
         .string()
         .min(0, "Please enter a display name.")

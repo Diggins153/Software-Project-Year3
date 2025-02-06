@@ -2,8 +2,9 @@
 
 import { signIn } from "@/auth";
 import { db } from "@/lib/db";
-import { loginFormSchema, registerFormSchema } from "@/lib/formSchemas";
+import { LoginFormSchema, RegisterFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
 
 export type User = {
@@ -16,8 +17,8 @@ export type User = {
     last_consent_date: Date;
 }
 
-export async function register(formValues: z.infer<typeof registerFormSchema>) {
-    const parseResult = await registerFormSchema.safeParseAsync(formValues);
+export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
+    const parseResult = await RegisterFormSchema.safeParseAsync(formValues);
 
     if (!parseResult.success) return { success: false, errors: parseResult.error.format() };
 
@@ -39,16 +40,24 @@ export async function register(formValues: z.infer<typeof registerFormSchema>) {
     return { success: true };
 }
 
-export async function login(formValues: z.infer<typeof loginFormSchema>) {
-    const parseResult = loginFormSchema.safeParse(formValues);
+export async function login(formValues: z.infer<typeof LoginFormSchema>) {
+    const parseResult = LoginFormSchema.safeParse(formValues);
 
     if (!parseResult.success) return { success: false, errors: parseResult.error.format() };
 
     const { email, password } = parseResult.data;
 
-    await signIn("credentials", { email, password, redirectTo: "/" });
+    try {
+        await signIn("credentials", { email, password, redirectTo: "/" });
+    } catch (e) {
+        if (isRedirectError(e)) {
+            throw e;
+        } else {
+            console.error("Sign in", e);
+        }
+    }
 
-    return { success: true };
+    // return { success: true };
 }
 
 export async function fetchUser(email: string): Promise<User | null> {

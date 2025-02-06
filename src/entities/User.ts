@@ -1,5 +1,6 @@
 import { BaseEntity } from "@/entities/BaseEntity";
-import { Entity, Property, Unique } from "@mikro-orm/core";
+import { Character } from "@/entities/Character";
+import { Entity, ManyToMany, OneToMany, Property, Unique } from "@mikro-orm/core";
 
 @Entity()
 export class User extends BaseEntity {

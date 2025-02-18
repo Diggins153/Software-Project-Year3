@@ -91,6 +91,9 @@ const config = {
     // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
     moduleNameMapper: {
         "^@/(.*)$": "<rootDir>/src/$1",
+        "@/auth": "<rootDir>/__tests__/mocks/auth.ts",
+        "next-auth/providers/credentials": "<rootDir>/__tests__/mocks/next-auth-providers-credentials.ts",
+        "next-auth": "<rootDir>/__tests__/mocks/next-auth.ts",
     },
 
     // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -138,7 +141,7 @@ const config = {
     // setupFiles: [],
 
     // A list of paths to modules that run some code to configure or set up the testing framework before each test
-    setupFilesAfterEnv: [ "<rootDir>/jest.setup.js" ],
+    setupFilesAfterEnv: [ "<rootDir>/jest.setup.ts" ],
 
     // The number of seconds after which a test is considered as slow and reported as such in the results.
     // slowTestThreshold: 5,
@@ -179,11 +182,10 @@ const config = {
     // transform: undefined,
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-    transformIgnorePatterns: [
-        // "/node_modules/",
-        // "\\.pnp\\.[^\\/]+$",
-        "/node_modules/(?!next-auth)"
-    ],
+    // transformIgnorePatterns: [
+    // "/node_modules/",
+    // "\\.pnp\\.[^\\/]+$",
+    // ],
 
     // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
     // unmockedModulePathPatterns: undefined,

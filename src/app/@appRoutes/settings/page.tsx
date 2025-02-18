@@ -8,6 +8,10 @@ export default async function SettingsPage() {
 
     return <main>
         User: <br/>
-        { JSON.stringify(session) }
+        <pre>
+            <code>
+                { JSON.stringify(session) }
+            </code>
+        </pre>
     </main>;
 }

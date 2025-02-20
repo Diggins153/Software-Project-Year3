@@ -30,8 +30,8 @@ jest.mock("react-dom", () => ({
     },
 }));
 
-jest.mock("../lib/actions", () => ({
-    ...jest.requireActual("../lib/actions"),
+jest.mock("../../../lib/actions/authentication", () => ({
+    ...jest.requireActual("../../../lib/actions/authentication"),
     login: jest.fn((formData: FormData) => {
         const email = formData.get("email");
         const password = formData.get("password");
@@ -56,7 +56,7 @@ jest.mock("../lib/actions", () => ({
 }));
 
 // TODO: Edit to fit login page and not root from example
-describe("Root", () => {
+describe("Login Page", () => {
     it("should render root page", () => {
         renderComponent();
     });

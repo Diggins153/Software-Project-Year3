@@ -1,35 +1,27 @@
+import { authConfig } from "@/auth.config";
 import { fetchUser, User } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
-import NextAuth from "next-auth";
+import NextAuth, { type User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ZodError } from "zod";
 
 declare module "next-auth" {
-    interface Session {
-        user: {
-            id: number;
-            displayName: string;
-            email: string;
-            role: "USER" | "ADMIN";
-            isPaying: boolean;
-            lastConsentDate: Date;
-        };
+    interface User {
+        displayName: string;
+        role: "USER" | "ADMIN";
+        isPaying: boolean;
+        lastConsentDate: Date;
     }
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-    session: {
-        strategy: "jwt",
-    },
-    pages: {
-        signIn: "/login",
-    },
+    ...authConfig,
     providers: [
         CredentialsProvider({
             name: "credentials",
             credentials: {
-                email: { label: "Email", type: "email", placeholder: "your@email.ie" },
+                email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
@@ -43,10 +35,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     console.log("User:", user);
 
                     if (!!user && await bcrypt.compare(password, user.password)) {
-                        return user;
+                        // Note: Typing to unknown and then to AuthUser is required, else this whole function errors out
+                        return user as unknown as AuthUser;
                     }
-
-                    return null;
                 } catch (error) {
                     if (error instanceof ZodError) {
                         console.error("ZodError", error);
@@ -65,14 +56,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 return session;
             }
 
-            session.user.email = user.email;
-            session.user.displayName = user.display_name;
-            session.user.email = user.email;
-            session.user.role = user.role;
-            session.user.isPaying = user.is_paying;
-            session.user.lastConsentDate = user.last_consent_date;
+            // session.user.email = user.email;
+            // session.user.displayName = user.display_name;
+            // session.user.role = user.role;
+            // session.user.isPaying = user.is_paying;
+            // session.user.lastConsentDate = user.last_consent_date;
 
-            return session;
+            return {
+                ...session,
+                user: {
+                    ...session.user,
+                    email: user.email,
+                    displayName: user.display_name,
+                    role: user.role,
+                    isPaying: user.is_paying,
+                    lastConsentDate: user.last_consent_date,
+                },
+            };
         },
     },
 });

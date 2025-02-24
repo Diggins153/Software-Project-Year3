@@ -1,4 +1,3 @@
-/** @type import("next").NextConfig */
 const path = require("path");
 const { devDependencies } = require("./package.json");
 
@@ -27,8 +26,14 @@ externals["@mikro-orm/seeder"] = "commonjs @mikro-orm/seeder";
 // Externalize knex
 externals["knex"] = "commonjs knex";
 
+/** @type import("next").NextConfig */
 module.exports = {
     output: "standalone",
+    experimental: {
+        turbo: {
+
+        }
+    },
     webpack: (config, { isServer, webpack }) => {
         //
         // 1) Externals (only do this on the server build)

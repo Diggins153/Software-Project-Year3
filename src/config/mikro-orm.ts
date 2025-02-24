@@ -23,6 +23,7 @@ const config: Options = {
     password: process.env.MYSQL_PASSWORD,
     port: parseInt(process.env.MYSQL_PORT!),
     debug: process.env.DEBUG === "true" || process.env.NODE_ENV == "development",
+    discovery: { disableDynamicFileAccess: true },
 };
 
 export default config;

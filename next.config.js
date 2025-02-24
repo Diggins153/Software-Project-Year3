@@ -1,4 +1,3 @@
-const path = require("path");
 const { devDependencies } = require("./package.json");
 
 // Build up your externals object from devDependencies (only for the server build).
@@ -6,13 +5,6 @@ const externals = {};
 for (const devDependency of Object.keys(devDependencies)) {
     externals[devDependency] = `commonjs ${ devDependency }`;
 }
-
-// Optional: Add any optional modules that you want to be externalized
-const optionalModules = new Set([
-    ...Object.keys(require("knex/package.json").browser),
-    ...Object.keys(require("@mikro-orm/core/package.json").peerDependencies || {}),
-    ...Object.keys(require("@mikro-orm/core/package.json").devDependencies || {}),
-]);
 
 // Externalize all MikroORM modules
 externals["@mikro-orm/core"] = "commonjs @mikro-orm/core";

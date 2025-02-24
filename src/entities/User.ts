@@ -21,4 +21,12 @@ export class User extends BaseEntity {
 
     @Property()
     lastConsentDate: Date = new Date(0);
+
+    constructor(displayName: string, email: string, password: string, lastConsentDate: Date) {
+        super();
+        this.displayName = displayName;
+        this.email = email;
+        this.password = password;
+        this.lastConsentDate = lastConsentDate;
+    }
 }

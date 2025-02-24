@@ -1,10 +1,11 @@
 import { authConfig } from "@/auth.config";
-import { fetchUser, User } from "@/lib/actions/authentication";
+import { fetchUser } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
 import NextAuth, { type NextAuthResult, type User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ZodError } from "zod";
+import { User as OrmUser } from "@/entities/User";
 
 declare module "next-auth" {
     interface User {
@@ -27,13 +28,11 @@ export const { handlers, auth, signIn, signOut }: NextAuthResult & { signIn: any
             },
             async authorize(credentials) {
                 try {
-                    let user: User | null = null;
-
                     const { email, password } = await LoginFormSchema.parseAsync(credentials);
 
-                    user = await fetchUser(email);
+                    let user: OrmUser | null = await fetchUser(email);
 
-                    console.log("User:", user);
+                    if (process.env.DEBUG) console.log("User:", user);
 
                     if (!!user && await bcrypt.compare(password, user.password)) {
                         // Note: Typing to unknown and then to AuthUser is required, else this whole function errors out
@@ -62,10 +61,10 @@ export const { handlers, auth, signIn, signOut }: NextAuthResult & { signIn: any
                 user: {
                     ...session.user,
                     email: user.email,
-                    displayName: user.display_name,
+                    displayName: user.displayName,
                     role: user.role,
-                    isPaying: user.is_paying,
-                    lastConsentDate: user.last_consent_date,
+                    isPaying: user.isPaying,
+                    lastConsentDate: user.lastConsentDate,
                 },
             };
         },

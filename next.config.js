@@ -26,7 +26,6 @@ externals["knex"] = "commonjs knex";
 
 /** @type import("next").NextConfig */
 module.exports = {
-    output: "standalone",
     experimental: {
         turbo: {},
     },
@@ -52,11 +51,6 @@ module.exports = {
         // 4) Custom module rules
         //
         config.module.rules.push(
-            {
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                loader: 'ts-loader',
-            },
             {
                 test: /\.node$/,
                 use: "node-loader",

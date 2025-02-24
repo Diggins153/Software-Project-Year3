@@ -2,7 +2,7 @@ import { authConfig } from "@/auth.config";
 import { fetchUser, User } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
-import NextAuth, { type User as AuthUser } from "next-auth";
+import NextAuth, { type NextAuthResult, type User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ZodError } from "zod";
 
@@ -15,7 +15,8 @@ declare module "next-auth" {
     }
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+// Note: Doing weird typing as TS has an issue with the option "declaration: true" and a dependency in next-auth
+export const { handlers, auth, signIn, signOut }: NextAuthResult & { signIn: any } = NextAuth({
     ...authConfig,
     providers: [
         CredentialsProvider({
@@ -55,12 +56,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (!user) {
                 return session;
             }
-
-            // session.user.email = user.email;
-            // session.user.displayName = user.display_name;
-            // session.user.role = user.role;
-            // session.user.isPaying = user.is_paying;
-            // session.user.lastConsentDate = user.last_consent_date;
 
             return {
                 ...session,

@@ -8,20 +8,27 @@ import { Collection, Entity, ManyToMany, ManyToOne, Property, type Ref } from "@
 @Entity()
 export class Character extends BaseEntity {
     @Property()
-    name!: string;
+    name: string;
 
     @Property()
-    handle!: string;
+    handle: string;
 
-    @ManyToOne()
-    race!: Race;
+    @ManyToOne(() => Race)
+    race: Ref<Race>;
 
     @Property()
-    image!: string;
+    image?: string;
 
     @ManyToMany({ entity: () => Class, pivotEntity: () => CharacterClasses })
     classes = new Collection<CharacterClasses>(this);
 
-    @ManyToOne()
+    @ManyToOne(() => User)
     owner!: Ref<User>;
+
+    constructor(name: string, handle: string, race: Ref<Race>) {
+        super();
+        this.name = name;
+        this.handle = handle;
+        this.race = race;
+    }
 }

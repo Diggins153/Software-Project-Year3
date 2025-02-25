@@ -40,6 +40,7 @@ export default async function Sidebar() {
                         action={ async () => {
                             "use server";
                             await signOut();
+                            throw redirect("/");
                         } }
                     >
                         <NavItem title="Sign Out" icon={ <LogOutIcon size={ 24 }/> }/>

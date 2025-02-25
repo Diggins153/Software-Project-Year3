@@ -27,7 +27,8 @@ export class User extends BaseEntity {
     @OneToMany(() => Character, character => character.owner, { cascade: [ Cascade.SCHEDULE_ORPHAN_REMOVAL ] })
     characters = new Collection<Character>(this);
 
-    @OneToMany(() => Campaign, c => c.dungeonMaster)
+    // Note: The entity needs to be specified as string else build fails
+    @OneToMany("Campaign", "dungeonMaster", { orphanRemoval: true })
     campaigns = new Collection<Campaign>(this);
 
     constructor(displayName: string, email: string, password: string, lastConsentDate: Date) {

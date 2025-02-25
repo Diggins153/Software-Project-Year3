@@ -1,3 +1,4 @@
+import { Campaign } from "@/entities/Campaign";
 import { Character } from "@/entities/Character";
 import { Class } from "@/entities/Class";
 import { Race } from "@/entities/Race";
@@ -11,16 +12,18 @@ const config: Options = {
     metadataProvider: TsMorphMetadataProvider,
     // WARNING: Entities must be specified explicitly
     entities: [
+        Campaign,
         Character,
         Class,
         Race,
         User,
     ],
     entitiesTs: [
+        Campaign,
         Character,
         Class,
         Race,
-        User
+        User,
     ],
     dbName: process.env.MYSQL_DB,
     host: process.env.MYSQL_HOST,

@@ -5,17 +5,17 @@ import { Cascade, Collection, Entity, Enum, OneToMany, Property, Unique } from "
 @Entity()
 export class User extends BaseEntity {
     @Property()
-    displayName!: string;
+    displayName: string;
 
     @Property()
     @Unique()
-    email!: string;
+    email: string;
 
     @Property()
-    password!: string;
+    password: string;
 
-    @Property({ length: 5 })
-    role: "USER" | "ADMIN" = "USER";
+    @Enum(() => UserRole)
+    role: UserRole = UserRole.USER;
 
     @Property()
     isPaying: boolean = false;
@@ -33,4 +33,9 @@ export class User extends BaseEntity {
         this.password = password;
         this.lastConsentDate = lastConsentDate;
     }
+}
+
+export enum UserRole {
+    USER = "user",
+    ADMIN = "admin",
 }

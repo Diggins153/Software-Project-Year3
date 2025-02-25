@@ -1,5 +1,6 @@
 import { BaseEntity } from "@/entities/BaseEntity";
-import { Entity, Property, Unique } from "@mikro-orm/core";
+import { Character } from "@/entities/Character";
+import { Cascade, Collection, Entity, Enum, OneToMany, Property, Unique } from "@mikro-orm/core";
 
 @Entity()
 export class User extends BaseEntity {
@@ -20,7 +21,10 @@ export class User extends BaseEntity {
     isPaying: boolean = false;
 
     @Property()
-    lastConsentDate: Date = new Date(0);
+    lastConsentDate: Date;
+
+    @OneToMany(() => Character, character => character.owner, { cascade: [ Cascade.SCHEDULE_ORPHAN_REMOVAL ] })
+    characters = new Collection<Character>(this);
 
     constructor(displayName: string, email: string, password: string, lastConsentDate: Date) {
         super();

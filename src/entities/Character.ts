@@ -1,8 +1,9 @@
 import { BaseEntity } from "@/entities/BaseEntity";
+import { CharacterClasses } from "@/entities/CharacterClasses";
 import { Class } from "@/entities/Class";
 import { Race } from "@/entities/Race";
 import { User } from "@/entities/User";
-import { Entity, ManyToMany, ManyToOne, Property, type Ref } from "@mikro-orm/core";
+import { Collection, Entity, ManyToMany, ManyToOne, Property, type Ref } from "@mikro-orm/core";
 
 @Entity()
 export class Character extends BaseEntity {
@@ -18,8 +19,8 @@ export class Character extends BaseEntity {
     @Property()
     image!: string;
 
-    @ManyToMany()
-    levels: Class[] = [];
+    @ManyToMany({ entity: () => Class, pivotEntity: () => CharacterClasses })
+    classes = new Collection<CharacterClasses>(this);
 
     @ManyToOne()
     owner!: Ref<User>;

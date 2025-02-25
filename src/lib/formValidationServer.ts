@@ -1,12 +1,11 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { User } from "@/entities/User";
+import getORM from "@/lib/orm";
 
 export async function userExists(email: string): Promise<boolean> {
-    let usersCount: number = await db("users")
-        .count<number>("email as count")
-        .where({ email: email })
-        .then((value: any) => (value[0].count as number));
+    const orm = await getORM();
+    const userCount = await orm.count(User, { email });
 
-    return usersCount > 0;
+    return userCount > 0;
 }

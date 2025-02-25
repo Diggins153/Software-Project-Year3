@@ -1,21 +1,23 @@
 import { authConfig } from "@/auth.config";
-import { fetchUser, User } from "@/lib/actions/authentication";
+import { fetchUser } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
-import NextAuth, { type User as AuthUser } from "next-auth";
+import NextAuth, { type NextAuthResult, type User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ZodError } from "zod";
+import { User as OrmUser, UserRole } from "@/entities/User";
 
 declare module "next-auth" {
     interface User {
         displayName: string;
-        role: "USER" | "ADMIN";
+        role: UserRole;
         isPaying: boolean;
         lastConsentDate: Date;
     }
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+// Note: Doing weird typing as TS has an issue with the option "declaration: true" and a dependency in next-auth
+export const { handlers, auth, signIn, signOut }: NextAuthResult & { signIn: any } = NextAuth({
     ...authConfig,
     providers: [
         CredentialsProvider({
@@ -26,13 +28,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
             async authorize(credentials) {
                 try {
-                    let user: User | null = null;
-
                     const { email, password } = await LoginFormSchema.parseAsync(credentials);
 
-                    user = await fetchUser(email);
+                    let user: OrmUser | null = await fetchUser(email);
 
-                    console.log("User:", user);
+                    if (process.env.DEBUG) console.log("User:", user);
 
                     if (!!user && await bcrypt.compare(password, user.password)) {
                         // Note: Typing to unknown and then to AuthUser is required, else this whole function errors out
@@ -51,27 +51,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         async session({ session }) {
-            const user = await fetchUser(session.user.email);
-            if (!user) {
+            const dbUser: OrmUser | null = await fetchUser(session.user.email);
+            if (!dbUser) {
                 return session;
             }
 
-            // session.user.email = user.email;
-            // session.user.displayName = user.display_name;
-            // session.user.role = user.role;
-            // session.user.isPaying = user.is_paying;
-            // session.user.lastConsentDate = user.last_consent_date;
+            const user: AuthUser = {
+                ...session.user,
+                email: dbUser.email,
+                displayName: dbUser.displayName,
+                role: dbUser.role,
+                isPaying: dbUser.isPaying,
+                lastConsentDate: dbUser.lastConsentDate,
+            };
 
             return {
                 ...session,
-                user: {
-                    ...session.user,
-                    email: user.email,
-                    displayName: user.display_name,
-                    role: user.role,
-                    isPaying: user.is_paying,
-                    lastConsentDate: user.last_consent_date,
-                },
+                user,
             };
         },
     },

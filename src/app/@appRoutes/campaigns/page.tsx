@@ -1,27 +1,16 @@
-import React from 'react';
-import CampaignCard from '@/components/CampaignCard';
-import {db} from "@/lib/db";
+import CampaignCard from "@/components/CampaignCard";
+import React from "react";
 
-async function fetchCardData() {
-    const response = db('campaign').select('*');
-    return (
-        response
-    )
+// Note: Tempfix before Campaign entity is implemented
+// TODO: Use ORM
+export default async function CampaignsPage() {
+    const cardData: any[] = [];
 
-
-}
-
-const Page: React.FC = async () => {
-    const cardData = await fetchCardData();
-    console.log(cardData);
     return (
         <main>
             <div>
-                {cardData.map(campaign => <CampaignCard {...campaign} key={campaign.id}/>)}
+                { cardData.map(campaign => <CampaignCard { ...campaign } key={ campaign.id }/>) }
             </div>
         </main>
     );
 };
-
-export default Page;
-

@@ -1,52 +1,43 @@
-import { fetchUser, User } from "@/lib/actions/authentication";
+import { authConfig } from "@/auth.config";
+import { fetchUser } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthResult, type User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ZodError } from "zod";
+import { User as OrmUser, UserRole } from "@/entities/User";
 
 declare module "next-auth" {
-    interface Session {
-        user: {
-            id: number;
-            displayName: string;
-            email: string;
-            role: "USER" | "ADMIN";
-            isPaying: boolean;
-            lastConsentDate: Date;
-        };
+    interface User {
+        displayName: string;
+        role: UserRole;
+        isPaying: boolean;
+        lastConsentDate: Date;
     }
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-    session: {
-        strategy: "jwt",
-    },
-    pages: {
-        signIn: "/login",
-    },
+// Note: Doing weird typing as TS has an issue with the option "declaration: true" and a dependency in next-auth
+export const { handlers, auth, signIn, signOut }: NextAuthResult & { signIn: any } = NextAuth({
+    ...authConfig,
     providers: [
         CredentialsProvider({
             name: "credentials",
             credentials: {
-                email: { label: "Email", type: "email", placeholder: "your@email.ie" },
+                email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
                 try {
-                    let user: User | null = null;
-
                     const { email, password } = await LoginFormSchema.parseAsync(credentials);
 
-                    user = await fetchUser(email);
+                    let user: OrmUser | null = await fetchUser(email);
 
-                    console.log("User:", user);
+                    if (process.env.DEBUG) console.log("User:", user);
 
                     if (!!user && await bcrypt.compare(password, user.password)) {
-                        return user;
+                        // Note: Typing to unknown and then to AuthUser is required, else this whole function errors out
+                        return user as unknown as AuthUser;
                     }
-
-                    return null;
                 } catch (error) {
                     if (error instanceof ZodError) {
                         console.error("ZodError", error);
@@ -60,19 +51,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         async session({ session }) {
-            const user = await fetchUser(session.user.email);
-            if (!user) {
+            const dbUser: OrmUser | null = await fetchUser(session.user.email);
+            if (!dbUser) {
                 return session;
             }
 
-            session.user.email = user.email;
-            session.user.displayName = user.display_name;
-            session.user.email = user.email;
-            session.user.role = user.role;
-            session.user.isPaying = user.is_paying;
-            session.user.lastConsentDate = user.last_consent_date;
+            const user: AuthUser = {
+                ...session.user,
+                email: dbUser.email,
+                displayName: dbUser.displayName,
+                role: dbUser.role,
+                isPaying: dbUser.isPaying,
+                lastConsentDate: dbUser.lastConsentDate,
+            };
 
-            return session;
+            return {
+                ...session,
+                user,
+            };
         },
     },
 });

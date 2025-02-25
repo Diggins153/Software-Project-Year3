@@ -1,4 +1,5 @@
 import { BaseEntity } from "@/entities/BaseEntity";
+import { Campaign } from "@/entities/Campaign";
 import { Character } from "@/entities/Character";
 import { Cascade, Collection, Entity, Enum, OneToMany, Property, Unique } from "@mikro-orm/core";
 
@@ -25,6 +26,10 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Character, character => character.owner, { cascade: [ Cascade.SCHEDULE_ORPHAN_REMOVAL ] })
     characters = new Collection<Character>(this);
+
+    // Note: The entity needs to be specified as string else build fails
+    @OneToMany("Campaign", "dungeonMaster", { orphanRemoval: true })
+    campaigns = new Collection<Campaign>(this);
 
     constructor(displayName: string, email: string, password: string, lastConsentDate: Date) {
         super();

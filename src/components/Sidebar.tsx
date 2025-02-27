@@ -16,14 +16,14 @@ export default async function Sidebar() {
                             <TooltipTrigger asChild>
                                 <Link
                                     href="/"
-                                    className={ `${ alikeAngular.className } text-4xl font-bold text-white bg-[#330F0A] rounded-lg text-center px-5 py-3 select-none` }
+                                    className={ `${ alikeAngular.className } text-4xl font-bold text-white bg-[#330F0A] rounded-lg text-center px-5 py-3 select-none border-2 border-white` }
                                 >
                                     B
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent
                                 side="right"
-                                className={ `text-2xl text-white bg-[#330F0A] font-bold ${ alikeAngular.className }` }
+                                className={ `text-2xl text-white bg-[#330F0A] font-bold border-white ${ alikeAngular.className }` }
                             >
                                 <p>ByonD&D - Home</p>
                             </TooltipContent>

@@ -6,7 +6,7 @@ export default function Characters() {
             <h1 className="text-3xl font-bold text-center">Create Your Character</h1>
             <div className="flex flex-col gap-6">
                 {/* Premade Character Card */}
-                <Link href="/appRoutes/characters/pre-made">
+                <Link href="/characters/pre-made">
                     <div className="w-[300px] p-6 bg-white rounded-lg shadow-lg border border-gray-200 transition-all duration-200 hover:shadow-2xl hover:scale-105 hover:border-gray-400 active:scale-95 cursor-pointer">
                         <h2 className="text-xl font-bold text-gray-800">Choose a Premade Character</h2>
                         <p className="text-gray-600 mt-2">

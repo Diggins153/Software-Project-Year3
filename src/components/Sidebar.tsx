@@ -1,4 +1,4 @@
-import { signOut } from "@/auth";
+import { signOut } from "@/lib/auth";
 import NavItem from "@/components/NavItem";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { alikeAngular } from "@/lib/fonts";

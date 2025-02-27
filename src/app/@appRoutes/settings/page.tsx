@@ -1,4 +1,4 @@
-import { auth, signIn } from "@/auth";
+import { auth, signIn } from "@/lib/auth";
 
 export default async function SettingsPage() {
     const session = await auth();

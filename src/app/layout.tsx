@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth";
 import { alikeAngular, artifika } from "@/lib/fonts";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";

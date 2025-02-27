@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn } from "@/lib/auth";
 import { LoginFormSchema, RegisterFormSchema } from "@/lib/formSchemas";
 import getORM from "@/lib/orm";
 import bcrypt from "bcryptjs";

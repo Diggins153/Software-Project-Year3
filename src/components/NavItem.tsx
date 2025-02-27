@@ -14,7 +14,7 @@ export default function NavItem({ title, href, icon }: PropsWithoutRef<{ title: 
                     { !!href
                         ? <Link
                             href={ href }
-                            className="!flex bg-green-800 text-white px-5 py-3 justify-center rounded-lg"
+                            className="!flex bg-green-800 text-white px-5 py-3 justify-center rounded-lg w-full"
                         >
                             { !!icon
                                 ? <div>{ icon }</div>
@@ -22,7 +22,7 @@ export default function NavItem({ title, href, icon }: PropsWithoutRef<{ title: 
                         </Link>
                         : <button
                             type="submit"
-                            className="!flex bg-green-800 text-white px-5 py-3 justify-center rounded-lg"
+                            className="!flex bg-green-800 text-white px-5 py-3 justify-center rounded-lg w-full"
                         >
                             { !!icon
                                 ? <div className="">{ icon }</div>

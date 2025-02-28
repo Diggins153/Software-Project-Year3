@@ -35,6 +35,17 @@ module.exports = {
     experimental: {
         turbo: {},
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "placehold.co",
+                port: "",
+                search: "",
+                pathname: "**",
+            },
+        ],
+    },
     webpack: (config, { isServer, webpack }) => {
         //
         // 1) Externals (only do this on the server build)

@@ -4,5 +4,10 @@ import { Entity, Property } from "@mikro-orm/core";
 @Entity()
 export class Race extends BaseEntity {
     @Property()
-    name!: string;
+    name: string;
+
+    constructor(name: string) {
+        super();
+        this.name = name;
+    }
 }

@@ -11,7 +11,7 @@ export default async function Sidebar() {
         <div className="h-dvh flex flex-col gap-4 p-2.5">
             <nav className="flex flex-col gap-5 h-full justify-center">
                 <div className="flex flex-col gap-1">
-                    <TooltipProvider delayDuration={ 0 }>
+                    <TooltipProvider delayDuration={ 0 } disableHoverableContent={true}>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Link

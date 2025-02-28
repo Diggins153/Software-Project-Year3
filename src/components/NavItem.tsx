@@ -8,7 +8,7 @@ import { PropsWithoutRef } from "react";
 export default function NavItem({ title, href, icon }: PropsWithoutRef<{ title: string, href?: string, icon?: any }>) {
 
     return <>
-        <TooltipProvider delayDuration={ 0 }>
+        <TooltipProvider delayDuration={ 0 } disableHoverableContent={true}>
             <Tooltip>
                 <TooltipTrigger asChild>
                     { !!href

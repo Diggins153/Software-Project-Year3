@@ -1,5 +1,6 @@
 import { Campaign } from "@/entities/Campaign";
 import { Character } from "@/entities/Character";
+import { CharacterClasses } from "@/entities/CharacterClasses";
 import { Class } from "@/entities/Class";
 import { Race } from "@/entities/Race";
 import { User } from "@/entities/User";
@@ -14,6 +15,7 @@ const config: Options = defineConfig({
     entities: [
         Campaign,
         Character,
+        CharacterClasses,
         Class,
         Race,
         User,
@@ -21,6 +23,7 @@ const config: Options = defineConfig({
     entitiesTs: [
         Campaign,
         Character,
+        CharacterClasses,
         Class,
         Race,
         User,

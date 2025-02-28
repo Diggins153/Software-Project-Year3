@@ -13,7 +13,7 @@ export class Character extends BaseEntity {
     @Property()
     handle: string;
 
-    @ManyToOne(() => Race)
+    @ManyToOne(() => Race, { eager: true })
     race: Ref<Race>;
 
     @Property()

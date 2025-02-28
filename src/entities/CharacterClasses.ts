@@ -4,10 +4,10 @@ import { Entity, ManyToOne, Property, type Ref } from "@mikro-orm/core";
 
 @Entity()
 export class CharacterClasses {
-    @ManyToOne({ entity: () => Character, primary: true })
+    @ManyToOne({ entity: () => Character, primary: true, eager: true })
     character: Ref<Character>;
 
-    @ManyToOne({ entity: () => Class, primary: true })
+    @ManyToOne({ entity: () => Class, primary: true, eager: true })
     class: Ref<Class>;
 
     @Property({ type: "int", default: "1" })

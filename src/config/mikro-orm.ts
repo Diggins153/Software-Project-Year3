@@ -4,10 +4,10 @@ import { Class } from "@/entities/Class";
 import { Race } from "@/entities/Race";
 import { User } from "@/entities/User";
 import { Options } from "@mikro-orm/core";
-import { MySqlDriver } from "@mikro-orm/mysql";
+import { defineConfig, MySqlDriver } from "@mikro-orm/mysql";
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
 
-const config: Options = {
+const config: Options = defineConfig({
     driver: MySqlDriver,
     metadataProvider: TsMorphMetadataProvider,
     // WARNING: Entities must be specified explicitly
@@ -33,6 +33,7 @@ const config: Options = {
     debug: process.env.DEBUG === "true",
     // WARNING: Keep the discovery option as is
     discovery: { disableDynamicFileAccess: true },
-};
+    pool: { min: 0, max: 1 },
+});
 
 export default config;

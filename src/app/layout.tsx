@@ -29,7 +29,7 @@ export default async function RootLayout({ appRoutes, publicRoutes }: Readonly<{
     return (
         <html lang="en">
         <body
-            className={ `${ alikeAngular.variable } ${ artifika.variable } antialiased` }
+            className={ `${ alikeAngular.variable } ${ artifika.variable } ${ artifika.className } antialiased` }
         >
         {
             !!session?.user

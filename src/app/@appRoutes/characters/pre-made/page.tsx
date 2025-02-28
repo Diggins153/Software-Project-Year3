@@ -1,5 +1,6 @@
 "use client";
 
+import { createPremadeCharacter } from "@/lib/actions/characters";
 import Image from "next/image";
 
 type PremadeCharacter = {
@@ -119,6 +120,7 @@ export default function PremadeCharactersPage() {
                 <div
                     key={character.id}
                     className="w-[300px] h-[500px] bg-gray-100 rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-transform duration-200 cursor-pointer"
+                    onClick={ async () => await createPremadeCharacter(character.name, character.race, character.class) }
                 >
                     {/* Character Image (Top 300px) */}
                     <div className="h-[300px] relative">

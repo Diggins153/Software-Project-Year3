@@ -3,7 +3,7 @@ import { CharacterClasses } from "@/entities/CharacterClasses";
 import { Class } from "@/entities/Class";
 import { Race } from "@/entities/Race";
 import { User } from "@/entities/User";
-import { Collection, Entity, ManyToMany, ManyToOne, Property, type Ref } from "@mikro-orm/core";
+import { Collection, Entity, ManyToMany, ManyToOne, Property, type Ref, ref } from "@mikro-orm/core";
 
 @Entity()
 export class Character extends BaseEntity {
@@ -25,10 +25,10 @@ export class Character extends BaseEntity {
     @ManyToOne(() => User)
     owner!: Ref<User>;
 
-    constructor(name: string, handle: string, race: Ref<Race>) {
+    constructor(name: string, handle: string, race: Race) {
         super();
         this.name = name;
         this.handle = handle;
-        this.race = race;
+        this.race = ref(race);
     }
 }

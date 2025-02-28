@@ -1,6 +1,6 @@
 import { Character } from "@/entities/Character";
 import { Class } from "@/entities/Class";
-import { Entity, ManyToOne, Property, type Ref } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property, ref, type Ref } from "@mikro-orm/core";
 
 @Entity()
 export class CharacterClasses {
@@ -13,9 +13,9 @@ export class CharacterClasses {
     @Property({ type: "int", default: "1" })
     level!: number;
 
-    constructor(character: Ref<Character>, characterClass: Ref<Class>, level: number) {
+    constructor(character: Ref<Character>, characterClass: Class, level: number) {
         this.character = character;
-        this.class = characterClass;
+        this.class = ref(characterClass);
         this.level = level;
     }
 }

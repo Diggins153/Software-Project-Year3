@@ -24,7 +24,7 @@ export class User extends BaseEntity {
     @Property()
     lastConsentDate: Date;
 
-    @OneToMany(() => Character, character => character.owner, { cascade: [ Cascade.SCHEDULE_ORPHAN_REMOVAL ] })
+    @OneToMany(() => Character, character => character.owner)
     characters = new Collection<Character>(this);
 
     // Note: The entity needs to be specified as string else build fails

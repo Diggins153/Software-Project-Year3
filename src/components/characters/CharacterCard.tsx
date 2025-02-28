@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default async function CharacterCard({ character }: { character?: Character }) {
     if (!!character) {
-        const { id, image = "", classes, name } = character;
+        const { id, image = "", name } = character;
         return <Link
             href={ `/characters/${ id }` }
             className="bg-yellow-200 text-black flex flex-col items-center justify-center mt-[calc(75px/2)] rounded-lg border-2 border-transparent"

@@ -15,13 +15,13 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
 
     const { id, owner, image = "", name, race, classes } = character;
 
-    return <main className="">
+    return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
         {/*Character Card*/ }
         <div className="bg-yellow-200 text-black flex flex-col items-center justify-center mt-[calc(75px/2)] rounded-lg pb-2">
             <div className="relative top-[calc(-75px/2)] mb-[calc(-75px/2)]">
                 <Image src={ image } alt="" width={ 75 } height={ 75 } className="rounded-full bg-white"/>
             </div>
-            <div className="flex justify-between w-full mx-auto md:w-3/4 px-2 py-1 select-none self-start mt-[calc(-75px/2)]">
+            <div className="flex justify-between w-full mx-auto px-2 py-1 self-start mt-[calc(-75px/2)]">
                 <div className="text-xl grow basis-0">
                     { name }
                 </div>

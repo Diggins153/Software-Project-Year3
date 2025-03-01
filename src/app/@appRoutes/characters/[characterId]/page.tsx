@@ -1,7 +1,6 @@
 import ClassToken from "@/components/characters/ClassToken";
 import { Character } from "@/entities/Character";
 import getORM from "@/lib/orm";
-import { wrap } from "@mikro-orm/core";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -14,9 +13,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
         redirect("/characters");
     }
 
-    const { id, owner, image = "", name, race, classes } = wrap(character).toPOJO();
-    // @ts-ignore
-    const characterClasses: string[] = classes.map(c => c.name);
+    const { id, owner, image = "", name, race, classes } = character;
 
     return <main className="">
         {/*Character Card*/ }

@@ -1,7 +1,7 @@
 "use server";
 
 import { Character } from "@/entities/Character";
-import { CharacterClasses } from "@/entities/CharacterClasses";
+import { CharacterClass } from "@/entities/CharacterClass";
 import { Class } from "@/entities/Class";
 import { Race } from "@/entities/Race";
 import { User } from "@/entities/User";
@@ -38,7 +38,7 @@ export async function createPremadeCharacter(name: string, race: string, charCla
     const newChar = new Character(name, `@${ name }`, dbRace);
 
     newChar.image = "https://placehold.co/75.png";
-    newChar.classes.add(new CharacterClasses(newChar, dbClass, 1));
+    newChar.classes.add(new CharacterClass(newChar, dbClass, 1));
     user.characters.add(newChar);
 
     await em.flush();

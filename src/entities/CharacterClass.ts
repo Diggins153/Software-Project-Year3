@@ -3,7 +3,7 @@ import { Class } from "@/entities/Class";
 import { Entity, ManyToOne, Property, ref, type Ref } from "@mikro-orm/core";
 
 @Entity()
-export class CharacterClasses {
+export class CharacterClass {
     @ManyToOne({ entity: () => Character, primary: true, eager: true })
     character: Ref<Character>;
 

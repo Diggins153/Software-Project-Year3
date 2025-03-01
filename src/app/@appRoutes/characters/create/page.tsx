@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createCharacter } from "@/lib/actions/characters";
 
 const classes = [
     { name: "Fighter", description: "Hit things. Get hit. Repeat. A true master of bonking." },
@@ -33,14 +34,19 @@ export default function CreateCharacter() {
     const [isSaving, setIsSaving] = useState(false);
 
     const handleConfirm = async () => {
+        // Ensure that required fields are selected.
         if (!selectedRace || !selectedClass || !characterName.trim()) return;
         setIsSaving(true);
 
-        // Simulating a save request (replace with actual API call if needed)
-        setTimeout(() => {
-            alert(`Character Created!\nName: ${characterName}\nRace: ${selectedRace}\nClass: ${selectedClass}\nLevel: ${level}`);
+        try {
+            // Call the server action to create the character.
+            // Currently, the server action only uses the name and race.
+            await createCharacter(characterName, selectedRace);
+            // No further client-side actions needed; the server action will redirect.
+        } catch (error) {
+            console.error("Error creating character:", error);
             setIsSaving(false);
-        }, 1000);
+        }
     };
 
     return (

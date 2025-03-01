@@ -44,6 +44,9 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
                 </div>
             </div>
         </div>
-        {JSON.stringify(classes)}
+        {/*Posts*/ }
+        <div className="text-center mt-4 text-xl">
+            Here be posts...
+        </div>
     </main>;
 }

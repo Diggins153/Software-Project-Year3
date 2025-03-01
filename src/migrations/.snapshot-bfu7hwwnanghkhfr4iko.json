@@ -425,14 +425,14 @@
           "mappedType": "integer"
         }
       },
-      "name": "character_classes",
+      "name": "character_class",
       "indexes": [
         {
           "columnNames": [
             "character_id"
           ],
           "composite": false,
-          "keyName": "character_classes_character_id_index",
+          "keyName": "character_class_character_id_index",
           "constraint": false,
           "primary": false,
           "unique": false
@@ -442,7 +442,7 @@
             "class_id"
           ],
           "composite": false,
-          "keyName": "character_classes_class_id_index",
+          "keyName": "character_class_class_id_index",
           "constraint": false,
           "primary": false,
           "unique": false
@@ -461,24 +461,24 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "character_classes_character_id_foreign": {
-          "constraintName": "character_classes_character_id_foreign",
+        "character_class_character_id_foreign": {
+          "constraintName": "character_class_character_id_foreign",
           "columnNames": [
             "character_id"
           ],
-          "localTableName": "character_classes",
+          "localTableName": "character_class",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "character",
           "updateRule": "cascade"
         },
-        "character_classes_class_id_foreign": {
-          "constraintName": "character_classes_class_id_foreign",
+        "character_class_class_id_foreign": {
+          "constraintName": "character_class_class_id_foreign",
           "columnNames": [
             "class_id"
           ],
-          "localTableName": "character_classes",
+          "localTableName": "character_class",
           "referencedColumnNames": [
             "id"
           ],

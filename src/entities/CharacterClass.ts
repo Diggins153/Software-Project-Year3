@@ -3,7 +3,7 @@ import { Class } from "@/entities/Class";
 import { Entity, ManyToOne, Property, ref, type Ref } from "@mikro-orm/core";
 
 @Entity()
-export class CharacterClasses {
+export class CharacterClass {
     @ManyToOne({ entity: () => Character, primary: true, eager: true })
     character: Ref<Character>;
 
@@ -11,10 +11,10 @@ export class CharacterClasses {
     class: Ref<Class>;
 
     @Property({ type: "int", default: "1" })
-    level!: number;
+    level: number;
 
-    constructor(character: Ref<Character>, characterClass: Class, level: number) {
-        this.character = character;
+    constructor(character: Character, characterClass: Class, level: number) {
+        this.character = ref(character);
         this.class = ref(characterClass);
         this.level = level;
     }

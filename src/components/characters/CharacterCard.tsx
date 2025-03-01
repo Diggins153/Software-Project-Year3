@@ -12,7 +12,7 @@ export default async function CharacterCard({ character }: { character?: Charact
             <div className="relative top-[calc(-75px/2)] mb-[calc(-75px/2)]">
                 <Image src={ image } alt="" width={ 75 } height={ 75 } className="rounded-full bg-white"/>
                 <div className="absolute left-full top-full -translate-y-full -translate-x-[25px]">
-                    {/*<ClassTokens classes={ classes.map(c => c.class) }/>*/}
+                    {/*<ClassTokens classes={ character.classes }/>*/}
                 </div>
             </div>
             <div className="text-lg p-1 select-none text-center">

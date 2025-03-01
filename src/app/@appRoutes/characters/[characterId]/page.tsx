@@ -32,8 +32,15 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
                 </div>
             </div>
             <div className="flex flex-col mt-2.5 gap-2.5">
-                <div>
-                    { characterClasses.map(className => <ClassToken key={ className } className={ className }/>) }
+                <div className="flex w-full flex-wrap justify-center gap-y-2">
+                    { classes.map(characterClass => {
+                        // @ts-ignore
+                        const className = characterClass.class.name;
+
+                        return <div key={ className } className="basis-1/2">
+                            <ClassToken characterClass={ characterClass }/>
+                        </div>;
+                    }) }
                 </div>
             </div>
         </div>

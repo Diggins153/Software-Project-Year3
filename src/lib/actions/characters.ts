@@ -7,7 +7,6 @@ import { Race } from "@/entities/Race";
 import { User } from "@/entities/User";
 import { auth } from "@/lib/auth";
 import getORM from "@/lib/orm";
-import { ref } from "@mikro-orm/core";
 import { redirect } from "next/navigation";
 
 export async function createCharacter(/* Put character deatails as arguments here */) {
@@ -29,11 +28,17 @@ export async function createPremadeCharacter(name: string, race: string, charCla
     }
 
     const dbRace = await em.findOne(Race, { name: race });
+    if (dbRace == null) {
+        return { ok: false, message: "Invalid race" };
+    }
     const dbClass = await em.findOne(Class, { name: charClass });
-    const newChar = new Character(name, `handle:${ name }`, dbRace!);
+    if (dbClass == null) {
+        return { ok: false, message: "Invalid class" };
+    }
+    const newChar = new Character(name, `@${ name }`, dbRace);
 
     newChar.image = "https://placehold.co/75.png";
-    newChar.classes.add(new CharacterClasses(ref(newChar), dbClass!, 1));
+    newChar.classes.add(new CharacterClasses(newChar, dbClass, 1));
     user.characters.add(newChar);
 
     await em.flush();

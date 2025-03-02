@@ -34,10 +34,9 @@ const races = [
 ];
 
 export default function CreateCharacter() {
-    // currentPage 0: choose Race; 1: choose Class; 2: review & confirm
+    // currentPage 0: Race Selection; 1: Class Selection; 2: Review & Confirm
     const [currentPage, setCurrentPage] = useState(0);
     const totalPages = 3;
-    // Titles for each step
     const pageTitles = ["Race Selection", "Class Selection", "Review & Confirm"];
 
     const [selectedRace, setSelectedRace] = useState<string | null>(null);
@@ -59,13 +58,10 @@ export default function CreateCharacter() {
     };
 
     const handleConfirm = async () => {
-        // Validate that required fields are selected
         if (!selectedRace || !selectedClass || !characterName.trim()) return;
         setIsSaving(true);
         try {
-            // Currently, the server action uses only the name and race.
             await createCharacter(characterName, selectedRace);
-            // Server action will redirect upon success.
         } catch (error) {
             console.error("Error creating character:", error);
             setIsSaving(false);
@@ -111,18 +107,26 @@ export default function CreateCharacter() {
                         {races.map((race) => (
                             <div
                                 key={race.name}
-                                className={`w-[300px] h-[500px] bg-yellow-200 rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-transform duration-200 cursor-pointer flex flex-col ${
-                                    selectedRace === race.name ? "border-4 border-blue-500" : "border border-gray-200"
-                                }`}
+                                className="relative w-[300px] h-[500px] group"
+                                style={{ perspective: "1000px" }}
                                 onClick={() => setSelectedRace(race.name)}
                             >
-                                {/* Name at the Top */}
-                                <div className="p-4 text-center">
-                                    <h2 className="text-xl font-bold text-gray-700">{race.name}</h2>
-                                </div>
-                                {/* Description centered */}
-                                <div className="flex-grow flex items-center justify-center">
-                                    <p className="text-center text-gray-700">{race.description}</p>
+                                <div
+                                    className={`flip-card-inner w-full h-full bg-yellow-200 rounded-lg shadow-lg cursor-pointer transition-transform duration-700 ${
+                                        selectedRace === race.name ? "border-4 border-blue-500" : "border border-gray-200"
+                                    }`}
+                                >
+                                    <div className="flip-card-front absolute w-full h-full flex flex-col">
+                                        <div className="p-4 text-center">
+                                            <h2 className="text-xl font-bold text-gray-700">{race.name}</h2>
+                                        </div>
+                                        <div className="mt-auto text-center">
+                                            <p className="text-gray-700">{race.description}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flip-card-back absolute w-full h-full flex items-center justify-center">
+                                        <p className="text-xl font-bold text-gray-700">Select {race.name}?</p>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -138,18 +142,26 @@ export default function CreateCharacter() {
                         {classes.map((cls) => (
                             <div
                                 key={cls.name}
-                                className={`w-[300px] h-[500px] bg-yellow-200 rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-transform duration-200 cursor-pointer flex flex-col ${
-                                    selectedClass === cls.name ? "border-4 border-blue-500" : "border border-gray-200"
-                                }`}
+                                className="relative w-[300px] h-[500px] group"
+                                style={{ perspective: "1000px" }}
                                 onClick={() => setSelectedClass(cls.name)}
                             >
-                                {/* Name at the Top */}
-                                <div className="p-4 text-center">
-                                    <h2 className="text-xl font-bold text-gray-700">{cls.name}</h2>
-                                </div>
-                                {/* Description centered */}
-                                <div className="flex-grow flex items-center justify-center">
-                                    <p className="text-center text-gray-700">{cls.description}</p>
+                                <div
+                                    className={`flip-card-inner w-full h-full bg-yellow-200 rounded-lg shadow-lg cursor-pointer transition-transform duration-700 ${
+                                        selectedClass === cls.name ? "border-4 border-blue-500" : "border border-gray-200"
+                                    }`}
+                                >
+                                    <div className="flip-card-front absolute w-full h-full flex flex-col">
+                                        <div className="p-4 text-center">
+                                            <h2 className="text-xl font-bold text-gray-700">{cls.name}</h2>
+                                        </div>
+                                        <div className="mt-auto text-center">
+                                            <p className="text-gray-700">{cls.description}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flip-card-back absolute w-full h-full flex items-center justify-center">
+                                        <p className="text-xl font-bold text-gray-700">Select {cls.name}?</p>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -195,6 +207,22 @@ export default function CreateCharacter() {
                     </div>
                 </section>
             )}
+
+            <style jsx>{`
+        .flip-card-inner {
+          transform-style: preserve-3d;
+        }
+        .flip-card-front,
+        .flip-card-back {
+          backface-visibility: hidden;
+        }
+        .flip-card-back {
+          transform: rotateY(180deg);
+        }
+        .group:hover .flip-card-inner {
+          transform: rotateY(180deg);
+        }
+      `}</style>
         </main>
     );
 }

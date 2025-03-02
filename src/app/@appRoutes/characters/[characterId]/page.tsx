@@ -1,21 +1,32 @@
 import ClassToken from "@/components/characters/ClassToken";
+import { Button } from "@/components/ui/button";
 import { Character } from "@/entities/Character";
+import { auth } from "@/lib/auth";
 import getORM from "@/lib/orm";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export default async function CharacterPage({ params }: { params: Promise<{ characterId: number; }> }) {
+    const session = await auth();
+
     const characterId = (await params).characterId;
     const em = await getORM();
     const character = await em.findOne(Character, { id: characterId }, { populate: [ "classes" ] });
 
-    if (character == null) {
+    if (!session || !session.user || !character) {
         redirect("/characters");
     }
 
     const { id, owner, image = "", name, race, classes } = character;
+    const currUserIsOwner = owner.id.toString() === session.user.id;
 
     return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
+        { currUserIsOwner &&
+            <div className="flex justify-end mb-[calc(-75px/2)]">
+                <Button className="mb-2">Edit</Button>
+            </div>
+        }
+
         {/*Character Card*/ }
         <div className="bg-yellow-200 text-black flex flex-col items-center justify-center mt-[calc(75px/2)] rounded-lg pb-2">
             <div className="relative top-[calc(-75px/2)] mb-[calc(-75px/2)]">

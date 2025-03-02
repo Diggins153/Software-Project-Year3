@@ -58,6 +58,7 @@ export const { handlers, auth, signIn, signOut }: NextAuthResult & { signIn: any
 
             const user: AuthUser = {
                 ...session.user,
+                id: dbUser.id.toString(),
                 email: dbUser.email,
                 displayName: dbUser.displayName,
                 role: dbUser.role,

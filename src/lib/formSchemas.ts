@@ -60,3 +60,19 @@ export const EditCharacterFormSchema = z.object({
     image: z.any(),
     // .refine(file => {}), // Further refinements
 });
+
+export const CampaignFormSchema = z.object({
+    title: z
+        .string({ required_error: "Please enter a campaign title" })
+        .max(255, "Title cannot be more than 255 characters long."),
+    maxPlayers: z
+        .number({ required_error: "Please enter a player limit." }),
+    signupsOpen: z
+        .boolean()
+        .default(true),
+    outline: z
+        .string()
+        .max(65_000, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
+        .optional(),
+    banner: z.any(),
+});

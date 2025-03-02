@@ -115,30 +115,32 @@ const premadeCharacters: PremadeCharacter[] = [
 export default function PremadeCharactersPage() {
     return (
         <main className="p-6 grid grid-cols-4 gap-2 ml-36">
-
-        {premadeCharacters.map((character) => (
+            {premadeCharacters.map((character) => (
                 <div
                     key={character.id}
-                    className="w-[300px] h-[500px] bg-gray-100 rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-transform duration-200 cursor-pointer"
-                    onClick={ async () => await createPremadeCharacter(character.name, character.race, character.class) }
+                    className="w-[300px] h-[500px] bg-yellow-200 rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-transform duration-200 cursor-pointer flex flex-col"
+                    onClick={async () => await createPremadeCharacter(character.name, character.race, character.class)}
                 >
-                    {/* Character Image (Top 300px) */}
+                    <div className="p-4 text-center">
+                        <h2 className="text-xl font-bold text-gray-700">{character.name}</h2>
+                    </div>
+
                     <div className="h-[300px] relative">
                         {/*<Image src={character.image} alt={character.name} layout="fill" objectFit="cover"/>*/}
                     </div>
 
-                    {/* Character Info (Bottom 200px) */}
-                    <div className="h-[200px] p-4 flex flex-col justify-center text-center">
-                        <h2 className="text-xl font-bold">{character.name}</h2>
-                        <p className="text-md text-gray-700 mt-1">
+                    <div className="flex-grow p-4 flex flex-col justify-center text-center">
+                        <p className="text-md text-gray-700">
                             {character.race} {character.class}
                         </p>
-                        <p className="text-sm text-gray-600 mt-2">
+                        <p className="text-sm text-gray-700 mt-2">
                             {character.description}
                         </p>
                     </div>
                 </div>
             ))}
         </main>
+
+
     );
 }

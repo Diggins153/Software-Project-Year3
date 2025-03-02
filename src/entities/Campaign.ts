@@ -12,7 +12,7 @@ export class Campaign extends BaseEntity {
     signupsOpen: boolean = false;
 
     @ManyToOne(() => User)
-    dungeonMaster: Ref<User>;
+    dungeonMaster: User;
 
     @Property({ type: "int", default: 4 })
     maxPlayers: number = 4;
@@ -29,6 +29,6 @@ export class Campaign extends BaseEntity {
     constructor(name: string, dungeonMaster: User) {
         super();
         this.name = name;
-        this.dungeonMaster = ref(dungeonMaster);
+        this.dungeonMaster = dungeonMaster;
     }
 }

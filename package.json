@@ -10,13 +10,6 @@
     "test": "jest",
     "test:watch": "jest --watchAll"
   },
-  "mikro-orm": {
-    "useTsNode": true,
-    "tsConfigPath": "./tsconfig.orm.json",
-    "configPaths": [
-      "./mikro-orm.config.ts"
-    ]
-  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@lucide/lab": "^0.1.2",

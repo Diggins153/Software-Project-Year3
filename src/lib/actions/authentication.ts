@@ -1,12 +1,12 @@
 "use server";
 
+import { User as OrmUser } from "@/entities/User";
 import { signIn } from "@/lib/auth";
 import { LoginFormSchema, RegisterFormSchema } from "@/lib/formSchemas";
-import getORM from "@/lib/orm";
+import query from "@/lib/query";
 import bcrypt from "bcryptjs";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
-import { User as OrmUser } from "@/entities/User";
 
 export type User = {
     id: number;
@@ -26,11 +26,7 @@ export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
     let { displayName, email, password } = parseResult.data;
     const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt(12));
 
-    const orm = await getORM();
-    const newUser = new OrmUser(displayName, email, passwordHash, new Date(Date.now()));
-
-    orm.persist(newUser);
-    await orm.flush();
+    await query("INSERT INTO `user`(created_at, updated_at, display_name, email, password, last_consent_date) VALUE (now(), now(), ?, ?, ? , now())", [ displayName, email, passwordHash ]);
 
     await signIn("credentials", { email, password, redirectTo: "/" });
 
@@ -58,7 +54,5 @@ export async function login(formValues: z.infer<typeof LoginFormSchema>) {
 }
 
 export async function fetchUser(email: string): Promise<OrmUser | null> {
-    const orm = await getORM();
-
-    return await orm.findOne(OrmUser, { email });
+    return await query("SELECT count(id) AS count FROM `user` WHERE email = ?", email) as OrmUser;
 }

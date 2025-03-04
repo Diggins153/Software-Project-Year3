@@ -2,7 +2,7 @@ import ClassToken from "@/components/characters/ClassToken";
 import { Button } from "@/components/ui/button";
 import { Character } from "@/entities/Character";
 import { auth } from "@/lib/auth";
-import getORM from "@/lib/orm";
+import getDB from "@/lib/getDB";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -10,8 +10,8 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
     const session = await auth();
 
     const characterId = (await params).characterId;
-    const em = await getORM();
-    const character = await em.findOne(Character, { id: characterId }, { populate: [ "classes" ] });
+    const db = await getDB();
+    const character = await db.query("SELECT * FROM `character` WHERE id = ?", characterId) as Character;
 
     if (!session || !session.user || !character) {
         redirect("/characters");
@@ -44,7 +44,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
             </div>
             <div className="flex flex-col mt-2.5 gap-2.5">
                 <div className="flex w-full flex-wrap justify-center gap-y-2">
-                    { classes.map(characterClass => {
+                    { classes.map((characterClass: any) => {
                         // @ts-ignore
                         const className = characterClass.class.name;
 

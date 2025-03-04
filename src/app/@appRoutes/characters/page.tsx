@@ -1,7 +1,4 @@
-import CharacterCard from "@/components/characters/CharacterCard";
-import { Character } from "@/entities/Character";
 import { auth } from "@/lib/auth";
-import getORM from "@/lib/orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 

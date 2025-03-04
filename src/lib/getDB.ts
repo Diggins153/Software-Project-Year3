@@ -3,7 +3,7 @@ import type { Config, ServerlessMysql } from "serverless-mysql";
 let mysql: ServerlessMysql | null = null;
 
 export default async function getDB(): Promise<ServerlessMysql> {
-    if (!mysql) {
+    if (mysql == null || !mysql) {
         mysql = require("serverless-mysql")({
             config: {
                 host: process.env.MYSQL_HOST,
@@ -13,6 +13,8 @@ export default async function getDB(): Promise<ServerlessMysql> {
                 password: process.env.MYSQL_PASSWORD,
                 connectionLimit: 1,
             },
-        } as Config);
+        } as Config) as ServerlessMysql;
     }
+
+    return mysql;
 }

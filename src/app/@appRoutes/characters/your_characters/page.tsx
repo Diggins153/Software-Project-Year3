@@ -1,6 +1,6 @@
 import {auth} from "@/lib/auth";
+import getDB from "@/lib/getDB";
 import {redirect} from "next/navigation";
-import getORM from "@/lib/orm";
 import {Character} from "@/entities/Character";
 import CharacterCard from "@/components/characters/CharacterCard";
 
@@ -11,12 +11,8 @@ export default async function CharactersPage() {
         redirect("/");
     }
 
-    const em = await getORM();
-    const characters = await em.find(
-        Character,
-        { owner: { email: session.user.email } },
-        { disableIdentityMap: true, populate: [ "*" ] },
-    );
+    const db = await getDB();
+    const characters = await db.query("SELECT * FROM `character` WHERE owner_id = ?", session.user.id) as Character[];
 
     return (
         <main>

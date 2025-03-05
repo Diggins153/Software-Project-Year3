@@ -1,5 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { CharacterClass } from "@/entities/CharacterClass";
+import { CharacterClass } from "@/types/CharacterClass";
 import { Collection } from "@mikro-orm/core";
 import Image from "next/image";
 

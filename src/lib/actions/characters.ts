@@ -1,10 +1,7 @@
 "use server";
 
-import { Character } from "@/entities/Character";
-import { CharacterClass } from "@/entities/CharacterClass";
-import { Class } from "@/entities/Class";
-import { Race } from "@/entities/Race";
-import { User } from "@/entities/User";
+import { Class } from "@/types/Class";
+import { Race } from "@/types/Race";
 import { fetchUser } from "@/lib/actions/authentication";
 import { auth } from "@/lib/auth";
 import getDB from "@/lib/getDB";

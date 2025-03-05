@@ -1,7 +1,7 @@
 import {auth} from "@/lib/auth";
 import getDB from "@/lib/getDB";
 import {redirect} from "next/navigation";
-import {Character} from "@/entities/Character";
+import {Character} from "@/types/Character";
 import CharacterCard from "@/components/characters/CharacterCard";
 
 export default async function CharactersPage() {

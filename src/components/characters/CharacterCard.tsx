@@ -1,4 +1,4 @@
-import { Character } from "@/entities/Character";
+import { Character } from "@/types/Character";
 import Image from "next/image";
 import Link from "next/link";
 

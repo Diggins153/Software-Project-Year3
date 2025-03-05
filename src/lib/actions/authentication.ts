@@ -1,6 +1,6 @@
 "use server";
 
-import { User as OrmUser } from "@/entities/User";
+import { User } from "@/types/User";
 import { signIn } from "@/lib/auth";
 import { LoginFormSchema, RegisterFormSchema } from "@/lib/formSchemas";
 import getDB from "@/lib/getDB";

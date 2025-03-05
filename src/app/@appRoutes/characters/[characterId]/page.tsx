@@ -1,6 +1,6 @@
 import ClassToken from "@/components/characters/ClassToken";
 import { Button } from "@/components/ui/button";
-import { Character } from "@/entities/Character";
+import { Character } from "@/types/Character";
 import { auth } from "@/lib/auth";
 import getDB from "@/lib/getDB";
 import Image from "next/image";

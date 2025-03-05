@@ -1,4 +1,4 @@
-import { CharacterClass } from "@/entities/CharacterClass";
+import { CharacterClass } from "@/types/CharacterClass";
 import Image from "next/image";
 
 export default function ClassToken({ characterClass }: { characterClass: CharacterClass }) {

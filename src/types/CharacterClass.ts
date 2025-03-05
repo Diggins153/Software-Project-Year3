@@ -3,5 +3,7 @@ export type CharacterClass = {
 
     class_id: number;
 
+    class_name: string | undefined;
+
     level: number;
 }

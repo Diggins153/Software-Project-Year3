@@ -1,7 +1,7 @@
-import {auth} from "@/lib/auth";
-import getDB from "@/lib/getDB";
-import {redirect} from "next/navigation";
-import {Character} from "@/types/Character";
+import { auth } from "@/lib/auth";
+import query from "@/lib/database";
+import { redirect } from "next/navigation";
+import { Character } from "@/types/Character";
 import CharacterCard from "@/components/characters/CharacterCard";
 
 export default async function CharactersPage() {
@@ -11,8 +11,7 @@ export default async function CharactersPage() {
         redirect("/");
     }
 
-    const db = await getDB();
-    const characters = await db.query("SELECT * FROM `character` WHERE owner_id = ?", session.user.id) as Character[];
+    const characters = await query<Character[]>("SELECT * FROM `character` WHERE owner_id = ?", session.user.id);
 
     return (
         <main>

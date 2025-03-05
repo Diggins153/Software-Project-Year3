@@ -7,6 +7,8 @@ export type Character = {
 
     race_id: number;
 
+    race_name: string | undefined;
+
     image?: string;
 
     owner_id: number;

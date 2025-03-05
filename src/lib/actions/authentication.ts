@@ -54,7 +54,11 @@ export async function login(formValues: z.infer<typeof LoginFormSchema>) {
     // return { success: true };
 }
 
-export async function fetchUser(email: string): Promise<OrmUser | null> {
+export async function fetchUser(email: string): Promise<User | null> {
     const db = await getDB();
-    return await db.query("SELECT count(id) AS count FROM `user` WHERE email = ?", email) as OrmUser;
+    const response = await db.query<User[]>("SELECT * FROM `user` WHERE email = ? LIMIT 1", email);
+
+    if (response.length != 1) return null;
+
+    return response[0];
 }

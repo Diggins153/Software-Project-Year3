@@ -3,8 +3,7 @@ import Image from "next/image";
 
 export default function ClassToken({ characterClass }: { characterClass: CharacterClass }) {
     const level = characterClass.level;
-    // @ts-ignore
-    const className: string = characterClass.class.name;
+    const className: string = characterClass.class_name || "";
 
     return <div className="flex gap-1 items-center justify-center">
         <div className="bg-white border-2 rounded-full p-1">

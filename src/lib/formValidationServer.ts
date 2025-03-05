@@ -1,16 +1,14 @@
 "use server";
 
-import getDB from "@/lib/getDB";
+import query from "@/lib/database";
 
 export async function userExists(email: string): Promise<boolean> {
-    const db = await getDB();
-    const result = await db.query("SELECT count(id) FROM `user` WHERE email = ?", email) as { count: number };
+    const result = await query<{ count: number }>("SELECT count(id) FROM `user` WHERE email = ?", email);
 
     return result.count > 0;
 }
 
 export async function isValidRace(race: string): Promise<boolean> {
-    const db = await getDB();
-    const result = await db.query("SELECT count(id) FROM race WHERE name = ?", race) as { count: number };
+    const result = await query<{ count: number }>("SELECT count(id) FROM race WHERE name = ?", race);
     return result.count == 1;
 }

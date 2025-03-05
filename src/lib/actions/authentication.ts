@@ -8,16 +8,6 @@ import bcrypt from "bcryptjs";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
 
-export type User = {
-    id: number;
-    display_name: string;
-    email: string;
-    password: string;
-    role: "USER" | "ADMIN";
-    is_paying: boolean;
-    last_consent_date: Date;
-}
-
 export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
     const parseResult = await RegisterFormSchema.safeParseAsync(formValues);
 

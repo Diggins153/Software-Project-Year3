@@ -1,14 +1,6 @@
-import { auth } from "@/lib/auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default async function CharactersPage() {
-    const session = await auth();
-
-    if (!session || !session.user) {
-        redirect("/");
-    }
-
     return (
         <main>
 

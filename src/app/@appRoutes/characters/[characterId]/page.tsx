@@ -1,8 +1,9 @@
 import ClassToken from "@/components/characters/ClassToken";
 import { Button } from "@/components/ui/button";
+import query from "@/lib/database";
 import { Character } from "@/types/Character";
 import { auth } from "@/lib/auth";
-import getDB from "@/lib/getDB";
+import { CharacterClass } from "@/types/CharacterClass";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -10,15 +11,16 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
     const session = await auth();
 
     const characterId = (await params).characterId;
-    const db = await getDB();
-    const character = await db.query("SELECT * FROM `character` WHERE id = ?", characterId) as Character;
+    const character = (await query<Character[]>("SELECT *, r.name AS race_name FROM `character` JOIN race r ON r.id = `character`.race_id WHERE `character`.id = ?", characterId))[0] || null;
 
     if (!session || !session.user || !character) {
         redirect("/characters");
     }
 
-    const { id, owner, image = "", name, race, classes } = character;
-    const currUserIsOwner = owner.id.toString() === session.user.id;
+    const { id, owner_id, image = "", name, race_name } = character;
+    const currUserIsOwner = owner_id.toString() === session.user.id;
+
+    const classes = (await query<CharacterClass[]>("SELECT character_class.*, c.name AS class_name FROM character_class JOIN class c ON c.id = character_class.class_id WHERE character_class.character_id = ?", characterId));
 
     return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
         { currUserIsOwner &&
@@ -38,17 +40,13 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
                 </div>
                 <div className="w-[75px] mx-3"></div>
                 <div className="text-right grow basis-0">
-                    { /*@ts-ignore*/ }
-                    { race.name }
+                    { race_name }
                 </div>
             </div>
             <div className="flex flex-col mt-2.5 gap-2.5">
                 <div className="flex w-full flex-wrap justify-center gap-y-2">
-                    { classes.map((characterClass: any) => {
-                        // @ts-ignore
-                        const className = characterClass.class.name;
-
-                        return <div key={ className } className="basis-1/2">
+                    { classes.map((characterClass) => {
+                        return <div key={ characterClass.class_name } className="basis-1/2">
                             <ClassToken characterClass={ characterClass }/>
                         </div>;
                     }) }

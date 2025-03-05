@@ -1,9 +1,9 @@
 "use server";
 
+import query from "@/lib/database";
 import { User } from "@/types/User";
 import { signIn } from "@/lib/auth";
 import { LoginFormSchema, RegisterFormSchema } from "@/lib/formSchemas";
-import getDB from "@/lib/getDB";
 import bcrypt from "bcryptjs";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
@@ -16,8 +16,7 @@ export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
     let { displayName, email, password } = parseResult.data;
     const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt(12));
 
-    const db = await getDB();
-    await db.query("INSERT INTO `user`(created_at, updated_at, display_name, email, password, last_consent_date) VALUE (now(), now(), ?, ?, ? , now())", displayName, email, passwordHash);
+    await query("INSERT INTO `user`(created_at, updated_at, display_name, email, password, last_consent_date) VALUE (now(), now(), ?, ?, ? , now())", displayName, email, passwordHash);
 
     await signIn("credentials", { email, password, redirectTo: "/" });
 
@@ -45,8 +44,7 @@ export async function login(formValues: z.infer<typeof LoginFormSchema>) {
 }
 
 export async function fetchUser(email: string): Promise<User | null> {
-    const db = await getDB();
-    const response = await db.query<User[]>("SELECT * FROM `user` WHERE email = ? LIMIT 1", email);
+    const response = await query<User[]>("SELECT * FROM `user` WHERE email = ? LIMIT 1", email);
 
     if (response.length != 1) return null;
 

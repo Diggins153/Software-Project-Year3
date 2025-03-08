@@ -1,9 +1,15 @@
 import ClassToken from "@/components/characters/ClassToken";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import query from "@/lib/database";
 import { Character } from "@/types/Character";
 import { auth } from "@/lib/auth";
 import { CharacterClass } from "@/types/CharacterClass";
+import { Ellipsis, PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -25,7 +31,21 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
     return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
         { currUserIsOwner &&
             <div className="flex justify-end mb-[calc(-75px/2)]">
-                <Button className="mb-2">Edit</Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost"><Ellipsis size={ 24 }/></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>
+                            <PencilIcon/>
+                            <span>Edit</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-300">
+                            <Trash2Icon/>
+                            <span>Delete</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         }
 

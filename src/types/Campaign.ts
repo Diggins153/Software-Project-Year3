@@ -1,6 +1,8 @@
 export type Campaign = {
     id: number;
 
+    created_at: Date
+
     name: string;
 
     signups_open: boolean;

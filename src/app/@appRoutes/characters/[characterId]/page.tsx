@@ -1,27 +1,9 @@
+import CharacterActionsDropdown from "@/components/characters/CharacterActionsDropdown";
 import ClassToken from "@/components/characters/ClassToken";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import query from "@/lib/database";
 import { Character } from "@/types/Character";
 import { auth } from "@/lib/auth";
 import { CharacterClass } from "@/types/CharacterClass";
-import { Ellipsis, PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -43,37 +25,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
     return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
         { currUserIsOwner &&
             <div className="flex justify-end mb-[calc(-75px/2)]">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost"><Ellipsis size={ 24 }/></Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuItem>
-                            <PencilIcon/>
-                            <span>Edit</span>
-                        </DropdownMenuItem>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <DropdownMenuItem className="text-red-300">
-                                    <Trash2Icon/>
-                                    <span>Delete</span>
-                                </DropdownMenuItem>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Do you really want to delete this character? This cannot be undone.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Nope, I don't want to do that</AlertDialogCancel>
-                                    <AlertDialogAction>I am sure</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <CharacterActionsDropdown/>
             </div>
         }
 

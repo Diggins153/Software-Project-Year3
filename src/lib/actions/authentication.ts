@@ -5,6 +5,7 @@ import { User } from "@/types/User";
 import { signIn } from "@/lib/auth";
 import { LoginFormSchema, RegisterFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
 
@@ -26,7 +27,7 @@ export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
 export async function login(formValues: z.infer<typeof LoginFormSchema>) {
     const parseResult = LoginFormSchema.safeParse(formValues);
 
-    if (!parseResult.success) return { success: false, errors: parseResult.error.format() };
+    if (!parseResult.success) return { ok: false, errors: parseResult.error.format() };
 
     const { email, password } = parseResult.data;
 
@@ -35,12 +36,25 @@ export async function login(formValues: z.infer<typeof LoginFormSchema>) {
     } catch (e) {
         if (isRedirectError(e)) {
             throw e;
-        } else {
-            console.error("Sign in", e);
         }
+
+        if (e instanceof AuthError) {
+            switch (e.type) {
+                case "CredentialsSignin": {
+                    return { ok: false, message: "Please check your login details." };
+                    break;
+                }
+                default: {
+                    console.error("Auth error", e);
+                    return { ok: false, message: "Something went wrong." };
+                }
+            }
+        }
+
+        console.error("Sign in error", e);
     }
 
-    // return { success: true };
+    return { ok: false, message: "Something went wrong." };
 }
 
 export async function fetchUser(email: string): Promise<User | null> {

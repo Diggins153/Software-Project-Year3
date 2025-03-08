@@ -1,13 +1,12 @@
 import CampaignCard from "@/components/CampaignCard";
 import { buttonVariants } from "@/components/ui/button";
-import { Campaign } from "@/entities/Campaign";
-import getORM from "@/lib/orm";
+import query from "@/lib/database";
+import { Campaign } from "@/types/Campaign";
 import Link from "next/link";
 import React from "react";
 
 export default async function CampaignsPage() {
-    const campaignsRepo = (await getORM()).getRepository(Campaign);
-    const cardData = await campaignsRepo.findAll({ populate: [ "dungeonMaster" ] });
+    const cardData = await query<Campaign[]>("SELECT *, u.display_name as dungeon_master_name FROM campaign JOIN user u ON u.id = dungeon_master_id;")
 
     return (
         <main>

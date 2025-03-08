@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Session } from "next-auth";
 import { ReactNode } from "react";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -36,6 +37,7 @@ export default async function RootLayout({ appRoutes, publicRoutes }: Readonly<{
                 ? appRoutes
                 : publicRoutes
         }
+        <Toaster/>
         </body>
         </html>
     );

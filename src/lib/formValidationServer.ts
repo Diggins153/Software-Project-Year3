@@ -1,17 +1,14 @@
 "use server";
 
-import { Race } from "@/entities/Race";
-import { User } from "@/entities/User";
-import getORM from "@/lib/orm";
+import query from "@/lib/database";
 
 export async function userExists(email: string): Promise<boolean> {
-    const orm = await getORM();
-    const userCount = await orm.count(User, { email });
+    const result = await query<{ count: number }>("SELECT count(id) FROM `user` WHERE email = ?", email);
 
-    return userCount > 0;
+    return result.count > 0;
 }
 
-export async function isValidRace(race: string):Promise<boolean> {
-    const em = (await getORM()).getRepository(Race);
-    return await em.count({ name: race }) == 1;
+export async function isValidRace(race: string): Promise<boolean> {
+    const result = await query<{ count: number }>("SELECT count(id) FROM race WHERE name = ?", race);
+    return result.count == 1;
 }

@@ -1,22 +1,13 @@
 "use server";
 
+import query from "@/lib/database";
+import { User } from "@/types/User";
 import { signIn } from "@/lib/auth";
 import { LoginFormSchema, RegisterFormSchema } from "@/lib/formSchemas";
-import getORM from "@/lib/orm";
 import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
-import { User as OrmUser } from "@/entities/User";
-
-export type User = {
-    id: number;
-    display_name: string;
-    email: string;
-    password: string;
-    role: "USER" | "ADMIN";
-    is_paying: boolean;
-    last_consent_date: Date;
-}
 
 export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
     const parseResult = await RegisterFormSchema.safeParseAsync(formValues);
@@ -26,11 +17,7 @@ export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
     let { displayName, email, password } = parseResult.data;
     const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt(12));
 
-    const orm = await getORM();
-    const newUser = new OrmUser(displayName, email, passwordHash, new Date(Date.now()));
-
-    orm.persist(newUser);
-    await orm.flush();
+    await query("INSERT INTO `user`(created_at, updated_at, display_name, email, password, last_consent_date) VALUE (now(), now(), ?, ?, ? , now())", displayName, email, passwordHash);
 
     await signIn("credentials", { email, password, redirectTo: "/" });
 
@@ -40,7 +27,7 @@ export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
 export async function login(formValues: z.infer<typeof LoginFormSchema>) {
     const parseResult = LoginFormSchema.safeParse(formValues);
 
-    if (!parseResult.success) return { success: false, errors: parseResult.error.format() };
+    if (!parseResult.success) return { ok: false, errors: parseResult.error.format() };
 
     const { email, password } = parseResult.data;
 
@@ -49,16 +36,31 @@ export async function login(formValues: z.infer<typeof LoginFormSchema>) {
     } catch (e) {
         if (isRedirectError(e)) {
             throw e;
-        } else {
-            console.error("Sign in", e);
         }
+
+        if (e instanceof AuthError) {
+            switch (e.type) {
+                case "CredentialsSignin": {
+                    return { ok: false, message: "Please check your login details." };
+                    break;
+                }
+                default: {
+                    console.error("Auth error", e);
+                    return { ok: false, message: "Something went wrong." };
+                }
+            }
+        }
+
+        console.error("Sign in error", e);
     }
 
-    // return { success: true };
+    return { ok: false, message: "Something went wrong." };
 }
 
-export async function fetchUser(email: string): Promise<OrmUser | null> {
-    const orm = await getORM();
+export async function fetchUser(email: string): Promise<User | null> {
+    const response = await query<User[]>("SELECT * FROM `user` WHERE email = ? LIMIT 1", email);
 
-    return await orm.findOne(OrmUser, { email });
+    if (response.length != 1) return null;
+
+    return response[0];
 }

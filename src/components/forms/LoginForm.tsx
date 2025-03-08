@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export default function LoginForm() {
@@ -20,8 +21,18 @@ export default function LoginForm() {
         },
     });
 
+    async function handleLoginSubmit(formData: z.infer<typeof LoginFormSchema>) {
+        const response = await login(formData);
+
+        if (!response.ok) {
+            toast.error(response.message, { richColors: true });
+            return response;
+        }
+
+    }
+
     return <Form { ...form }>
-        <form onSubmit={ form.handleSubmit(login) } className="space-y-8">
+        <form onSubmit={ form.handleSubmit(handleLoginSubmit) } className="space-y-8">
             <FormField
                 control={ form.control } name="email" render={ ({ field }) => (
                 <FormItem>

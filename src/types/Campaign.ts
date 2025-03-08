@@ -9,7 +9,9 @@ export type Campaign = {
 
     dungeon_master_id: number;
 
-    maxPlayers: number;
+    dungeon_master_name?: string;
+
+    max_players: number;
 
     banner?: string;
 

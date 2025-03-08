@@ -18,7 +18,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { deleteCharacter } from "@/lib/actions/characters";
 import { Ellipsis, PencilIcon, Trash2Icon } from "lucide-react";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export default function CharacterActionsDropdown({ characterId }: { characterId: number }) {
     async function handleEdit() {
@@ -26,7 +29,14 @@ export default function CharacterActionsDropdown({ characterId }: { characterId:
     }
 
     async function handleDelete() {
-        console.log("Deleting character");
+        const response = await deleteCharacter(characterId);
+
+        if (response.ok) {
+            toast(response.message);
+            redirect(response.redirect);
+        } else {
+            toast.error(response.message);
+        }
     }
 
     return <DropdownMenu>

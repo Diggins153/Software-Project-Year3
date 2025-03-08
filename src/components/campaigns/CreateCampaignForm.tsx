@@ -10,7 +10,9 @@ import { CampaignFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export default function CreateCampaignForm() {
@@ -19,19 +21,20 @@ export default function CreateCampaignForm() {
         defaultValues: {
             name: "",
             outline: "",
-            banner: undefined,
+            banner: "",
             maxPlayers: 4,
             signupsOpen: true,
         },
     });
+    const bannerRef = form.register("banner");
 
     async function formSubmit(data: z.infer<typeof CampaignFormSchema>) {
-        const parseResult = CampaignFormSchema.safeParse(data);
-
-        console.log("Errors", parseResult);
-        if (!parseResult.success) return parseResult.error.format();
-
         const response = await createCampaign(data);
+
+        if (response.ok) {
+            toast(response.message);
+            redirect(response.redirect!);
+        }
     }
 
     return <Form { ...form }>
@@ -39,11 +42,11 @@ export default function CreateCampaignForm() {
             <FormField
                 name="banner"
                 control={ form.control }
-                render={ ({ field }) =>
+                render={ () =>
                     <FormItem>
                         <FormLabel>Banner</FormLabel>
                         <FormControl>
-                            <Input type="file" { ...field }/>
+                            <Input type="file" { ...bannerRef }/>
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -109,7 +112,7 @@ export default function CreateCampaignForm() {
                 }
             />
 
-            <div className="flex gap-2">
+            <div className="flex flex-col lg:flex-row gap-2">
                 <Link href="/campaigns" className={ `${ buttonVariants({ variant: "outline" }) } flex-grow` }>
                     Cancel
                 </Link>

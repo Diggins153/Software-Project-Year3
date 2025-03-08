@@ -1,8 +1,20 @@
 import ClassToken from "@/components/characters/ClassToken";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
-    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import query from "@/lib/database";
@@ -40,10 +52,26 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
                             <PencilIcon/>
                             <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-300">
-                            <Trash2Icon/>
-                            <span>Delete</span>
-                        </DropdownMenuItem>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="text-red-300">
+                                    <Trash2Icon/>
+                                    <span>Delete</span>
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Do you really want to delete this character? This cannot be undone.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Nope, I don't want to do that</AlertDialogCancel>
+                                    <AlertDialogAction>I am sure</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

@@ -17,7 +17,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
         redirect("/characters");
     }
 
-    const { id, owner_id, image = "", name, race_name } = character;
+    const { owner_id, image = "", name, race_name } = character;
     const currUserIsOwner = owner_id.toString() === session.user.id;
 
     const classes = (await query<CharacterClass[]>("SELECT character_class.*, c.name AS class_name FROM character_class JOIN class c ON c.id = character_class.class_id WHERE character_class.character_id = ?", characterId));
@@ -25,7 +25,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
     return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
         { currUserIsOwner &&
             <div className="flex justify-end mb-[calc(-75px/2)]">
-                <CharacterActionsDropdown/>
+                <CharacterActionsDropdown characterId={ characterId }/>
             </div>
         }
 

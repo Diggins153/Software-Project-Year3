@@ -67,6 +67,7 @@ export const CampaignFormSchema = z.object({
         .min(1, "Please enter a campaign name")
         .max(255, "Title cannot be more than 255 characters long."),
     maxPlayers: z
+        .coerce
         .number()
         .min(1, "Please enter a player limit."),
     signupsOpen: z

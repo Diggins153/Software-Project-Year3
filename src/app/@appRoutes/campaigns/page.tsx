@@ -6,14 +6,20 @@ import Link from "next/link";
 import React from "react";
 
 export default async function CampaignsPage() {
-    const cardData = await query<Campaign[]>("SELECT *, u.display_name as dungeon_master_name FROM campaign JOIN user u ON u.id = dungeon_master_id;")
+    const cardData = await query<Campaign[]>(
+        "SELECT *, u.display_name as dungeon_master_name FROM campaign JOIN user u ON u.id = dungeon_master_id;"
+    );
 
     return (
-        <main>
-            <Link className={ buttonVariants() } href="/campaigns/create">Create Campaign</Link>
-            <div>
-                { cardData.map(campaign => <CampaignCard campaign={ campaign } key={ campaign.id }/>) }
+        <main className="p-6">
+            <Link className={buttonVariants()} href="/campaigns/create">
+                Create Campaign
+            </Link>
+            <div className="mt-6 grid grid-cols-2 gap-4">
+                {cardData.map((campaign) => (
+                    <CampaignCard campaign={campaign} key={campaign.id} />
+                ))}
             </div>
         </main>
     );
-};
+}

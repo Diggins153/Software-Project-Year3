@@ -37,7 +37,7 @@ export default async function RootLayout({ appRoutes, publicRoutes }: Readonly<{
                 ? appRoutes
                 : publicRoutes
         }
-        <Toaster/>
+        <Toaster richColors={ true }/>
         </body>
         </html>
     );

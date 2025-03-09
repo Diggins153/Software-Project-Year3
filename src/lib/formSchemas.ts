@@ -49,11 +49,10 @@ export const EditCharacterFormSchema = z.object({
     name: z
         .string({ required_error: "Please enter a name" })
         .max(255, "Name can have maximum of 255 characters"),
-    race: z
-        .string()
-        .refine(async race => await isValidRace(race), "The value of race is invalid."),
-    // classes: z
-    //     .array(),
+    raceId: z
+        .coerce
+        .number()
+        .refine(async raceId => await isValidRace(raceId), "The value of race is invalid."),
     handle: z
         .string({ required_error: "Please specify a handle" })
         .max(255, "Handle cannot have more than 255 characters"),

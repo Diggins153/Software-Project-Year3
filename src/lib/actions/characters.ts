@@ -1,8 +1,9 @@
 "use server";
 
 import query from "@/lib/database";
-import { Character } from "@/types/Character";
+import { Character, UpdateCharacter } from "@/types/Character";
 import { Class } from "@/types/Class";
+import IIndexable from "@/types/IIndexable";
 import { Race } from "@/types/Race";
 import { fetchUser } from "@/lib/actions/authentication";
 import { auth } from "@/lib/auth";
@@ -45,6 +46,45 @@ export async function createPremadeCharacter(name: string, race: string, charCla
     await query("INSERT INTO `character` (created_at, updated_at, name, handle, race_id, image, owner_id) VALUE (now(), now(), ?, ?, ?, '', ?)", name, `@${ name }`, dbRace.id, session.user.id);
 
     return redirect("/characters");
+}
+
+export async function updateCharacter(characterId: number, newData: UpdateCharacter): Promise<
+    { ok: false, message: string } |
+    { ok: true }
+> {
+    // Session check
+    const session = await auth();
+    if (!session || !session.user) return redirect("/");
+
+    // Check the character exists
+    let character = (await query<Character[]>("SELECT * FROM `character` WHERE id = ?", characterId))[0] || null;
+    if (!character) return { ok: false, message: "Could not find that character" };
+
+    // Check owner
+    if (character.owner_id.toString() !== session.user.id)
+        return { ok: false, message: "Sorry, you are not allowed to update someone else's character." };
+
+    if (newData.id != characterId) {
+        console.error(`Cannot update character (characterId = ${ characterId }) with newData (newData.id = ${ newData.id }). ID mismatch`);
+        return { ok: false, message: "Something went wrong." };
+    }
+
+    // Do update
+    let newVals: string[] = [];
+    for (const newDataKey in newData) {
+        if (newDataKey == "id") continue;
+        const newDataValue = (newData as IIndexable)[newDataKey];
+        newVals.push(`${ newDataKey } = ${ newDataValue }`);
+    }
+    if (newVals.length == 0) return { ok: true };
+    let statement = `UPDATE \`character\`
+                     SET ${ newVals.join(", ") }
+                     WHERE id = ?`;
+
+    console.log("Statement", statement);
+    // await query(statement, characterId);
+
+    return { ok: true };
 }
 
 export async function deleteCharacter(characterId: number): Promise<

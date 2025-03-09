@@ -46,6 +46,9 @@ export const RegisterFormSchema = z.object({
 });
 
 export const EditCharacterFormSchema = z.object({
+    id: z
+        .coerce
+        .number(),
     name: z
         .string({ required_error: "Please enter a name" })
         .max(255, "Name can have maximum of 255 characters"),
@@ -73,7 +76,7 @@ export const CampaignFormSchema = z.object({
         .boolean()
         .default(true),
     outline: z
-        .string({message: "HEHE"})
+        .string()
         .max(60, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
         .optional(),
     banner: z.any(),

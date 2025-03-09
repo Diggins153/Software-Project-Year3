@@ -1,5 +1,5 @@
 import { hasDigits, hasLowercase, hasSpecialCharacter, hasUppercase } from "@/lib/formValidation";
-import { isValidRace, userExists } from "@/lib/formValidationServer";
+import { isHandleUnique, isValidRace, userExists } from "@/lib/formValidationServer";
 import { z } from "zod";
 
 export const LoginFormSchema = z.object({
@@ -51,17 +51,28 @@ export const EditCharacterFormSchema = z.object({
         .number(),
     name: z
         .string({ required_error: "Please enter a name" })
-        .max(255, "Name can have maximum of 255 characters"),
+        .max(40, "Name can have maximum of 40 characters"),
     raceId: z
         .coerce
         .number()
         .refine(async raceId => await isValidRace(raceId), "The value of race is invalid."),
     handle: z
         .string({ required_error: "Please specify a handle" })
-        .max(255, "Handle cannot have more than 255 characters"),
+        .toLowerCase()
+        .max(50, "Handle cannot have more than 50 characters")
+        .regex(/[a-z0-9-]+/, "Handle can only contain lowercase letters and - (dashes)"),
     image: z.any(),
-    // .refine(file => {}), // Further refinements
-});
+})
+    .superRefine(async (arg, ctx) => {
+        const isUnique = await isHandleUnique(arg.handle, arg.id);
+        if (!isUnique) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "This handle is already used by different character. Please choose a different one.",
+                path: [ "handle" ],
+            });
+        }
+    });
 
 export const CampaignFormSchema = z.object({
     name: z

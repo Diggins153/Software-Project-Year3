@@ -34,24 +34,14 @@ export default function EditCharacterForm({ character, races, onSubmit }: {
             id: character.id,
             name: character.name,
             handle: character.handle,
-            image: "",
+            image: "https://placehold.co/75.png",
             raceId: character.race_id,
         },
     });
-    const imageRef = form.register("image");
+    // const imageRef = form.register("image");
 
     async function handleUpdateCharacter(data: z.infer<typeof EditCharacterFormSchema>) {
-        const { name, handle, image, raceId } = data;
-
-        form.setError("root", { type: z.ZodIssueCode.custom, message: "Hi" });
-
-        const newCharacterData: UpdateCharacter = { id: character.id };
-        if (name !== character.name) newCharacterData.name = name;
-        if (handle !== character.handle) newCharacterData.handle = handle;
-        // TODO: Image
-        if (raceId !== character.race_id) newCharacterData.race_id = raceId;
-
-        const response = await updateCharacter(character.id, newCharacterData);
+        const response = await updateCharacter(character.id, data);
 
         if (response.ok) {
             router.refresh();
@@ -63,8 +53,6 @@ export default function EditCharacterForm({ character, races, onSubmit }: {
 
     return <Form { ...form }>
         <form onSubmit={ form.handleSubmit(handleUpdateCharacter) } className="space-y-8">
-            <input type="hidden" name="id" value={ character.id }/>
-
             <FormField
                 control={ form.control }
                 name="name"
@@ -123,19 +111,19 @@ export default function EditCharacterForm({ character, races, onSubmit }: {
                 }
             />
 
-            <FormField
-                control={ form.control }
-                name="image"
-                render={ () =>
-                    <FormItem>
-                        <FormLabel>Image</FormLabel>
-                        <FormControl>
-                            <Input type="file" { ...imageRef }/>
-                        </FormControl>
-                        <FormMessage></FormMessage>
-                    </FormItem>
-                }
-            />
+            {/*<FormField*/}
+            {/*    control={ form.control }*/}
+            {/*    name="image"*/}
+            {/*    render={ () =>*/}
+            {/*        <FormItem>*/}
+            {/*            <FormLabel>Image</FormLabel>*/}
+            {/*            <FormControl>*/}
+            {/*                <Input type="file" { ...imageRef }/>*/}
+            {/*            </FormControl>*/}
+            {/*            <FormMessage></FormMessage>*/}
+            {/*        </FormItem>*/}
+            {/*    }*/}
+            {/*/>*/}
 
             <div className="flex justify-end">
                 <Button type="submit">Save Changes</Button>

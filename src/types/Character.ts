@@ -17,11 +17,11 @@ export type Character = {
 export type UpdateCharacter = {
     id: number;
 
-    name: string;
+    name?: string;
 
-    handle: string;
+    handle?: string;
 
-    race_id: number;
+    race_id?: number;
 
     image?: string;
 }

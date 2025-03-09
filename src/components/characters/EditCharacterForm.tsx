@@ -9,7 +9,6 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-    FormRootMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -56,6 +55,7 @@ export default function EditCharacterForm({ character, races, onSubmit }: {
 
         if (response.ok) {
             router.refresh();
+            if (!!onSubmit) onSubmit();
         } else {
             toast.error(response.message);
         }

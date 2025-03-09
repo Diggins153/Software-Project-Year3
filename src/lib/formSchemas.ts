@@ -50,17 +50,20 @@ export const EditCharacterFormSchema = z.object({
         .coerce
         .number(),
     name: z
-        .string({ required_error: "Please enter a name" })
+        .string()
+        .min(1, "Please enter a name")
         .max(40, "Name can have maximum of 40 characters"),
     raceId: z
         .coerce
         .number()
-        .refine(async raceId => await isValidRace(raceId), "The value of race is invalid."),
+        .refine(async raceId => await isValidRace(raceId), "The selected race is invalid."),
     handle: z
-        .string({ required_error: "Please specify a handle" })
+        .string()
         .toLowerCase()
+        .min(1, "Please specify a handle")
         .max(50, "Handle cannot have more than 50 characters")
-        .regex(/[a-z0-9-]+/, "Handle can only contain lowercase letters and - (dashes)"),
+        .regex(/[a-z0-9-]+/, "Handle can only contain lowercase letters and - (dashes)")
+        .transform(value => value.replaceAll(/(?![a-z0-9-]+)./g, "")),
     image: z.any(),
 })
     .superRefine(async (arg, ctx) => {

@@ -29,11 +29,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function CharacterActionsDropdown({ character, races }: { character: Character, races: Race[] }) {
-    const [ isOpen, setOpen ] = useState(false);
-
-    async function handleEdit() {
-        console.log("Editing character");
-    }
+    const [ isDetailsOpen, setDetailsOpen ] = useState(false);
 
     async function handleDelete() {
         const response = await deleteCharacter(character.id);
@@ -52,9 +48,9 @@ export default function CharacterActionsDropdown({ character, races }: { charact
                 <Button variant="ghost"><Ellipsis size={ 24 }/></Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem onSelect={ () => setOpen(true) }>
+                <DropdownMenuItem onSelect={ () => setDetailsOpen(true) }>
                     <PencilIcon/>
-                    <span>Edit</span>
+                    <span>Edit Details</span>
                 </DropdownMenuItem>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -79,12 +75,12 @@ export default function CharacterActionsDropdown({ character, races }: { charact
                 </AlertDialog>
             </DropdownMenuContent>
 
-            <Dialog open={ isOpen } onOpenChange={ open => setOpen(open) }>
+            <Dialog open={ isDetailsOpen } onOpenChange={ open => setDetailsOpen(open) }>
                 <DialogContent className="bg-theme">
                     <DialogHeader>
                         <DialogTitle>Edit Character</DialogTitle>
                     </DialogHeader>
-                    <EditCharacterForm character={ character } races={ races } onSubmit={ () => setOpen(false) }/>
+                    <EditCharacterForm character={ character } races={ races } onSubmit={ () => setDetailsOpen(false) }/>
                 </DialogContent>
             </Dialog>
         </DropdownMenu>

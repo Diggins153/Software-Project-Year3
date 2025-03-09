@@ -23,13 +23,14 @@ import {
 import { deleteCharacter } from "@/lib/actions/characters";
 import { Character } from "@/types/Character";
 import { Race } from "@/types/Race";
-import { Ellipsis, PencilIcon, Trash2Icon } from "lucide-react";
+import { Ellipsis, PencilIcon, ShapesIcon, Trash2Icon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function CharacterActionsDropdown({ character, races }: { character: Character, races: Race[] }) {
     const [ isDetailsOpen, setDetailsOpen ] = useState(false);
+    const [ isLevelsOpen, setLevelsOpen ] = useState(false);
 
     async function handleDelete() {
         const response = await deleteCharacter(character.id);
@@ -51,6 +52,10 @@ export default function CharacterActionsDropdown({ character, races }: { charact
                 <DropdownMenuItem onSelect={ () => setDetailsOpen(true) }>
                     <PencilIcon/>
                     <span>Edit Details</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={ () => setLevelsOpen(true) }>
+                    <ShapesIcon/>
+                    <span>Edit Levels</span>
                 </DropdownMenuItem>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -80,7 +85,11 @@ export default function CharacterActionsDropdown({ character, races }: { charact
                     <DialogHeader>
                         <DialogTitle>Edit Character</DialogTitle>
                     </DialogHeader>
-                    <EditCharacterForm character={ character } races={ races } onSubmit={ () => setDetailsOpen(false) }/>
+                    <EditCharacterForm
+                        character={ character }
+                        races={ races }
+                        onSubmit={ () => setDetailsOpen(false) }
+                    />
                 </DialogContent>
             </Dialog>
         </DropdownMenu>

@@ -3,14 +3,13 @@
 import query from "@/lib/database";
 
 export async function userExists(email: string): Promise<boolean> {
-    const result = await query<{ count: number }>("SELECT count(id) FROM `user` WHERE email = ?", email);
-
-    return result.count > 0;
+    const result = await query<{ count: number }[]>("SELECT count(id) as count FROM `user` WHERE email = ?", email);
+    return result[0].count > 0;
 }
 
 export async function isValidRace(raceId: number): Promise<boolean> {
-    const result = await query<{ count: number }>("SELECT count(id) FROM race WHERE id = ?", raceId);
-    return result.count == 1;
+    const result = await query<{ count: number }[]>("SELECT count(id) as count FROM race WHERE id = ?", raceId);
+    return result[0].count == 1;
 }
 
 /**
@@ -20,9 +19,8 @@ export async function isValidRace(raceId: number): Promise<boolean> {
  */
 export async function isHandleUnique(handle: string, currentCharacterId: number): Promise<boolean> {
     handle = handle.toLowerCase();
-    const result = await query<{ count: number }>(
-        "SELECT count(handle) FROM `character` WHERE handle = ? AND id != ?",
+    const result = await query<{ count: number }[]>(
+        "SELECT count(handle) AS count FROM `character` WHERE handle = ? AND NOT id = ?",
         handle, currentCharacterId);
-
-    return result.count == 0;
+    return result[0].count == 0;
 }

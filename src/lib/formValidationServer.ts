@@ -12,3 +12,17 @@ export async function isValidRace(raceId: number): Promise<boolean> {
     const result = await query<{ count: number }>("SELECT count(id) FROM race WHERE id = ?", raceId);
     return result.count == 1;
 }
+
+/**
+ * Checks that a handle is unique among all the characters except the character that is being updated.
+ * @param handle The handle to be checked
+ * @param currentCharacterId Character ID that is being updated so it can be excluded from the unique check.
+ */
+export async function isHandleUnique(handle: string, currentCharacterId: number): Promise<boolean> {
+    handle = handle.toLowerCase();
+    const result = await query<{ count: number }>(
+        "SELECT count(handle) FROM `character` WHERE handle = ? AND id != ?",
+        handle, currentCharacterId);
+
+    return result.count == 0;
+}

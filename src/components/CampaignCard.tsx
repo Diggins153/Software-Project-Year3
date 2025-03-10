@@ -7,11 +7,21 @@ import styles from "./CampaignCard.module.css";
 
 export default function CampaignCard({ campaign }: { campaign: Campaign }) {
     const router = useRouter();
-    const { id, name, created_at, max_players, outline, dungeon_master_name } = campaign;
+    const {
+        //@ts-ignore
+        campaign_id,
+        //@ts-ignore
+        campaign_name,
+        created_at,
+        max_players,
+        outline,
+        dungeon_master_name,
+    } = campaign;
 
     const handleClick = () => {
+        console.log("Campaign clicked, id:", campaign_id);
         // Navigate to the campaign view page with the campaign id as a query parameter.
-        router.push(`/campaigns/view?campaignId=${id}`);
+        router.push(`/campaigns/view?campaignId=${campaign_id}`);
     };
 
     return (
@@ -19,10 +29,10 @@ export default function CampaignCard({ campaign }: { campaign: Campaign }) {
             <div className={styles.card}>
                 <div className={styles.textSection}>
                     <div className={styles.header}>
-                        <h2>{name}</h2>
+                        <h2>{campaign_name}</h2>
                     </div>
                     <div className={styles.body}>
-                        <p><strong>ID:</strong> {id}</p>
+                        <p><strong>ID:</strong> {campaign_id}</p>
                         <p>
                             <strong>Created At:</strong> {new Date(created_at).toLocaleDateString("en-US")}
                         </p>

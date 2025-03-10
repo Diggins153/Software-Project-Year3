@@ -4,6 +4,7 @@ import query from "@/lib/database";
 import { SessionFormSchema } from "@/lib/formSchemas";
 import { z } from "zod";
 
+// Function to create a session
 export async function createSession(
     data: z.infer<typeof SessionFormSchema>,
     campaignId: number
@@ -22,16 +23,17 @@ export async function createSession(
         const formattedSessionDate = formatDateTime(data.sessionDate);
         const formattedSignupDeadline = formatDateTime(data.signupDeadline);
 
-        // Ensure the SQL string is exactly defined with 6 placeholders.
+        // Define SQL string with exactly 6 placeholders.
         const sql =
             "INSERT INTO session (campaign_id, title, excerpt, writeup, session_date, signup_deadline) VALUES (?, ?, ?, ?, ?, ?)";
-        await query(sql,
+        await query(
+            sql,
             campaignId,
             data.title,
             data.excerpt ?? "",
             data.writeup ?? "",
             formattedSessionDate,
-            formattedSignupDeadline,
+            formattedSignupDeadline
         );
 
         return {
@@ -44,6 +46,27 @@ export async function createSession(
         return {
             ok: false,
             message: "Failed to create session",
+        };
+    }
+}
+
+// Function to delete a session
+export async function deleteSession(sessionId: number, campaignId: number) {
+    try {
+        // Define SQL string with exactly 2 placeholders.
+        const sql = "DELETE FROM session WHERE id = ? AND campaign_id = ?";
+        await query(sql, sessionId, campaignId);
+
+        return {
+            ok: true,
+            message: "Session deleted successfully",
+            redirect: `/campaigns/view?campaignId=${campaignId}`,
+        };
+    } catch (error) {
+        console.error("Error deleting session:", error);
+        return {
+            ok: false,
+            message: "Failed to delete session",
         };
     }
 }

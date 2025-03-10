@@ -52,7 +52,7 @@ export default function CreateSessionForm({ campaignId }: CreateSessionFormProps
                         <FormItem>
                             <FormLabel>Session Title</FormLabel>
                             <FormControl>
-                                <Input required {...field} />
+                                <Input  {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -97,7 +97,7 @@ export default function CreateSessionForm({ campaignId }: CreateSessionFormProps
                         <FormItem>
                             <FormLabel>Session Date/Time</FormLabel>
                             <FormControl>
-                                <Input type="datetime-local" required {...field} />
+                                <Input type="datetime-local"  {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -112,7 +112,7 @@ export default function CreateSessionForm({ campaignId }: CreateSessionFormProps
                         <FormItem>
                             <FormLabel>Signup Deadline</FormLabel>
                             <FormControl>
-                                <Input type="datetime-local" required {...field} />
+                                <Input type="datetime-local"  {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

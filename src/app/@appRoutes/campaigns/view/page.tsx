@@ -17,6 +17,15 @@ type Campaign = {
     dungeon_master_name: string;
 };
 
+type Session = {
+    id: number;
+    title: string;
+    excerpt: string | null;
+    writeup: string | null;
+    session_date: string;
+    signup_deadline: string;
+};
+
 type CampaignViewPageProps = {
     searchParams: { campaignId?: string };
 };
@@ -28,6 +37,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
         redirect("/campaigns");
     }
 
+    // Query the campaign by its id using proper aliases.
     const campaigns = await query<Campaign[]>(`
         SELECT
             c.id AS campaign_id,
@@ -56,9 +66,17 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
         session.user &&
         campaign.dungeon_master_id.toString() === session.user.id;
 
+    // Query sessions for this campaign.
+    const sessions = await query<Session[]>(`
+    SELECT id, title, excerpt, writeup, session_date, signup_deadline
+    FROM session
+    WHERE campaign_id = ?
+    ORDER BY session_date ASC
+  `, [campaign.campaign_id]);
+
     return (
         <main className="p-6">
-            {/* If the current user is the DM, show Edit + Create Session buttons */}
+            {/* DM-only controls */}
             {currUserIsOwner && (
                 <div className="flex justify-end mb-4 gap-2">
                     <Link
@@ -76,7 +94,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                 </div>
             )}
 
-
+            {/* Campaign details */}
             <h1 className="text-6xl font-bold text-center mb-8">
                 {campaign.campaign_name}
             </h1>
@@ -92,8 +110,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                     <strong>Max Players:</strong> {campaign.max_players}
                 </p>
                 <p>
-                    <strong>Signups Open:</strong>{" "}
-                    {campaign.signups_open ? "Yes" : "No"}
+                    <strong>Signups Open:</strong> {campaign.signups_open ? "Yes" : "No"}
                 </p>
                 <p>
                     <strong>Outline:</strong> {campaign.outline}
@@ -106,6 +123,36 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                     />
                 )}
             </div>
+
+            {/* Sessions Section */}
+            <div className="mt-8">
+                <h2 className="text-3xl font-semibold text-center mb-4">Upcoming Sessions</h2>
+                {sessions.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-6">
+                        {sessions.map((session) => (
+                            <div key={session.id} className="border p-4 rounded shadow hover:shadow-lg">
+                                <h3 className="text-2xl font-bold">{session.title}</h3>
+                                <p className="text-gray-600">
+                                    <strong>Date:</strong> {new Date(session.session_date).toLocaleString("en-US")}
+                                </p>
+                                <p className="text-gray-600">
+                                    <strong>Signup Deadline:</strong> {new Date(session.signup_deadline).toLocaleString("en-US")}
+                                </p>
+                                {session.excerpt && (
+                                    <p className="mt-2">{session.excerpt}</p>
+                                )}
+                                {session.writeup && (
+                                    <p className="mt-2 text-sm text-gray-500">{session.writeup}</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500">No sessions have been scheduled for this campaign.</p>
+                )}
+            </div>
+
+            {/* Back link */}
             <div className="mt-8 text-center">
                 <Link
                     href="/campaigns"

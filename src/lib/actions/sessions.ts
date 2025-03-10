@@ -1,32 +1,43 @@
-// lib/actions/sessions.ts
 "use server";
 
 import query from "@/lib/database";
 import { SessionFormSchema } from "@/lib/formSchemas";
-import {z} from "zod";
+import { z } from "zod";
 
-export async function createSession(data: z.infer<typeof SessionFormSchema>, campaignId: number) {
-    // Validate data with SessionFormSchema if needed, or rely on the client form validation.
-    // Insert into the session table. Example columns: title, excerpt, writeup, session_date, signup_deadline, campaign_id
-
+export async function createSession(
+    data: z.infer<typeof SessionFormSchema>,
+    campaignId: number
+) {
     try {
-        // For MySQL insertion, adapt to your schema:
-        await query(`
-      INSERT INTO session (campaign_id, title, excerpt, writeup, session_date, signup_deadline)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `, [
+        // Convert datetime-local string (e.g. "2025-03-30T18:50") to "YYYY-MM-DD HH:MM:SS" format.
+        const formatDateTime = (dt: string) => {
+            const [datePart, timePart] = dt.split("T");
+            let formattedTime = timePart || "";
+            if (formattedTime && formattedTime.split(":").length === 2) {
+                formattedTime += ":00";
+            }
+            return `${datePart} ${formattedTime}`;
+        };
+
+        const formattedSessionDate = formatDateTime(data.sessionDate);
+        const formattedSignupDeadline = formatDateTime(data.signupDeadline);
+
+        // Ensure the SQL string is exactly defined with 6 placeholders.
+        const sql =
+            "INSERT INTO session (campaign_id, title, excerpt, writeup, session_date, signup_deadline) VALUES (?, ?, ?, ?, ?, ?)";
+        await query(sql,
             campaignId,
             data.title,
             data.excerpt ?? "",
             data.writeup ?? "",
-            data.sessionDate,
-            data.signupDeadline
-        ]);
+            formattedSessionDate,
+            formattedSignupDeadline,
+        );
 
         return {
             ok: true,
             message: "Session created successfully",
-            redirect: `/campaigns/view?campaignId=${campaignId}`
+            redirect: `/campaigns/view?campaignId=${campaignId}`,
         };
     } catch (error) {
         console.error("Error creating session:", error);

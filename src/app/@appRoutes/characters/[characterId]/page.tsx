@@ -1,6 +1,7 @@
 import CharacterActionsDropdown from "@/components/characters/CharacterActionsDropdown";
 import ClassToken from "@/components/characters/ClassToken";
 import query from "@/lib/database";
+import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 import { auth } from "@/lib/auth";
 import { CharacterClass } from "@/types/CharacterClass";
@@ -23,6 +24,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
     const characterClasses = (await query<CharacterClass[]>("SELECT character_class.*, c.name AS class_name FROM character_class JOIN class c ON c.id = character_class.class_id WHERE character_class.character_id = ?", characterId));
     const classes = await query<Class[]>("SELECT * FROM `class`");
     const races = await query<Race[]>("SELECT * FROM race");
+    const characterCampaigns = await query<Campaign[]>("SELECT campaign.* FROM campaign JOIN campaign_characters cc ON campaign.id = cc.campaign_id WHERE cc.character_id = ?", characterId);
 
     return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
         { currUserIsOwner &&
@@ -32,6 +34,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
                     characterClasses={ characterClasses }
                     classes={ classes }
                     races={ races }
+                    characterCampaigns={ characterCampaigns }
                 />
             </div>
         }

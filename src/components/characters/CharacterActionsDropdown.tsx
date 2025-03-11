@@ -22,13 +22,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteCharacter } from "@/lib/actions/characters";
 import { Character } from "@/types/Character";
+import { CharacterClass } from "@/types/CharacterClass";
+import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { Ellipsis, PencilIcon, ShapesIcon, Trash2Icon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function CharacterActionsDropdown({ character, races }: { character: Character, races: Race[] }) {
+export default function CharacterActionsDropdown({ character, characterClasses, races, classes }: {
+    character: Character,
+    characterClasses: CharacterClass[],
+    races: Race[],
+    classes: Class[],
+}) {
     const [ isDetailsOpen, setDetailsOpen ] = useState(false);
     const [ isLevelsOpen, setLevelsOpen ] = useState(false);
 
@@ -46,14 +53,14 @@ export default function CharacterActionsDropdown({ character, races }: { charact
     return <>
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost"><Ellipsis size={ 24 }/></Button>
+                <Button variant="ghost"><Ellipsis/></Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onSelect={ () => setDetailsOpen(true) }>
                     <PencilIcon/>
                     <span>Edit Details</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={ () => setLevelsOpen(true) }>
+                <DropdownMenuItem onSelect={ () => setLevelsOpen(true) } disabled={ true }>
                     <ShapesIcon/>
                     <span>Edit Levels</span>
                 </DropdownMenuItem>
@@ -64,7 +71,7 @@ export default function CharacterActionsDropdown({ character, races }: { charact
                             <span>Delete</span>
                         </DropdownMenuItem>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="bg-theme">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
@@ -87,9 +94,19 @@ export default function CharacterActionsDropdown({ character, races }: { charact
                     </DialogHeader>
                     <EditCharacterForm
                         character={ character }
+                        characterClasses={ characterClasses }
                         races={ races }
                         onSubmit={ () => setDetailsOpen(false) }
+                        classes={ classes }
                     />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={ isLevelsOpen } onOpenChange={ open => setLevelsOpen(open) }>
+                <DialogContent className="bg-theme">
+                    <DialogHeader>
+                        <DialogTitle>Edit Levels</DialogTitle>
+                    </DialogHeader>
                 </DialogContent>
             </Dialog>
         </DropdownMenu>

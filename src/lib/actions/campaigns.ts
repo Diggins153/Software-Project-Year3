@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
 import { CampaignFormSchema } from "@/lib/formSchemas";
+import { generateCampaignInviteCode } from "@/lib/utils";
 import { z } from "zod";
 
 export async function createCampaign(formValues: z.infer<typeof CampaignFormSchema>): Promise<
@@ -28,4 +29,20 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
         name, session.user.id, signupsOpen, maxPlayers, outline);
 
     return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };
+}
+
+export async function regenerateInviteCode(campaignId: number): Promise<{ ok: boolean }> {
+    const session = await auth();
+    const campaign = (await query<{ dungeon_master_id: number }[]>(
+        "SELECT dungeon_master_id FROM campaign WHERE id = ?", campaignId,
+    ))[0] || null;
+
+    if (!session || !session.user || !campaign || session.user.id !== campaign.dungeon_master_id.toString()) {
+        return { ok: false };
+    }
+
+    const newCode = generateCampaignInviteCode();
+
+    await query("UPDATE campaign SET invite = ? WHERE id = ?", newCode, campaignId);
+    return { ok: true };
 }

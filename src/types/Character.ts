@@ -13,15 +13,3 @@ export type Character = {
 
     owner_id: number;
 }
-
-export type UpdateCharacter = {
-    id: number;
-
-    name?: string;
-
-    handle?: string;
-
-    race_id?: number;
-
-    image?: string;
-}

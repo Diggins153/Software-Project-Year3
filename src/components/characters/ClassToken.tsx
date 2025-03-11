@@ -8,7 +8,7 @@ export default function ClassToken({ characterClass }: { characterClass: Charact
     return <div className="flex gap-1 items-center justify-center">
         <div className="bg-white border-2 rounded-full p-1">
             <Image
-                className="aspect-square w-[25px] h-[25px]"
+                className="aspect-square min-w-[25px] w-[25px] min-h-[25px] h-[25px]"
                 src={ `/classes/${ className }.svg` }
                 alt={ `${ className } class` }
                 width={ 25 }

@@ -1,5 +1,5 @@
 import { hasDigits, hasLowercase, hasSpecialCharacter, hasUppercase } from "@/lib/formValidation";
-import { isValidRace, userExists } from "@/lib/formValidationServer";
+import { isHandleUnique, isValidClass, isValidRace, userExists } from "@/lib/formValidationServer";
 import { z } from "zod";
 
 export const LoginFormSchema = z.object({
@@ -46,20 +46,45 @@ export const RegisterFormSchema = z.object({
 });
 
 export const EditCharacterFormSchema = z.object({
+    id: z
+        .coerce
+        .number(),
     name: z
-        .string({ required_error: "Please enter a name" })
-        .max(255, "Name can have maximum of 255 characters"),
-    race: z
         .string()
-        .refine(async race => await isValidRace(race), "The value of race is invalid."),
-    // classes: z
-    //     .array(),
+        .min(1, "Please enter a name")
+        .max(40, "Name can have maximum of 40 characters"),
+    raceId: z
+        .coerce
+        .number()
+        .refine(async raceId => await isValidRace(raceId), "The selected race is invalid."),
+    classId: z
+        .coerce
+        .number()
+        .refine(async classId => await isValidClass(classId), "The selected class is invalid"),
+    level: z
+        .coerce
+        .number()
+        .gte(1, "Levels can't go below 1")
+        .lte(20, "Levels can't go above 20"),
     handle: z
-        .string({ required_error: "Please specify a handle" })
-        .max(255, "Handle cannot have more than 255 characters"),
+        .string()
+        .toLowerCase()
+        .min(1, "Please specify a handle")
+        .max(50, "Handle cannot have more than 50 characters")
+        .regex(/[a-z0-9-]+/, "Handle can only contain lowercase letters and - (dashes)")
+        .transform(value => value.replaceAll(/(?![a-z0-9-]+)./g, "")),
     image: z.any(),
-    // .refine(file => {}), // Further refinements
-});
+})
+    .superRefine(async (arg, ctx) => {
+        const isUnique = await isHandleUnique(arg.handle, arg.id);
+        if (!isUnique) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "This handle is already used by different character. Please choose a different one.",
+                path: [ "handle" ],
+            });
+        }
+    });
 
 export const CampaignFormSchema = z.object({
     name: z
@@ -74,8 +99,8 @@ export const CampaignFormSchema = z.object({
         .boolean()
         .default(true),
     outline: z
-        .string({message: "HEHE"})
-        .max(60, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
+        .string()
+        .max(60_000, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
         .optional(),
     banner: z.any(),
 });

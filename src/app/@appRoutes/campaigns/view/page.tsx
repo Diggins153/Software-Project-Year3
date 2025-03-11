@@ -38,12 +38,12 @@ type UserCharacter = {
 };
 
 type CampaignViewPageProps = {
-    searchParams: { campaignId?: string };
+    searchParams: Promise<{ campaignId?: string }>;
 };
 
 export default async function CampaignViewPage({ searchParams }: CampaignViewPageProps) {
     const sessionData = await auth();
-    const campaignId = searchParams.campaignId;
+    const campaignId = (await searchParams).campaignId;
     if (!campaignId) {
         redirect("/campaigns");
     }

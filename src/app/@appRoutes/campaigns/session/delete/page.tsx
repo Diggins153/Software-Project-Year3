@@ -4,12 +4,12 @@ import query from "@/lib/database";
 import { deleteSession } from "@/lib/actions/sessions";
 
 type DeleteSessionPageProps = {
-    searchParams: { sessionId?: string; campaignId?: string };
+    searchParams: Promise<{ sessionId?: string; campaignId?: string }>;
 };
 
 export default async function DeleteSessionPage({ searchParams }: DeleteSessionPageProps) {
     const sessionData = await auth();
-    const { sessionId, campaignId } = searchParams;
+    const { sessionId, campaignId } = await searchParams;
     if (!sessionId || !campaignId) {
         redirect("/campaigns");
     }

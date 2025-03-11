@@ -105,6 +105,8 @@ CREATE TABLE campaign (
                           max_players INT NOT NULL DEFAULT 4,
                           banner VARCHAR(255) NOT NULL,
                           outline TEXT NOT NULL,
+                          public BOOL DEFAULT FALSE,
+                          invite VARCHAR(7) DEFAULT NULL,
                           FOREIGN KEY (dungeon_master_id) REFERENCES `user`(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

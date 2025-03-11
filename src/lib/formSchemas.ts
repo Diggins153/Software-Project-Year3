@@ -1,5 +1,5 @@
 import { hasDigits, hasLowercase, hasSpecialCharacter, hasUppercase } from "@/lib/formValidation";
-import { isHandleUnique, isValidRace, userExists } from "@/lib/formValidationServer";
+import { isHandleUnique, isValidClass, isValidRace, userExists } from "@/lib/formValidationServer";
 import { z } from "zod";
 
 export const LoginFormSchema = z.object({
@@ -57,6 +57,15 @@ export const EditCharacterFormSchema = z.object({
         .coerce
         .number()
         .refine(async raceId => await isValidRace(raceId), "The selected race is invalid."),
+    classId: z
+        .coerce
+        .number()
+        .refine(async classId => await isValidClass(classId), "The selected class is invalid"),
+    level: z
+        .coerce
+        .number()
+        .gte(1, "Levels can't go below 1")
+        .lte(20, "Levels can't go above 20"),
     handle: z
         .string()
         .toLowerCase()
@@ -91,7 +100,7 @@ export const CampaignFormSchema = z.object({
         .default(true),
     outline: z
         .string()
-        .max(60, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
+        .max(60_000, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
         .optional(),
     banner: z.any(),
 });

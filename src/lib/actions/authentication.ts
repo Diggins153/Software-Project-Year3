@@ -17,7 +17,7 @@ export async function register(formValues: z.infer<typeof RegisterFormSchema>) {
     let { displayName, email, password } = parseResult.data;
     const passwordHash = await bcrypt.hash(password, await bcrypt.genSalt(12));
 
-    await query("INSERT INTO `user`(created_at, updated_at, display_name, email, password, last_consent_date) VALUE (now(), now(), ?, ?, ? , now())", displayName, email, passwordHash);
+    await query("INSERT INTO `user`(display_name, email, password, gdpr_consent) VALUE (?, ?, ? , now())", displayName, email, passwordHash);
 
     await signIn("credentials", { email, password, redirectTo: "/" });
 

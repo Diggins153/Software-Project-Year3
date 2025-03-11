@@ -14,7 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { updateCharacter } from "@/lib/actions/characters";
 import { EditCharacterFormSchema } from "@/lib/formSchemas";
-import { Character, UpdateCharacter } from "@/types/Character";
+import { Character } from "@/types/Character";
+import { CharacterClass } from "@/types/CharacterClass";
+import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -22,10 +24,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export default function EditCharacterForm({ character, races, onSubmit }: {
+export default function EditCharacterForm({ character, characterClasses, races, onSubmit, classes }: {
     character: Character,
+    characterClasses: CharacterClass[],
     races: Race[],
-    onSubmit?(): void
+    onSubmit?(): void,
+    classes: Class[],
 }) {
     const router = useRouter();
     const form = useForm<z.infer<typeof EditCharacterFormSchema>>({
@@ -36,8 +40,11 @@ export default function EditCharacterForm({ character, races, onSubmit }: {
             handle: character.handle,
             image: "https://placehold.co/75.png",
             raceId: character.race_id,
+            classId: characterClasses[0].class_id,
+            level: characterClasses[0].level,
         },
     });
+
     // const imageRef = form.register("image");
 
     async function handleUpdateCharacter(data: z.infer<typeof EditCharacterFormSchema>) {
@@ -77,7 +84,8 @@ export default function EditCharacterForm({ character, races, onSubmit }: {
                             <Input { ...field }/>
                         </FormControl>
                         <FormDescription>
-                            Your handle will be @{ form.getValues("handle").toLowerCase().replaceAll(/(?![a-z0-9-]+)./g, "") }
+                            Your handle will be
+                            @{ form.getValues("handle").toLowerCase().replaceAll(/(?![a-z0-9-]+)./g, "") }
                         </FormDescription>
                         <FormMessage/>
                     </FormItem>
@@ -111,19 +119,60 @@ export default function EditCharacterForm({ character, races, onSubmit }: {
                 }
             />
 
-            {/*<FormField*/}
-            {/*    control={ form.control }*/}
-            {/*    name="image"*/}
-            {/*    render={ () =>*/}
-            {/*        <FormItem>*/}
-            {/*            <FormLabel>Image</FormLabel>*/}
-            {/*            <FormControl>*/}
-            {/*                <Input type="file" { ...imageRef }/>*/}
-            {/*            </FormControl>*/}
-            {/*            <FormMessage></FormMessage>*/}
-            {/*        </FormItem>*/}
-            {/*    }*/}
-            {/*/>*/}
+            <FormField
+                control={ form.control }
+                name="classId"
+                render={ ({ field }) =>
+                    <FormItem>
+                        <FormLabel>Class</FormLabel>
+                        <Select onValueChange={ field.onChange } defaultValue={ field.value.toString() }>
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Class"/>
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                { classes.map(cClass =>
+                                    <SelectItem
+                                        key={ cClass.id }
+                                        value={ cClass.id.toString() }
+                                    >
+                                        { cClass.name }
+                                    </SelectItem>) }
+                            </SelectContent>
+                        </Select>
+                        <FormMessage/>
+                    </FormItem>
+                }
+            />
+
+            <FormField
+                control={ form.control }
+                name="level"
+                render={ ({ field }) =>
+                    <FormItem>
+                        <FormLabel>Level</FormLabel>
+                        <FormControl>
+                            <Input type="number" min="1" max="20" { ...field }/>
+                        </FormControl>
+                        <FormMessage/>
+                    </FormItem>
+                }
+            />
+
+            {/*<FormField*/ }
+            {/*    control={ form.control }*/ }
+            {/*    name="image"*/ }
+            {/*    render={ () =>*/ }
+            {/*        <FormItem>*/ }
+            {/*            <FormLabel>Image</FormLabel>*/ }
+            {/*            <FormControl>*/ }
+            {/*                <Input type="file" { ...imageRef }/>*/ }
+            {/*            </FormControl>*/ }
+            {/*            <FormMessage></FormMessage>*/ }
+            {/*        </FormItem>*/ }
+            {/*    }*/ }
+            {/*/>*/ }
 
             <div className="flex justify-end">
                 <Button type="submit">Save Changes</Button>

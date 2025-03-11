@@ -23,7 +23,7 @@ export async function createCharacter(name: string, race: string) {
     if (!dbRace) return { ok: false, error: "Invalid race" };
 
     // Add the character to the user's collection.
-    await query("INSERT INTO `character` (created_at, updated_at, name, handle, race_id, image, owner_id) VALUE (now(), now(), ?, ?, ?, '', ?)", name, `@${ name }`, dbRace.id, session.user.id);
+    await query("INSERT INTO `character` (name, handle, race_id, image, owner_id) VALUE (?, ?, ?, '', ?)", name, `@${ name }`, dbRace.id, session.user.id);
 
     // Persist and flush the new character so it gets an ID.
     return redirect("/characters");
@@ -45,7 +45,7 @@ export async function createPremadeCharacter(name: string, race: string, charCla
         return { ok: false, message: "Invalid class" };
     }
 
-    await query("INSERT INTO `character` (created_at, updated_at, name, handle, race_id, image, owner_id) VALUE (now(), now(), ?, ?, ?, '', ?)", name, `@${ name }`, dbRace.id, session.user.id);
+    await query("INSERT INTO `character` (name, handle, race_id, image, owner_id) VALUE (?, ?, ?, '', ?)", name, `@${ name }`, dbRace.id, session.user.id);
 
     return redirect("/characters");
 }

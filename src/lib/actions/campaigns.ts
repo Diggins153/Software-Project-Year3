@@ -24,7 +24,7 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
     // TODO: Set banner in query
 
     await query(
-        "INSERT INTO campaign (created_at, updated_at, name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (now(), now(), ?, ?, ?, ?, 'https://placehold.co/720/200', ?)",
+        "INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/720/200', ?)",
         name, session.user.id, signupsOpen, maxPlayers, outline);
 
     return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };

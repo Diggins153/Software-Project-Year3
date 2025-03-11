@@ -104,3 +104,11 @@ export const CampaignFormSchema = z.object({
         .optional(),
     banner: z.any(),
 });
+
+export const SessionFormSchema = z.object({
+    title: z.string().min(1, "Session title is required"),
+    excerpt: z.string().optional(),
+    writeup: z.string().optional(),
+    sessionDate: z.string().min(1, "Session date is required"),
+    signupDeadline: z.string().min(1, "Signup deadline is required"),
+});

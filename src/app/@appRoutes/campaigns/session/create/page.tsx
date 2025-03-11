@@ -4,7 +4,7 @@ import query from "@/lib/database";
 import CreateSessionForm from "@/components/sessions/CreateSessionForm";
 
 type SessionCreatePageProps = {
-    searchParams: { campaignId?: string };
+    searchParams: Promise<{ campaignId?: string }>;
 };
 
 type DungeonMasterRow = {
@@ -13,7 +13,7 @@ type DungeonMasterRow = {
 
 export default async function SessionCreatePage({ searchParams }: SessionCreatePageProps) {
     const session = await auth();
-    const cId = searchParams.campaignId;
+    const cId = (await searchParams).campaignId;
     if (!cId) {
         redirect("/campaigns");
     }

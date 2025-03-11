@@ -4,13 +4,13 @@ import query from "@/lib/database";
 import { Character } from "@/types/Character";
 import { auth } from "@/lib/auth";
 import { CharacterClass } from "@/types/CharacterClass";
+import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export default async function CharacterPage({ params }: { params: Promise<{ characterId: number; }> }) {
     const session = await auth();
-
     const characterId = (await params).characterId;
     const character = (await query<Character[]>("SELECT `character`.*, r.name AS race_name FROM `character` JOIN race r ON r.id = `character`.race_id WHERE `character`.id = ?", characterId))[0] || null;
 
@@ -20,13 +20,19 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
 
     const { owner_id, image = "", name, race_name } = character;
     const currUserIsOwner = owner_id.toString() === session.user.id;
-    const classes = (await query<CharacterClass[]>("SELECT character_class.*, c.name AS class_name FROM character_class JOIN class c ON c.id = character_class.class_id WHERE character_class.character_id = ?", characterId));
+    const characterClasses = (await query<CharacterClass[]>("SELECT character_class.*, c.name AS class_name FROM character_class JOIN class c ON c.id = character_class.class_id WHERE character_class.character_id = ?", characterId));
+    const classes = await query<Class[]>("SELECT * FROM `class`");
     const races = await query<Race[]>("SELECT * FROM race");
 
     return <main className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto pt-4">
         { currUserIsOwner &&
             <div className="flex justify-end mb-[calc(-75px/2)]">
-                <CharacterActionsDropdown character={ character } races={ races }/>
+                <CharacterActionsDropdown
+                    character={ character }
+                    characterClasses={ characterClasses }
+                    classes={ classes }
+                    races={ races }
+                />
             </div>
         }
 
@@ -44,9 +50,9 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
                     { race_name }
                 </div>
             </div>
-            <div className="flex flex-col mt-2.5 gap-2.5">
-                <div className="flex w-full flex-wrap justify-center gap-y-2">
-                    { classes.map((characterClass) => {
+            <div className="flex flex-col w-full mt-2.5 gap-2.5">
+                <div className="flex flex-wrap justify-center gap-y-2">
+                    { characterClasses.map((characterClass) => {
                         return <div key={ characterClass.class_name } className="basis-1/2">
                             <ClassToken characterClass={ characterClass }/>
                         </div>;

@@ -53,8 +53,6 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
         SELECT
             c.id AS campaign_id,
             c.name AS campaign_name,
-            c.created_at,
-            c.updated_at,
             c.signups_open,
             c.dungeon_master_id,
             c.max_players,

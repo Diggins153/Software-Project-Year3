@@ -133,6 +133,7 @@ export async function deleteCharacter(characterId: number): Promise<
         return { ok: false, message: "Sorry, you are not allowed to delete someone else's character." };
 
     // Delete character
+    await query("DELETE FROM beyondnd.campaign_characters WHERE character_id = ?", characterId);
     await query("DELETE FROM character_class WHERE character_id = ?", characterId);
     await query("DELETE FROM `character` WHERE id = ?", characterId);
 

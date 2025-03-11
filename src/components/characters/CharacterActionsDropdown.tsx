@@ -1,6 +1,7 @@
 "use client";
 
 import EditCharacterForm from "@/components/characters/EditCharacterForm";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,23 +22,26 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteCharacter } from "@/lib/actions/characters";
+import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 import { CharacterClass } from "@/types/CharacterClass";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
-import { Ellipsis, PencilIcon, ShapesIcon, Trash2Icon } from "lucide-react";
+import { AlertCircle, Ellipsis, PencilIcon, ShapesIcon, Trash2Icon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function CharacterActionsDropdown({ character, characterClasses, races, classes }: {
+export default function CharacterActionsDropdown({ character, characterClasses, races, classes, characterCampaigns }: {
     character: Character,
     characterClasses: CharacterClass[],
     races: Race[],
     classes: Class[],
+    characterCampaigns: Campaign[],
 }) {
     const [ isDetailsOpen, setDetailsOpen ] = useState(false);
     const [ isLevelsOpen, setLevelsOpen ] = useState(false);
+    const [ isDeleteOpen, setDeleteOpen ] = useState(false);
 
     async function handleDelete() {
         const response = await deleteCharacter(character.id);
@@ -64,27 +68,10 @@ export default function CharacterActionsDropdown({ character, characterClasses, 
                     <ShapesIcon/>
                     <span>Edit Levels</span>
                 </DropdownMenuItem>
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <DropdownMenuItem className="text-red-300" onSelect={ e => e.preventDefault() }>
-                            <Trash2Icon/>
-                            <span>Delete</span>
-                        </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="bg-theme">
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Do you really want to delete this character?
-                                <b className="block text-destructive mt-2">This cannot be undone.</b>
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={ handleDelete }>Delete my character</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                <DropdownMenuItem className="text-red-300" onSelect={ () => setDeleteOpen(true) }>
+                    <Trash2Icon/>
+                    <span>Delete</span>
+                </DropdownMenuItem>
             </DropdownMenuContent>
 
             <Dialog open={ isDetailsOpen } onOpenChange={ open => setDetailsOpen(open) }>
@@ -109,7 +96,36 @@ export default function CharacterActionsDropdown({ character, characterClasses, 
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
-        </DropdownMenu>
 
+            <AlertDialog open={ isDeleteOpen } onOpenChange={ open => setDeleteOpen(open) }>
+                <AlertDialogContent className="bg-theme">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Do you really want to delete { character.name }?</AlertDialogTitle>
+                        <AlertDialogDescription className="space-y-4">
+                            { characterCampaigns.length > 0 &&
+                                <p className="space-y-2">
+                                    <p>The character is playing
+                                        in { characterCampaigns.length == 1 ? "this campaign" : "these campaigns" }:
+                                    </p>
+                                    <ul className="list-disc list-inside">
+                                        { characterCampaigns.map(campaign =>
+                                            <li key={ campaign.id }>{ campaign.name }</li>) }
+                                    </ul>
+                                    <p className="font-bold">The character will be removed and you will loose access to the campaign.</p>
+                                </p>
+                            }
+                            <Alert variant="destructive" className="mt-4">
+                                <AlertCircle className="size-4"/>
+                                <AlertDescription>This cannot be undone!</AlertDescription>
+                            </Alert>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={ handleDelete }>Delete my character</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </DropdownMenu>
     </>;
 }

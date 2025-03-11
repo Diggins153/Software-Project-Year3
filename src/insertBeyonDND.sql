@@ -33,7 +33,7 @@ INSERT INTO class (id, created_at, updated_at, name) VALUES
                                                          (11, '2025-03-01 14:45:30', '2025-03-01 14:45:32', 'Bard'),
                                                          (12, '2025-03-01 14:45:30', '2025-03-01 14:45:32', 'Druid');
 
-INSERT INTO character (id, created_at, updated_at, name, handle, race_id, image, owner_id) VALUES
+INSERT INTO `character` (id, created_at, updated_at, name, handle, race_id, image, owner_id) VALUES
                                                                                                (13, '2025-03-01 16:00:51', '2025-03-01 16:00:51', 'Grog the Mighty', 'handle:Grog the Mighty', 2, 'https://placehold.co/75.png', 7),
                                                                                                (14, '2025-03-01 16:03:45', '2025-03-01 16:03:45', 'Elara the Swift', 'handle:Elara the Swift', 3, 'https://placehold.co/75.png', 7),
                                                                                                (15, '2025-03-01 16:04:50', '2025-03-01 16:04:50', 'Nyx the Shadow', 'handle:Nyx the Shadow', 7, 'https://placehold.co/75.png', 7),
@@ -43,15 +43,15 @@ INSERT INTO character (id, created_at, updated_at, name, handle, race_id, image,
                                                                                                (19, '2025-03-04 11:21:50', '2025-03-04 11:21:50', 'Grog the Mighty', '@Grog the Mighty', 2, 'https://placehold.co/75.png', 6),
                                                                                                (20, '2025-03-08 21:45:24', '2025-03-08 21:45:24', 'Grog the Mighty', '@Grog the Mighty', 2, '', 7);
 
+INSERT INTO campaign (id, created_at, updated_at, name, signups_open, dungeon_master_id, max_players, banner, outline) VALUES
+                                                                                                                           (3, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'The Lost Caverns', 1, 2, 5, '', 'Explore the deep mysteries of the lost caverns.'),
+                                                                                                                           (4, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'Forest of Whispers', 1, 3, 4, '', 'Uncover secrets in a magical forest.'),
+                                                                                                                           (5, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'Dreadhold Escape', 1, 4, 6, '', 'Break out from the high-security fortress Dreadhold.'),
+                                                                                                                           (6, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'Desert of Shadows', 1, 5, 8, '', 'Survive the treacherous sands of the Desert of Shadows.');
+
 INSERT INTO campaign_characters (campaign_id, character_id) VALUES
                                                                 (3, 13),
                                                                 (3, 14),
                                                                 (3, 15),
                                                                 (3, 16),
                                                                 (3, 18);
-
-INSERT INTO campaign (id, created_at, updated_at, name, signups_open, dungeon_master_id, max_players, banner, outline) VALUES
-                                                                                                                           (3, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'The Lost Caverns', 1, 2, 5, '', 'Explore the deep mysteries of the lost caverns.'),
-                                                                                                                           (4, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'Forest of Whispers', 1, 3, 4, '', 'Uncover secrets in a magical forest.'),
-                                                                                                                           (5, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'Dreadhold Escape', 1, 4, 6, '', 'Break out from the high-security fortress Dreadhold.'),
-                                                                                                                           (6, '2025-02-01 17:17:59', '2025-02-01 17:17:59', 'Desert of Shadows', 1, 5, 8, '', 'Survive the treacherous sands of the Desert of Shadows.');

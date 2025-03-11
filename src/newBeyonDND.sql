@@ -53,7 +53,7 @@ CREATE TABLE `character` (
                              image VARCHAR(128),
                              owner_id INT UNSIGNED NOT NULL,
                              bio VARCHAR(512),
-                             private BOOL DEFAULT TRUE,
+                             private BOOL NOT NULL DEFAULT TRUE,
                              FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE CASCADE,
                              FOREIGN KEY (owner_id) REFERENCES `user`(id) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

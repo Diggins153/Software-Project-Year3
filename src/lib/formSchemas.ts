@@ -39,11 +39,22 @@ export const RegisterFormSchema = z.object({
                 ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Password must have a lowercase letter." });
             }
         }),
+    passwordCheck: z
+        .string(),
     gdpr: z
         .boolean({ required_error: "You need to accept the terms to continue." })
         .default(false)
         .refine(value => value === true, "You need to accept the terms to continue."),
-});
+})
+    .superRefine((arg, ctx) => {
+        if (arg.password !== arg.passwordCheck) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Passwords need to match",
+                path: [ "passwordCheck" ],
+            });
+        }
+    });
 
 export const EditCharacterFormSchema = z.object({
     id: z

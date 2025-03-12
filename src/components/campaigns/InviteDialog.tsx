@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import CopyButton from "@/components/ui/copy-button";
 import {
     Dialog,
@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { regenerateInviteCode } from "@/lib/actions/campaigns";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function InviteDialog({ inviteCode, campaignId }: { inviteCode: string, campaignId: number }) {
@@ -38,7 +38,7 @@ export default function InviteDialog({ inviteCode, campaignId }: { inviteCode: s
         setGenerating(false);
     }
 
-    return <Dialog defaultOpen>
+    return <Dialog>
         <DialogTrigger className={ buttonVariants({ variant: "default" }) }>Invite</DialogTrigger>
         <DialogContent className="bg-theme">
             <DialogHeader>

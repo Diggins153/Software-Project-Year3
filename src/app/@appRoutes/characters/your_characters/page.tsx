@@ -3,6 +3,7 @@ import query from "@/lib/database";
 import { redirect } from "next/navigation";
 import { Character } from "@/types/Character";
 import CharacterCard from "@/components/characters/CharacterCard";
+import Link from "next/link";
 
 export default async function CharactersPage() {
     const session = await auth();
@@ -18,18 +19,22 @@ export default async function CharactersPage() {
             <div className="space-y-4">
                 <h1 className="text-3xl font-bold text-center">Your Characters</h1>
                 <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                    <CharacterCard
-                        character={ {
-                            id: "create",
-                            name: "Create a new Character",
-                            image: "/icons/plus.png",
-                        } as any as Character }
-                    />
+                    <Link href="/characters/create">
+                        <CharacterCard
+                            character={ {
+                                id: "create",
+                                name: "Create a new Character",
+                                image: "/icons/plus.png",
+                            } as any as Character }
+                        />
+                    </Link>
                     { characters.length > 0
-                        ? characters.map(character => <CharacterCard
-                            key={ character.id }
-                            character={ character }
-                        />)
+                        ? characters.map(character => <Link href={ `/characters/${ character.id }` }>
+                            <CharacterCard
+                                key={ character.id }
+                                character={ character }
+                            />
+                        </Link>)
                         : <CharacterCard/> }
                 </div>
             </div>

@@ -16,4 +16,8 @@ export type Campaign = {
     banner?: string;
 
     outline?: string;
+
+    public: boolean;
+
+    invite?: string;
 }

@@ -27,8 +27,8 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
 
     return <main>
         <h1>Managing Campaign with ID { campaignId }</h1>
+        <InviteDialog inviteCode={ campaign.invite } campaignId={ campaignId }/>
         <p>Table of users here</p>
         <p>Campaign Actions Here</p>
-        <InviteDialog inviteCode={ campaign.invite } campaignId={ campaignId }/>
     </main>;
 };

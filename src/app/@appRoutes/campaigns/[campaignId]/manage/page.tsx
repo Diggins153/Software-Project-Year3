@@ -1,22 +1,20 @@
 import InviteDialog from "@/components/campaigns/InviteDialog";
-import { auth } from "@/lib/auth";
 import query from "@/lib/database";
-import { generateCampaignInviteCode } from "@/lib/utils";
+import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export const metadata: Metadata = {
     title: "Manage Campaign",
 };
 
 export default async function ManageCampaignPage({ params }: { params: Promise<{ campaignId: number }> }) {
-    const session = await auth();
-    if (!session || !session.user) redirect("/");
+    let session = await ensureSession();
 
     const { campaignId } = await params;
     const campaign = (await query<Campaign[]>("SELECT * FROM campaign WHERE id = ?", campaignId))[0] ?? null;
-    if (!campaign) redirect("/campaigns");
+    if (!campaign) notFound();
     if (campaign.dungeon_master_id.toString() !== session.user.id) redirect(`/campaigns/view?campaignId=${ campaignId }`);
 
     if (!campaign.invite) {

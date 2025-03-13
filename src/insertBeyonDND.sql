@@ -35,15 +35,15 @@ INSERT INTO class (id, name) VALUES
                                  (11, 'Bard'),
                                  (12, 'Druid');
 
-INSERT INTO `character` (id, name, handle, race_id, image, owner_id) VALUES
-                                                                         (13, 'Grog the Mighty', 'handle:Grog the Mighty', 2, 'https://placehold.co/75.png', 7),
-                                                                         (14, 'Elara the Swift', 'handle:Elara the Swift', 3, 'https://placehold.co/75.png', 7),
-                                                                         (15, 'Nyx the Shadow', 'handle:Nyx the Shadow', 7, 'https://placehold.co/75.png', 7),
-                                                                         (16, 'k', 'handle:k', 3, 'https://placehold.co/75.png', 7),
-                                                                         (17, 'a', 'handle:a', 6, 'https://placehold.co/75.png', 6),
-                                                                         (18, 'Rat', 'handle:Rat', 3, 'https://placehold.co/75.png', 6),
-                                                                         (19, 'Grog the Mighty', '@Grog the Mighty', 2, 'https://placehold.co/75.png', 6),
-                                                                         (20, 'Grog the Mighty', '@Grog the Mighty', 2, '', 7);
+INSERT INTO `character` (id, name, handle, class_id, level, race_id, image, owner_id) VALUES
+                                                                         (13, 'Grog the Mighty', 'handle:Grog the Mighty', 1, 1, 2, 'https://placehold.co/75.png', 7),
+                                                                         (14, 'Elara the Swift', 'handle:Elara the Swift', 2, 1, 3, 'https://placehold.co/75.png', 7),
+                                                                         (15, 'Nyx the Shadow', 'handle:Nyx the Shadow', 6, 1, 7, 'https://placehold.co/75.png', 7),
+                                                                         (16, 'k', 'handle:k', 5, 1, 3, 'https://placehold.co/75.png', 7),
+                                                                         (17, 'a', 'handle:a', 9, 1, 6, 'https://placehold.co/75.png', 6),
+                                                                         (18, 'Rat', 'handle:Rat', 12, 20, 3, 'https://placehold.co/75.png', 6),
+                                                                         (19, 'Grog the Mighty', 1, 1, '@Grog the Mighty', 2, 'https://placehold.co/75.png', 6),
+                                                                         (20, 'Grog the Mighty', 1, 1, '@Grog the Mighty', 2, '', 7);
 
 INSERT INTO campaign (id, name, signups_open, dungeon_master_id, max_players, banner, outline) VALUES
                                                                                                    (3, 'The Lost Caverns', 1, 2, 5, '', 'Explore the deep mysteries of the lost caverns.'),

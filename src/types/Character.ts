@@ -5,6 +5,10 @@ export type Character = {
 
     handle: string;
 
+    class_id: number;
+
+    level: number;
+
     race_id: number;
 
     race_name?: string;

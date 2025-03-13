@@ -11,37 +11,41 @@ type ClassUsage = {
 };
 
 export default async function StatisticsPage() {
+    // Query for most used races (by counting characters per race)
     const mostUsedRaces: RaceUsage[] = await query<RaceUsage[]>(`
-    SELECT r.name, COUNT(c.id) AS usage_count
-    FROM race r
-    LEFT JOIN \`character\` c ON c.race_id = r.id
-    GROUP BY r.id
-    ORDER BY usage_count DESC
-  `);
+        SELECT r.name, COUNT(c.id) AS usage_count
+        FROM race r
+                 LEFT JOIN \`character\` c ON c.race_id = r.id
+        GROUP BY r.id
+        ORDER BY usage_count DESC
+    `);
 
+    // Query for least used races
     const leastUsedRaces: RaceUsage[] = await query<RaceUsage[]>(`
-    SELECT r.name, COUNT(c.id) AS usage_count
-    FROM race r
-    LEFT JOIN \`character\` c ON c.race_id = r.id
-    GROUP BY r.id
-    ORDER BY usage_count ASC
-  `);
+        SELECT r.name, COUNT(c.id) AS usage_count
+        FROM race r
+                 LEFT JOIN \`character\` c ON c.race_id = r.id
+        GROUP BY r.id
+        ORDER BY usage_count ASC
+    `);
 
+    // Query for most used classes (by counting characters per class)
     const mostUsedClasses: ClassUsage[] = await query<ClassUsage[]>(`
-    SELECT cl.name, COUNT(cc.character_id) AS usage_count
-    FROM \`class\` cl
-    LEFT JOIN character_class cc ON cc.class_id = cl.id
-    GROUP BY cl.id
-    ORDER BY usage_count DESC
-  `);
+        SELECT cl.name, COUNT(c.id) AS usage_count
+        FROM \`class\` cl
+                 LEFT JOIN \`character\` c ON c.class_id = cl.id
+        GROUP BY cl.id
+        ORDER BY usage_count DESC
+    `);
 
+    // Query for least used classes
     const leastUsedClasses: ClassUsage[] = await query<ClassUsage[]>(`
-    SELECT cl.name, COUNT(cc.character_id) AS usage_count
-    FROM \`class\` cl
-    LEFT JOIN character_class cc ON cc.class_id = cl.id
-    GROUP BY cl.id
-    ORDER BY usage_count ASC
-  `);
+        SELECT cl.name, COUNT(c.id) AS usage_count
+        FROM \`class\` cl
+                 LEFT JOIN \`character\` c ON c.class_id = cl.id
+        GROUP BY cl.id
+        ORDER BY usage_count ASC
+    `);
 
     return (
         <main className="p-6">

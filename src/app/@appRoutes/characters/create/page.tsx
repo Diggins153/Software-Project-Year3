@@ -61,12 +61,13 @@ export default function CreateCharacter() {
         if (!selectedRace || !selectedClass || !characterName.trim()) return;
         setIsSaving(true);
         try {
-            await createCharacter(characterName, selectedRace);
+            await createCharacter(characterName, selectedRace, selectedClass, level);
         } catch (error) {
             console.error("Error creating character:", error);
             setIsSaving(false);
         }
     };
+
 
     return (
         <main className="relative p-8 min-h-screen">

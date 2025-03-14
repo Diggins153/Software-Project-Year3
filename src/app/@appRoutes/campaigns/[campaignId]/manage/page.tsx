@@ -37,7 +37,7 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
 
     return <main className="w-full md:w-1/2 mx-auto space-y-8">
         <div className="flex items-center justify-between">
-            <h1 className="text-2xl">Managing Campaign with ID { campaignId }</h1>
+            <h1 className="text-2xl">{ campaign.name }</h1>
             <InviteDialog inviteCode={ campaign.invite } campaignId={ campaignId }/>
         </div>
         <div className="space-y-2">

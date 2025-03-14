@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use properties of {@link Character}
+*/
 export type CharacterClass = {
     character_id: number;
 

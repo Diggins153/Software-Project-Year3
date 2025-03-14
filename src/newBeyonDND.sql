@@ -49,6 +49,8 @@ CREATE TABLE `character` (
                              id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                              name VARCHAR(40) NOT NULL,
                              handle VARCHAR(50) NOT NULL,
+                             class_id INT UNSIGNED NOT NULL,
+                             level INT UNSIGNED NOT NULL DEFAULT 1,
                              race_id INT UNSIGNED NOT NULL,
                              image VARCHAR(128),
                              owner_id INT UNSIGNED NOT NULL,
@@ -65,16 +67,6 @@ CREATE TABLE user_characters (
                                  PRIMARY KEY (character_id, user_id),
                                  FOREIGN KEY (character_id) REFERENCES `character`(id) ON DELETE CASCADE,
                                  FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- CHARACTER_CLASS (Many-to-Many: character <-> class)
-CREATE TABLE character_class (
-                                 character_id INT UNSIGNED NOT NULL,
-                                 class_id INT UNSIGNED NOT NULL,
-                                 level INT NOT NULL DEFAULT 1,
-                                 PRIMARY KEY (character_id, class_id),
-                                 FOREIGN KEY (character_id) REFERENCES `character`(id) ON DELETE CASCADE,
-                                 FOREIGN KEY (class_id) REFERENCES `class`(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- VERIFICATION_CODES

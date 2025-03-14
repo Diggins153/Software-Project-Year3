@@ -9,6 +9,7 @@ type PremadeCharacter = {
     race: string;
     class: string;
     description: string;
+    level: number;
     // image: string;
 };
 
@@ -21,6 +22,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Barbarian",
         description:
             "Loves smashing things. Not so great at math. Has won many battles and lost many arguments.",
+        level: 3,
         // image: "/images/grog.jpg",
     },
     {
@@ -30,6 +32,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Rogue",
         description:
             "Steals hearts... and your gold pouch. Will definitely flirt with the enemy mid-fight.",
+        level: 3,
         // image: "/images/elara.jpg",
     },
     {
@@ -39,6 +42,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Wizard",
         description:
             "Magic runs through their veins... sometimes too much. Once accidentally polymorphed into a duck.",
+        level: 3,
         // image: "/images/zymar.jpg",
     },
     {
@@ -48,6 +52,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Paladin",
         description:
             "Holy warrior, radiant smile, terrifying smites. Will heal you, then guilt-trip you for needing healing.",
+        level: 3,
         // image: "/images/seraphina.jpg",
     },
     {
@@ -57,6 +62,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Fighter",
         description:
             "Stubborn, tough, and swings an axe like it's an extension of his beard. Loves ale and battle equally.",
+        level: 3,
         // image: "/images/brom.jpg",
     },
     {
@@ -66,6 +72,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Warlock",
         description:
             "Pacts with dark forces? Check. Shadowy past? Check. Really good at dramatic pauses? Absolutely.",
+        level: 3,
         // image: "/images/nyx.jpg",
     },
     {
@@ -75,6 +82,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Bard",
         description:
             "Plays the lute, charms the crowd, and probably knows more gossip than a noble’s servant.",
+        level: 3,
         // image: "/images/finn.jpg",
     },
     {
@@ -84,6 +92,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Sorcerer",
         description:
             "Born with power, breathes magic, and occasionally sets things on fire... on purpose.",
+        level: 3,
         // image: "/images/ignis.jpg",
     },
     {
@@ -93,6 +102,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Druid",
         description:
             "Can turn into a bear, but prefers to chat with squirrels. Deeply concerned about deforestation.",
+        level: 3,
         // image: "/images/willow.jpg",
     },
     {
@@ -102,6 +112,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Ranger",
         description:
             "Silent, deadly, and has a wolf companion that’s more social than he is.",
+        level: 3,
         // image: "/images/kaelen.jpg",
     },
     {
@@ -111,6 +122,7 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Monk",
         description:
             "Once punched a tree so hard it apologized. Finds inner peace through disciplined fury.",
+        level: 3,
         // image: "/images/torug.jpg",
     },
     {
@@ -120,8 +132,9 @@ const premadeCharacters: PremadeCharacter[] = [
         class: "Artificer",
         description:
             "Builds crazy gadgets, some of which explode. Claims that’s ‘just a feature.’",
+        level: 3,
         // image: "/images/zibzok.jpg",
-    },
+    }
 ];
 
 export default function PremadeCharactersPage() {
@@ -136,7 +149,8 @@ export default function PremadeCharactersPage() {
                         await createPremadeCharacter(
                             character.name,
                             character.race,
-                            character.class
+                            character.class,
+                            character.level
                         )
                     }
                 >
@@ -159,7 +173,7 @@ export default function PremadeCharactersPage() {
                             {/* Description at the Bottom */}
                             <div className="mt-auto p-4 text-center">
                                 <p className="text-md text-gray-700">
-                                    {character.race} {character.class}
+                                    {character.race} {character.class} (Lvl {character.level})
                                 </p>
                                 <p className="text-sm text-gray-700 mt-2">
                                     {character.description}
@@ -175,25 +189,24 @@ export default function PremadeCharactersPage() {
                     </div>
                 </div>
             ))}
-            {/* Custom CSS for the Flip Effect */}
             <style jsx>{`
-        .flip-card-inner {
-          transform-style: preserve-3d;
-        }
-        .flip-card-front,
-        .flip-card-back {
-          backface-visibility: hidden;
-          position: absolute;
-          width: 100%;
-          height: 100%;
-        }
-        .flip-card-back {
-          transform: rotateY(180deg);
-        }
-        .group:hover .flip-card-inner {
-          transform: rotateY(180deg);
-        }
-      `}</style>
+                .flip-card-inner {
+                    transform-style: preserve-3d;
+                }
+                .flip-card-front,
+                .flip-card-back {
+                    backface-visibility: hidden;
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                }
+                .flip-card-back {
+                    transform: rotateY(180deg);
+                }
+                .group:hover .flip-card-inner {
+                    transform: rotateY(180deg);
+                }
+            `}</style>
         </main>
     );
 }

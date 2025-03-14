@@ -11,44 +11,73 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-export async function createCharacter(name: string, race: string) {
+export async function createCharacter(
+    name: string,
+    race: string,
+    charClass: string,
+    level: number
+) {
     const session = await auth();
     if (!session || !session.user) return redirect("/");
 
     const user = await fetchUser(session.user.email!);
     if (!user) return { ok: false };
 
-    // Retrieve the Race entity based on the provided race name.
-    const dbRace = (await query<Race[]>("SELECT name FROM race WHERE name = ?", race))[0] || null;
+    // Retrieve the Race entity with id and name.
+    const dbRace = (await query<Race[]>("SELECT id, name FROM race WHERE name = ?", race))[0] || null;
     if (!dbRace) return { ok: false, error: "Invalid race" };
 
-    // Add the character to the user's collection.
-    await query("INSERT INTO `character` (name, handle, race_id, image, owner_id) VALUE (?, ?, ?, '', ?)", name, `@${ name }`, dbRace.id, session.user.id);
+    // Retrieve the Class entity with id and name.
+    const dbClass = (await query<Class[]>("SELECT id, name FROM `class` WHERE name = ?", charClass))[0] || null;
+    if (!dbClass) return { ok: false, error: "Invalid class" };
 
-    // Persist and flush the new character so it gets an ID.
+    // Insert the new character with race_id, class_id, and level.
+    await query(
+        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, '', ?)",
+        name,
+        `@${name}`,
+        dbRace.id,
+        dbClass.id,
+        level,
+        session.user.id
+    );
+
     return redirect("/characters");
 }
 
-export async function createPremadeCharacter(name: string, race: string, charClass: string) {
+
+
+export async function createPremadeCharacter(
+    name: string,
+    race: string,
+    charClass: string,
+    level: number
+) {
     const session = await auth();
+    if (!session || !session.user) return redirect("/");
 
-    if (!session || !session.user) {
-        return redirect("/");
-    }
-
-    const dbRace = (await query<Race[]>("SELECT * FROM race WHERE name = ?", race))[0] || null;
+    const dbRace = (await query<Race[]>("SELECT id, name FROM race WHERE name = ?", race))[0] || null;
     if (dbRace == null) {
         return { ok: false, message: "Invalid race" };
     }
-    const dbClass = (await query<Class[]>("SELECT * FROM class WHERE name = ?", charClass))[0] || null;
+    const dbClass = (await query<Class[]>("SELECT id, name FROM `class` WHERE name = ?", charClass))[0] || null;
     if (dbClass == null) {
         return { ok: false, message: "Invalid class" };
     }
 
-    await query("INSERT INTO `character` (name, handle, race_id, image, owner_id) VALUE (?, ?, ?, '', ?)", name, `@${ name }`, dbRace.id, session.user.id);
+    await query(
+        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, '', ?)",
+        name,
+        `@${name}`,
+        dbRace.id,
+        dbClass.id,
+        level,
+        session.user.id
+    );
 
     return redirect("/characters");
 }
+
 
 export async function updateCharacter(characterId: number, formData: z.infer<typeof EditCharacterFormSchema>): Promise<
     { ok: false, message: string } |

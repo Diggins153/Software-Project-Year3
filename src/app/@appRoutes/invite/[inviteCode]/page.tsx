@@ -27,7 +27,7 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
     async function addCharacter(character: Character) {
         "use server";
         const campaignUrl = `/campaigns/view?campaignId=${ campaign!.id }`;
-        await query("INSERT INTO campaign_characters (campaign_id, character_id, status) VALUE (?, ?, 'joined')", campaign!.id, character.id);
+        await query("INSERT INTO campaign_characters (campaign_id, character_id, status) VALUE (?, ?, 'joined') ON DUPLICATE KEY UPDATE status = 'joined'", campaign!.id, character.id);
         revalidatePath("/campaigns");
         revalidatePath(campaignUrl);
         redirect(campaignUrl);

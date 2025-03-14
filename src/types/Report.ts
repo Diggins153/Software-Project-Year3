@@ -8,6 +8,8 @@ export type Report = {
     reason: string;
 
     user_description: string;
+
+    author_id: number;
 }
 
 export enum ContentType {

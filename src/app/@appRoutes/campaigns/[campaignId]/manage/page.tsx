@@ -1,15 +1,18 @@
 import CampaignActionsList from "@/components/campaigns/CampaignActionsList";
+import CampaignForm from "@/components/campaigns/CampaignForm";
 import InviteDialog from "@/components/campaigns/InviteDialog";
 import ManageCampaignCharacters from "@/components/campaigns/ManageCampaignCharacters";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import query from "@/lib/database";
+import { CampaignFormSchema } from "@/lib/formSchemas";
 import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { CharacterStatus } from "@/types/CampaignCharacters";
 import { Character } from "@/types/Character";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { z } from "zod";
 
 export const metadata: Metadata = {
     title: "Manage Campaign",
@@ -25,6 +28,12 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
         "SELECT c.*, u.display_name AS owner_name, campaign_characters.status FROM campaign_characters JOIN `character` c ON character_id = c.id JOIN user u ON c.owner_id = u.id WHERE campaign_id = ?",
         campaignId,
     );
+    const formData: z.infer<typeof CampaignFormSchema> = {
+        name: campaign.name,
+        maxPlayers: campaign.max_players,
+        outline: campaign.outline,
+        signupsOpen: campaign.signups_open,
+    };
 
     if (!campaign.invite) {
         const code = generateCampaignInviteCode();
@@ -40,6 +49,9 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
         <div className="flex items-center justify-between">
             <h1 className="text-2xl">{ campaign.name }</h1>
             <InviteDialog inviteCode={ campaign.invite } campaignId={ campaignId }/>
+        </div>
+        <div>
+            <CampaignForm formData={ formData } asEditForm campaignId={ campaignId }/>
         </div>
         <div className="space-y-2">
             <h2 className="text-xl">Characters</h2>

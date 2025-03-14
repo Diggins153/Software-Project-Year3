@@ -176,8 +176,10 @@ CREATE TABLE premade_character (
 -- REPORTS
 CREATE TABLE reports (
                          id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                         author_id INT UNSIGNED,
                          content_type ENUM('user','character','campaign','session','message') NOT NULL,
                          content_id INT UNSIGNED,
                          reason VARCHAR(32),
-                         user_description VARCHAR(256)
+                         user_description VARCHAR(256),
+                         FOREIGN KEY (author_id) REFERENCES `user`(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

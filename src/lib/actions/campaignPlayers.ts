@@ -5,7 +5,7 @@ import { ensureSession } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 
-type CampaignPlayerResponse = {
+export type CampaignPlayerResponse = {
     ok: boolean,
     message: string
 };

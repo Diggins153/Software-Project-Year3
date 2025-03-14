@@ -2,8 +2,10 @@
 
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
-import { CampaignFormSchema } from "@/lib/formSchemas";
-import { generateCampaignInviteCode } from "@/lib/utils";
+import { CampaignFormSchema, TransferOwnershipFormSchema } from "@/lib/formSchemas";
+import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
+import { Campaign } from "@/types/Campaign";
+import { User } from "@/types/User";
 import { z } from "zod";
 
 export async function createCampaign(formValues: z.infer<typeof CampaignFormSchema>): Promise<
@@ -45,4 +47,27 @@ export async function regenerateInviteCode(campaignId: number): Promise<{ ok: bo
 
     await query("UPDATE campaign SET invite = ? WHERE id = ?", newCode, campaignId);
     return { ok: true };
+}
+
+export async function transferOwnership(data: z.infer<typeof TransferOwnershipFormSchema>): Promise<
+    { ok: true, message: string, redirectTo: string } |
+    { ok: false, message: string }
+> {
+    const { user } = await ensureSession();
+    const result = await TransferOwnershipFormSchema.safeParseAsync(data);
+    if (!result.success) return { ok: false, message: "Please check form is valid" };
+
+    const { campaignId, newOwnerEmail } = result.data;
+    const campaign = (await query<Campaign[]>("SELECT dungeon_master_id FROM campaign WHERE id = ?", campaignId))[0];
+    const newOwner = (await query<User[]>("SELECT id, display_name FROM user WHERE email = ?", newOwnerEmail))[0];
+    if (campaign.dungeon_master_id.toString() !== user.id) return {
+        ok: false,
+        message: "You can only transfer your campaigns.",
+    };
+    await query("UPDATE campaign SET dungeon_master_id = ? WHERE id = ?", newOwner.id, campaignId);
+    return {
+        ok: true,
+        message: `Ownership successfully transferred to ${ newOwner.display_name }`,
+        redirectTo: "/campaigns",
+    };
 }

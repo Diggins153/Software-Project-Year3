@@ -50,8 +50,6 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
         redirect("/campaigns");
     }
 
-    console.log(campaign);
-
     // Check if current user is the DM (owner).
     const currUserIsOwner =
         sessionData &&

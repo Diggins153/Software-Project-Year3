@@ -40,7 +40,7 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
         <DialogTrigger className={ buttonVariants({ variant: "destructive" }) }><FlagIcon/></DialogTrigger>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Report a Campaign</DialogTitle>
+                <DialogTitle>{ getContentTypeDialogName(contentType) }</DialogTitle>
             </DialogHeader>
 
             <Form { ...form }>

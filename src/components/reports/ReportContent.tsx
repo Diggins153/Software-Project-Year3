@@ -1,12 +1,12 @@
 "use client";
 
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ReportContentFormSchema } from "@/lib/formSchemas";
-import { ContentType } from "@/types/Report";
+import { ContentType, getContentTypeDialogName, getReasons } from "@/types/Report";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FlagIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,6 @@ type ReportCampaignProps = {
 
 export default function ReportContent({ contentType, contentId }: ReportCampaignProps) {
     const { data: session } = useSession();
-
     const form = useForm<z.infer<typeof ReportContentFormSchema>>({
         resolver: zodResolver(ReportContentFormSchema),
         defaultValues: {
@@ -31,6 +30,7 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
             authorId: Number(session?.user?.id),
         },
     });
+    const reasons = getReasons(contentType);
 
     async function handleSubmitReport(data: z.infer<typeof ReportContentFormSchema>) {
 
@@ -57,7 +57,11 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="name">Offensive Name</SelectItem>
+                                        { Object.keys(reasons).map(key => (
+                                            <SelectItem key={ key } value={ key }>
+                                                { reasons[key] }
+                                            </SelectItem>
+                                        )) }
                                     </SelectContent>
                                 </Select>
                                 <FormMessage/>
@@ -79,6 +83,8 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
                             </FormItem>
                         }
                     />
+
+                    <Button type="submit" className="w-full">Send Report</Button>
                 </form>
             </Form>
 

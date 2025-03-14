@@ -5,11 +5,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { sendReport } from "@/lib/actions/reports";
 import { ReportContentFormSchema } from "@/lib/formSchemas";
 import { ContentType, getContentTypeDialogName, getReasons } from "@/types/Report";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FlagIcon, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 type ReportCampaignProps = {
@@ -18,6 +21,7 @@ type ReportCampaignProps = {
 }
 
 export default function ReportContent({ contentType, contentId }: ReportCampaignProps) {
+    const [ isOpen, setOpen ] = useState(false);
     const form = useForm<z.infer<typeof ReportContentFormSchema>>({
         resolver: zodResolver(ReportContentFormSchema),
         defaultValues: {
@@ -30,10 +34,15 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
     const reasons = getReasons(contentType);
 
     async function handleSubmitReport(data: z.infer<typeof ReportContentFormSchema>) {
+        const response = await sendReport(data);
 
+        if (response.ok) toast.success(response.message);
+        else toast.error(response.message);
+        form.reset();
+        setOpen(false);
     }
 
-    return <Dialog>
+    return <Dialog open={ isOpen } onOpenChange={ open => setOpen(open) }>
         <DialogTrigger className={ buttonVariants({ variant: "destructive" }) }><FlagIcon/></DialogTrigger>
         <DialogContent>
             <DialogHeader>

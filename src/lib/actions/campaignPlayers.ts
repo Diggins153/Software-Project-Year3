@@ -66,3 +66,13 @@ export async function banPlayer(campaignId: number, characterId: number): Promis
     await query("UPDATE campaign_characters SET status = 'banned' WHERE character_id = ?", characterId);
     return { ok: true, message: `${ character.name } has been banned.` };
 }
+
+export async function removeBan(campaignId: number, characterId: number): Promise<CampaignPlayerResponse> {
+    const result = await doChecks(campaignId, characterId);
+    let character = null;
+    if (!result.ok) return result;
+    else character = result.character;
+
+    await query("DELETE FROM campaign_characters WHERE campaign_id = ? AND character_id = ?", campaignId, character);
+    return { ok: true, message: `${ character.name } has been unbanned.` };
+}

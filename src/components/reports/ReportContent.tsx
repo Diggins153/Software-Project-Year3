@@ -44,7 +44,7 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
             </DialogHeader>
 
             <Form { ...form }>
-                <form onSubmit={ form.handleSubmit(handleSubmitReport) }>
+                <form onSubmit={ form.handleSubmit(handleSubmitReport) } className="space-y-8">
                     <FormField
                         control={ form.control }
                         name="reason"

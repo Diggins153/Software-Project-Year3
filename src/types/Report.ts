@@ -19,3 +19,9 @@ export enum ContentType {
     SESSION = "session",
     MESSAGE = "message",
 }
+
+export const CampaignReasons = {
+    "name": "Offensive Name",
+    "outline": "Offensive Outline",
+    "banner": "Offensive Banner",
+};

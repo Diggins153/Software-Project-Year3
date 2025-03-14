@@ -1,3 +1,4 @@
+import CampaignActionsList from "@/components/campaigns/CampaignActionsList";
 import InviteDialog from "@/components/campaigns/InviteDialog";
 import ManageCampaignCharacters from "@/components/campaigns/ManageCampaignCharacters";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,7 +82,8 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
             }
         </div>
         <div>
-            <h2 className="text-xl">Campaign Actions Here</h2>
+            <h2 className="text-xl mb-4">Campaign Actions</h2>
+            <CampaignActionsList campaignId={ campaignId }/>
         </div>
     </main>;
 };

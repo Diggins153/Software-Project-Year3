@@ -51,12 +51,12 @@ INSERT INTO campaign (id, name, signups_open, dungeon_master_id, max_players, ba
                                                                                                    (5, 'Dreadhold Escape', 1, 4, 6, '', 'Break out from the high-security fortress Dreadhold.'),
                                                                                                    (6, 'Desert of Shadows', 1, 5, 8, '', 'Survive the treacherous sands of the Desert of Shadows.');
 
-INSERT INTO campaign_characters (campaign_id, character_id) VALUES
-                                                                (3, 13),
-                                                                (3, 14),
-                                                                (3, 15),
-                                                                (3, 16),
-                                                                (3, 18);
+INSERT INTO campaign_characters (campaign_id, character_id, status) VALUES
+                                                                       (3, 13, 'joined'),
+                                                                       (3, 14, 'joined'),
+                                                                       (3, 15, 'joined'),
+                                                                       (3, 16, 'joined'),
+                                                                       (3, 18, 'joined');
 
 INSERT INTO premade_character (name, race_id, class_id, description, image) VALUES
                                                                                 ('Grog the Mighty', 2, 1, 'Loves smashing things. Not so great at math. Has won many battles and lost many arguments.', NULL),

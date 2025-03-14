@@ -12,7 +12,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function InvitePage({ params }: { params: Promise<{ inviteCode: string }> }) {
-    const session = await ensureSession()
+    const { user } = await ensureSession();
     const { inviteCode } = await params;
     const campaign = (await query<Campaign[]>("SELECT * FROM campaign WHERE invite = ?", inviteCode))[0] || null;
     if (campaign == null || !campaign) redirect("/campaigns");
@@ -21,8 +21,8 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
         campaign!.id,
     ))[0].count;
     const characters = await query<Character[]>(
-        "SELECT * FROM `character` WHERE owner_id = ? AND id NOT IN (SELECT character_id FROM campaign_characters WHERE campaign_id = ?)",
-        session!.user!.id, campaign!.id);
+        "SELECT * FROM `character` WHERE owner_id = ? AND id NOT IN (SELECT character_id FROM campaign_characters WHERE campaign_id = ? AND status NOT IN ('kicked'))",
+        user.id, campaign!.id);
 
     async function addCharacter(character: Character) {
         "use server";
@@ -33,10 +33,19 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
         redirect(campaignUrl);
     }
 
+    if (!campaign!.signups_open) {
+        return <main className="h-full flex flex-col items-center justify-center gap-4">
+            <CampaignCard campaign={ campaign }/>
+            <h3 className="text-xl font-bold">Signups for this campaigns have closed.</h3>
+            <p>If you wish to join, contact the DM so they can increase the player size.</p>
+            <Link href="/campaigns" className={ buttonVariants({ variant: "default" }) }>Go back to campaigns</Link>
+        </main>;
+    }
+
     if (characterCount >= campaign!.max_players) {
         return <main className="h-full flex flex-col items-center justify-center gap-4">
             <CampaignCard campaign={ campaign }/>
-            <p>Sorry, this campaign is full.</p>
+            <h3 className="text-xl font-bold">This campaign is full.</h3>
             <p>If you wish to join, contact the DM so they can increase the player size.</p>
             <Link href="/campaigns" className={ buttonVariants({ variant: "default" }) }>Go back to campaigns</Link>
         </main>;
@@ -52,7 +61,7 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
             <TooltipProvider delayDuration={ 0 } disableHoverableContent>
                 <Tooltip>
                     <TooltipTrigger type="button"><CircleHelpIcon size={ 20 }/></TooltipTrigger>
-                    <TooltipContent>Excludes character that are already in the campaign</TooltipContent>
+                    <TooltipContent>Excludes banned or already joined characters</TooltipContent>
                 </Tooltip>
             </TooltipProvider>
         </div>

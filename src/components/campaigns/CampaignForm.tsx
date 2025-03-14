@@ -22,7 +22,7 @@ type UpdateCampaignFormProps = {
     campaignId?: number,
 }
 
-export default function CreateCampaignForm({ formData, asEditForm = false, campaignId }: UpdateCampaignFormProps) {
+export default function CampaignForm({ formData, asEditForm = false, campaignId }: UpdateCampaignFormProps) {
     const router = useRouter();
     const defaultValues = !!formData ? formData : {
         name: "",

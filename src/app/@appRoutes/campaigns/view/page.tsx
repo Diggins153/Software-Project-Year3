@@ -1,10 +1,13 @@
 // app/campaigns/view/page.tsx
-import { Campaign } from "@/types/Campaign";
-import { Session } from "@/types/Session";
-import { redirect } from "next/navigation";
-import query from "@/lib/database";
-import Link from "next/link";
+import ReportContent from "@/components/reports/ReportContent";
 import { auth } from "@/lib/auth";
+import query from "@/lib/database";
+import { Campaign } from "@/types/Campaign";
+import { ContentType } from "@/types/Report";
+import { Session } from "@/types/Session";
+import { SessionProvider } from "next-auth/react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 type SessionSignup = {
     session_id: number;
@@ -49,8 +52,6 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
     if (!campaign) {
         redirect("/campaigns");
     }
-
-    console.log(campaign);
 
     // Check if current user is the DM (owner).
     const currUserIsOwner =
@@ -115,6 +116,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                     >
                         Create Session
                     </Link>
+                    <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
                 </div>
             )}
 

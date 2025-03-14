@@ -1,5 +1,6 @@
 import { hasDigits, hasLowercase, hasSpecialCharacter, hasUppercase } from "@/lib/formValidation";
 import { isHandleUnique, isValidClass, isValidRace, userExists } from "@/lib/formValidationServer";
+import { ContentType } from "@/types/Report";
 import { z } from "zod";
 
 export const LoginFormSchema = z.object({
@@ -136,4 +137,19 @@ export const TransferOwnershipFormSchema = z.object({
     confirmation: z
         .string()
         .refine(value => value === "confirm transfer", "Enter the required phrase."),
+});
+
+export const ReportContentFormSchema = z.object({
+    contentType: z
+        .nativeEnum(ContentType),
+    contentId: z
+        .coerce
+        .number(),
+    reason: z
+        .string()
+        .max(32, "Reason can only be 32 characters long"),
+    userDescription: z
+        .string()
+        .max(256, "Description cannot have more than 256 characters")
+        .optional(),
 });

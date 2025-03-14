@@ -152,7 +152,4 @@ export const ReportContentFormSchema = z.object({
         .string()
         .max(256, "Description cannot have more than 256 characters")
         .optional(),
-    authorId: z
-        .coerce
-        .number(),
 });

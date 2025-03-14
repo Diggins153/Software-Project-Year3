@@ -11,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FlagIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useSession } from "next-auth/react";
 
 type ReportCampaignProps = {
     contentType: ContentType;
@@ -19,7 +18,6 @@ type ReportCampaignProps = {
 }
 
 export default function ReportContent({ contentType, contentId }: ReportCampaignProps) {
-    const { data: session } = useSession();
     const form = useForm<z.infer<typeof ReportContentFormSchema>>({
         resolver: zodResolver(ReportContentFormSchema),
         defaultValues: {
@@ -27,7 +25,6 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
             contentId: contentId,
             reason: "",
             userDescription: "",
-            authorId: Number(session?.user?.id),
         },
     });
     const reasons = getReasons(contentType);

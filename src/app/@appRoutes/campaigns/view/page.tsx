@@ -116,9 +116,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                     >
                         Create Session
                     </Link>
-                    <SessionProvider>
-                        <ReportContent contentId={ campaign.id } contentType={ContentType.CAMPAIGN}/>
-                    </SessionProvider>
+                    <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
                 </div>
             )}
 

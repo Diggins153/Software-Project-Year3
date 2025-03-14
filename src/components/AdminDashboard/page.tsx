@@ -19,12 +19,19 @@ type Campaign = {
     dungeon_master_name: string;
 };
 
+type UserInfo = {
+    id: number;
+    display_name: string;
+    email: string;
+};
+
 type AdminDashboardProps = {
     mostUsedRaces: RaceUsage[];
     leastUsedRaces: RaceUsage[];
     mostUsedClasses: ClassUsage[];
     leastUsedClasses: ClassUsage[];
-    campaigns: Campaign[]; // new prop for campaigns
+    campaigns: Campaign[];
+    users: UserInfo[];
 };
 
 export default function AdminDashboardClient({
@@ -33,6 +40,7 @@ export default function AdminDashboardClient({
                                                  mostUsedClasses,
                                                  leastUsedClasses,
                                                  campaigns,
+                                                 users,
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
 
@@ -204,13 +212,13 @@ export default function AdminDashboardClient({
                                     <td className="border px-4 py-2">{campaign.dungeon_master_name}</td>
                                     <td className="border px-4 py-2 text-center">
                                         <details className="inline-block">
-                                            <summary className="cursor-pointer px-2 py-1 bg-gray-200 rounded">
+                                            <summary className="cursor-pointer px-2 py-1 bg-gray-200 text-black rounded">
                                                 Actions
                                             </summary>
-                                            <ul className="mt-1 bg-white border rounded shadow">
-                                                <li className="px-4 py-2 hover:bg-gray-100">Edit</li>
-                                                <li className="px-4 py-2 hover:bg-gray-100">View</li>
-                                                <li className="px-4 py-2 hover:bg-gray-100">Delete</li>
+                                            <ul className="mt-1 bg-white text-black border rounded shadow">
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">Edit</li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">View</li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">Delete</li>
                                             </ul>
                                         </details>
                                     </td>
@@ -225,7 +233,38 @@ export default function AdminDashboardClient({
             {activeTab === "users" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">User List</h2>
-                    <p className="text-center">You are viewing the Users section.</p>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full border-collapse">
+                            <thead>
+                            <tr>
+                                <th className="border px-4 py-2">ID</th>
+                                <th className="border px-4 py-2">Display Name</th>
+                                <th className="border px-4 py-2">Email</th>
+                                <th className="border px-4 py-2">Characters</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {users.map((user: UserInfo) => (
+                                <tr key={user.id}>
+                                    <td className="border px-4 py-2 text-center">{user.id}</td>
+                                    <td className="border px-4 py-2">{user.display_name}</td>
+                                    <td className="border px-4 py-2">{user.email}</td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <details className="inline-block">
+                                            <summary className="cursor-pointer px-2 py-1 bg-gray-200 rounded text-black">
+                                                Characters
+                                            </summary>
+                                            <ul className="mt-1 bg-white border rounded shadow">
+                                                {/* Use actual data here when available */}
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">[User's Characters]</li>
+                                            </ul>
+                                        </details>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             )}
 
@@ -240,10 +279,3 @@ export default function AdminDashboardClient({
         </main>
     );
 }
-
-// Dummy campaigns data to simulate passed-in prop for campaigns in the "campaigns" tab.
-const campaigns: Campaign[] = [
-    { id: 1, name: "Lost Caverns", dungeon_master_name: "Alice" },
-    { id: 2, name: "Forest of Whispers", dungeon_master_name: "Bob" },
-    { id: 3, name: "Desert of Shadows", dungeon_master_name: "Charlie" },
-];

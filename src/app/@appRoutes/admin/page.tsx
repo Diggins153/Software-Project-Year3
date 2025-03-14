@@ -18,6 +18,12 @@ type Campaign = {
     dungeon_master_name: string;
 };
 
+type User = {
+    id: number;
+    display_name: string;
+    email: string;
+};
+
 export default async function AdminDashboardPage() {
     // Query for most used races (by counting characters per race)
     const mostUsedRaces: RaceUsage[] = await query<RaceUsage[]>(`
@@ -55,12 +61,19 @@ export default async function AdminDashboardPage() {
         ORDER BY usage_count ASC
     `);
 
-    // Query for campaigns (example: fetch ID, name, and DM's display name)
+    // Query for campaigns (fetch ID, name, and DM's display name)
     const campaigns: Campaign[] = await query<Campaign[]>(`
-    SELECT c.id, c.name, u.display_name AS dungeon_master_name
-    FROM campaign c
-    JOIN \`user\` u ON u.id = c.dungeon_master_id
-    ORDER BY c.id ASC
+        SELECT c.id, c.name, u.display_name AS dungeon_master_name
+        FROM campaign c
+                 JOIN \`user\` u ON u.id = c.dungeon_master_id
+        ORDER BY c.id ASC
+    `);
+
+    // Query for users (fetch id, display_name, email)
+    const users: User[] = await query<User[]>(`
+    SELECT id, display_name, email
+    FROM \`user\`
+    ORDER BY id ASC
   `);
 
     return (
@@ -70,7 +83,9 @@ export default async function AdminDashboardPage() {
             mostUsedClasses={mostUsedClasses}
             leastUsedClasses={leastUsedClasses}
             // @ts-ignore
-            campaigns={campaigns}  // Pass campaigns to the AdminDashboard component
+            campaigns={campaigns}
+            // @ts-ignore
+            users={users}
         />
     );
 }

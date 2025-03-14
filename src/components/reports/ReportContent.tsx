@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ReportContentFormSchema } from "@/lib/formSchemas";
 import { ContentType, getContentTypeDialogName, getReasons } from "@/types/Report";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FlagIcon } from "lucide-react";
+import { FlagIcon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -81,7 +81,10 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
                         }
                     />
 
-                    <Button type="submit" className="w-full">Send Report</Button>
+                    <Button type="submit" className="w-full">
+                        Send Report
+                        { form.formState.isSubmitting && <Loader2 className="animate-spin"/> }
+                    </Button>
                 </form>
             </Form>
 

@@ -33,6 +33,57 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
     return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };
 }
 
+export async function updateCampaign(campaignId: number, data: z.infer<typeof CampaignFormSchema>): Promise<
+    { ok: false, message: string } |
+    { ok: true }
+> {
+    const { user } = await ensureSession();
+    const parseResult = CampaignFormSchema.safeParse(data);
+
+    if (!parseResult.success) return { ok: false, message: "Please check all data is correct" };
+    const { name, banner, outline, maxPlayers, signupsOpen } = parseResult.data;
+
+    // Check campaign exists
+    const campaign = (await query<Campaign[]>("SELECT * FROM campaign WHERE id = ?", campaignId))[0] || null;
+    if (campaign == null) return { ok: false, message: "The campaign you're trying to update does not exist" };
+
+    // Check owner
+    if (campaign.dungeon_master_id.toString() !== user.id)
+        return { ok: false, message: "You can only edit your own campaigns." };
+
+    // Construct update
+    const parametrizedKeys: string[] = [];
+    const params = [];
+    if (campaign.name !== name) {
+        parametrizedKeys.push("name = ?");
+        params.push(name);
+    }
+    // TODO: Banner
+    if (campaign.outline !== outline) {
+        parametrizedKeys.push("outline = ?");
+        params.push(outline);
+    }
+    if (campaign.max_players !== maxPlayers) {
+        parametrizedKeys.push("max_players = ?");
+        params.push(maxPlayers);
+    }
+    if (campaign.signups_open !== signupsOpen) {
+        parametrizedKeys.push("signups_open = ?");
+        params.push(signupsOpen);
+    }
+    if (parametrizedKeys.length == 0) return { ok: true };
+    let statement = `UPDATE campaign SET ${ parametrizedKeys.join(", ") } WHERE id = ?`;
+
+    try {
+        await query(statement, ...params, campaignId);
+    } catch (e) {
+        console.error("Error when updating character", e);
+        return { ok: false, message: "Something went wrong" };
+    }
+
+    return { ok: true };
+}
+
 export async function regenerateInviteCode(campaignId: number): Promise<{ ok: boolean }> {
     const session = await auth();
     const campaign = (await query<{ dungeon_master_id: number }[]>(

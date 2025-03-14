@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
 import { Campaign } from "@/types/Campaign";
 import styles from "./CampaignCard.module.css";
@@ -8,10 +7,8 @@ import styles from "./CampaignCard.module.css";
 export default function CampaignCard({ campaign }: { campaign: Campaign }) {
     const router = useRouter();
     const {
-        //@ts-ignore
-        campaign_id,
-        //@ts-ignore
-        campaign_name,
+        id: campaign_id,
+        name: campaign_name,
         created_at,
         max_players,
         outline,
@@ -34,7 +31,7 @@ export default function CampaignCard({ campaign }: { campaign: Campaign }) {
                     <div className={styles.body}>
                         <p><strong>ID:</strong> {campaign_id}</p>
                         <p>
-                            <strong>Created At:</strong> {new Date(created_at).toLocaleDateString("en-US")}
+                            <strong>Created At:</strong> {created_at.toLocaleDateString("en-UK")}
                         </p>
                         <p><strong>Dungeon Master:</strong> {dungeon_master_name}</p>
                         <p><strong>Max Players:</strong> {max_players}</p>

@@ -107,6 +107,7 @@ export const CampaignFormSchema = z.object({
         .number()
         .min(1, "Please enter a player limit."),
     signupsOpen: z
+        .coerce
         .boolean()
         .default(true),
     outline: z

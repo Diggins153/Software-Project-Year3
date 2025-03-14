@@ -1,30 +1,10 @@
 // app/campaigns/view/page.tsx
+import { Campaign } from "@/types/Campaign";
+import { Session } from "@/types/Session";
 import { redirect } from "next/navigation";
 import query from "@/lib/database";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
-
-type Campaign = {
-    campaign_id: number;
-    campaign_name: string;
-    created_at: string;
-    updated_at: string;
-    signups_open: number;
-    dungeon_master_id: number;
-    max_players: number;
-    banner: string;
-    outline: string;
-    dungeon_master_name: string;
-};
-
-type Session = {
-    id: number;
-    title: string;
-    excerpt: string | null;
-    writeup: string | null;
-    session_date: string;
-    signup_deadline: string;
-};
 
 type SessionSignup = {
     session_id: number;
@@ -51,8 +31,9 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
     // Query campaign details.
     const campaigns = await query<Campaign[]>(`
         SELECT
-            c.id AS campaign_id,
-            c.name AS campaign_name,
+            c.id,
+            c.name,
+            c.created_at,
             c.signups_open,
             c.dungeon_master_id,
             c.max_players,
@@ -69,6 +50,8 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
         redirect("/campaigns");
     }
 
+    console.log(campaign);
+
     // Check if current user is the DM (owner).
     const currUserIsOwner =
         sessionData &&
@@ -81,7 +64,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
         FROM session
         WHERE campaign_id = ?
         ORDER BY session_date ASC
-    `, [campaign.campaign_id]);
+    `, [campaign.id]);
 
     // Query signups for sessions.
     let signups: SessionSignup[] = [];
@@ -112,7 +95,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
             WHERE uc.user_id = ? AND c.id IN (
                 SELECT character_id FROM campaign_characters WHERE campaign_id = ?
             )
-        `, sessionData.user.id, campaign.campaign_id);
+        `, sessionData.user.id, campaign.id);
     }
 
     return (
@@ -121,13 +104,13 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
             {currUserIsOwner && (
                 <div className="flex justify-end mb-4 gap-2">
                     <Link
-                        href={`/campaigns/edit?campaignId=${campaign.campaign_id}`}
+                        href={`/campaigns/${campaign.id}/manage`}
                         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                     >
-                        Edit Campaign
+                        Manage Campaign
                     </Link>
                     <Link
-                        href={`/campaigns/session/create?campaignId=${campaign.campaign_id}`}
+                        href={`/campaigns/session/create?campaignId=${campaign.id}`}
                         className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                     >
                         Create Session
@@ -139,7 +122,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
             {!currUserIsOwner && userCharacters.length === 0 && (
                 <div className="flex justify-end mb-4">
                     <Link
-                        href={`/campaigns/join?campaignId=${campaign.campaign_id}`}
+                        href={`/campaigns/join?campaignId=${campaign.id}`}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
                         Join Campaign
@@ -149,14 +132,14 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
 
             {/* Campaign details */}
             <h1 className="text-6xl font-bold text-center mb-8">
-                {campaign.campaign_name}
+                {campaign.name}
             </h1>
             <div className="max-w-3xl mx-auto space-y-4 text-lg">
                 <p>
                     <strong>Dungeon Master:</strong> {campaign.dungeon_master_name}
                 </p>
                 <p>
-                    <strong>Created At:</strong> {new Date(campaign.created_at).toLocaleDateString("en-US")}
+                    <strong>Created At:</strong> {campaign.created_at.toLocaleDateString("en-UK")}
                 </p>
                 <p>
                     <strong>Max Players:</strong> {campaign.max_players}
@@ -170,7 +153,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                 {campaign.banner && (
                     <img
                         src={campaign.banner}
-                        alt={`${campaign.campaign_name} Banner`}
+                        alt={`${campaign.name} Banner`}
                         className="w-full h-auto mt-4"
                     />
                 )}
@@ -216,7 +199,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                                     {userCharacters.length > 0 && !userHasJoined && (
                                         <div className="mt-4">
                                             <Link
-                                                href={`/campaigns/session/join?sessionId=${sess.id}&campaignId=${campaign.campaign_id}&characterId=${userCharacters[0].character_id}`}
+                                                href={`/campaigns/session/join?sessionId=${sess.id}&campaignId=${campaign.id}&characterId=${userCharacters[0].character_id}`}
                                                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                                             >
                                                 Join Session
@@ -227,7 +210,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                                     {currUserIsOwner && (
                                         <div className="mt-4">
                                             <Link
-                                                href={`/campaigns/session/delete?sessionId=${sess.id}&campaignId=${campaign.campaign_id}`}
+                                                href={`/campaigns/session/delete?sessionId=${sess.id}&campaignId=${campaign.id}`}
                                                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                                             >
                                                 Delete Session

@@ -9,8 +9,9 @@ export default async function CampaignsPage() {
     // Explicitly alias columns using the names from your SQL.
     const cardData = await query<Campaign[]>(`
         SELECT
-            c.id AS campaign_id,
-            c.name AS campaign_name,
+            c.id,
+            c.name,
+            c.created_at,
             c.signups_open,
             c.dungeon_master_id,
             c.max_players,
@@ -19,7 +20,6 @@ export default async function CampaignsPage() {
             u.display_name AS dungeon_master_name
         FROM campaign c
                  JOIN \`user\` u ON u.id = c.dungeon_master_id
-        ORDER BY c.id ASC;
     `);
 
     return (
@@ -29,8 +29,7 @@ export default async function CampaignsPage() {
             </Link>
             <div className="mt-6 grid grid-cols-2 gap-4">
                 {cardData.map((campaign) => (
-                    //@ts-ignore
-                    <CampaignCard campaign={campaign} key={campaign.campaign_id} />
+                    <CampaignCard campaign={campaign} key={campaign.id} />
                 ))}
             </div>
         </main>

@@ -1,3 +1,4 @@
+import CampaignActionsList from "@/components/campaigns/CampaignActionsList";
 import InviteDialog from "@/components/campaigns/InviteDialog";
 import ManageCampaignCharacters from "@/components/campaigns/ManageCampaignCharacters";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -37,7 +38,7 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
 
     return <main className="w-full md:w-1/2 mx-auto space-y-8">
         <div className="flex items-center justify-between">
-            <h1 className="text-2xl">Managing Campaign with ID { campaignId }</h1>
+            <h1 className="text-2xl">{ campaign.name }</h1>
             <InviteDialog inviteCode={ campaign.invite } campaignId={ campaignId }/>
         </div>
         <div className="space-y-2">
@@ -81,7 +82,8 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
             }
         </div>
         <div>
-            <h2 className="text-xl">Campaign Actions Here</h2>
+            <h2 className="text-xl mb-4">Campaign Actions</h2>
+            <CampaignActionsList campaignId={ campaignId }/>
         </div>
     </main>;
 };

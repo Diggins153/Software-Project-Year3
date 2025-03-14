@@ -123,3 +123,16 @@ export const SessionFormSchema = z.object({
     sessionDate: z.string().min(1, "Session date is required"),
     signupDeadline: z.string().min(1, "Signup deadline is required"),
 });
+
+export const TransferOwnershipFormSchema = z.object({
+    campaignId: z
+        .coerce
+        .number(),
+    newOwnerEmail: z
+        .string()
+        .email("Please enter an email address")
+        .refine(async email => userExists(email), "You can transfer campaigns to registered users only."),
+    confirmation: z
+        .string()
+        .refine(value => value === "confirm transfer", "Enter the required phrase."),
+});

@@ -1,3 +1,5 @@
+import IIndexable from "@/types/IIndexable";
+
 export type Report = {
     id: number;
 
@@ -20,7 +22,7 @@ export enum ContentType {
     MESSAGE = "message",
 }
 
-export const getContentTypeDialogName = (type: ContentType) => {
+export function getContentTypeDialogName(type: ContentType) {
     switch (type) {
         case ContentType.USER:
             return "Report a User";
@@ -33,10 +35,23 @@ export const getContentTypeDialogName = (type: ContentType) => {
         case ContentType.MESSAGE:
             return "Report a Message";
     }
-};
+}
 
-export const campaignReasons = {
-    "name": "Offensive Name",
-    "outline": "Offensive Outline",
-    "banner": "Offensive Banner",
-};
+export function getReasons(type: ContentType): IIndexable<string> {
+    switch (type) {
+        case ContentType.USER:
+            return {};
+        case ContentType.CHARACTER:
+            return {};
+        case ContentType.CAMPAIGN:
+            return {
+                "name": "Offensive Name",
+                "outline": "Offensive Outline",
+                "banner": "Offensive Banner",
+            };
+        case ContentType.SESSION:
+            return {};
+        case ContentType.MESSAGE:
+            return {};
+    }
+}

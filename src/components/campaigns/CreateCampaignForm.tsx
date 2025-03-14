@@ -4,36 +4,56 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { createCampaign } from "@/lib/actions/campaigns";
+import { createCampaign, updateCampaign } from "@/lib/actions/campaigns";
 import { CampaignFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export default function CreateCampaignForm() {
+type UpdateCampaignFormProps = {
+    formData?: z.infer<typeof CampaignFormSchema>,
+    asEditForm?: boolean,
+    campaignId?: number,
+}
+
+export default function CreateCampaignForm({ formData, asEditForm = false, campaignId }: UpdateCampaignFormProps) {
+    const router = useRouter();
+    const defaultValues = !!formData ? formData : {
+        name: "",
+        outline: "",
+        banner: "",
+        maxPlayers: 4,
+        signupsOpen: true,
+    };
     const form = useForm<z.infer<typeof CampaignFormSchema>>({
         resolver: zodResolver(CampaignFormSchema),
-        defaultValues: {
-            name: "",
-            outline: "",
-            banner: "",
-            maxPlayers: 4,
-            signupsOpen: true,
-        },
+        defaultValues: defaultValues,
     });
     const bannerRef = form.register("banner");
 
     async function formSubmit(data: z.infer<typeof CampaignFormSchema>) {
-        const response = await createCampaign(data);
+        if (asEditForm) {
+            const response = await updateCampaign(campaignId!, data);
 
-        if (response.ok) {
-            toast(response.message);
-            redirect(response.redirect!);
+            if (response.ok) {
+                router.refresh();
+                toast.success("Campaign updated");
+            } else {
+                toast.error(response.message);
+            }
+        } else {
+            const response = await createCampaign(data);
+
+            if (response.ok) {
+                toast(response.message);
+                redirect(response.redirect!);
+            }
         }
     }
 
@@ -88,7 +108,7 @@ export default function CreateCampaignForm() {
                     <FormItem>
                         <div className="flex items-center space-x-4">
                             <FormControl>
-                                <Checkbox checked={ field.value } onCheckedChange={ field.onChange }/>
+                                <Switch checked={ field.value } onCheckedChange={ field.onChange }/>
                             </FormControl>
                             <FormLabel>Signups Open</FormLabel>
                         </div>
@@ -112,18 +132,25 @@ export default function CreateCampaignForm() {
                 }
             />
 
-            <div className="flex flex-col lg:flex-row gap-2">
-                <Link href="/campaigns" className={ `${ buttonVariants({ variant: "outline" }) } flex-grow` }>
-                    Cancel
-                </Link>
-                <Button
-                    className="flex-grow"
-                    type="submit"
-                >
-                    { form.formState.isSubmitting && <Loader2 className="animate-spin"/> }
-                    Create
-                </Button>
-            </div>
+            { !asEditForm ?
+                <div className="flex flex-col lg:flex-row gap-2">
+                    <Link href="/campaigns" className={ `${ buttonVariants({ variant: "outline" }) } flex-grow` }>
+                        Cancel
+                    </Link>
+                    <Button
+                        className="flex-grow"
+                        type="submit"
+                    >
+                        { form.formState.isSubmitting && <Loader2 className="animate-spin"/> }
+                        Create
+                    </Button>
+                </div>
+                : <div className="flex justify-end">
+                    <Button type="submit">
+                        Save Changes
+                    </Button>
+                </div>
+            }
         </form>
     </Form>;
 }

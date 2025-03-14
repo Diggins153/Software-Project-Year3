@@ -121,10 +121,10 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
             {currUserIsOwner && (
                 <div className="flex justify-end mb-4 gap-2">
                     <Link
-                        href={`/campaigns/edit?campaignId=${campaign.campaign_id}`}
+                        href={`/campaigns/${campaign.campaign_id}/manage`}
                         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                     >
-                        Edit Campaign
+                        Manage Campaign
                     </Link>
                     <Link
                         href={`/campaigns/session/create?campaignId=${campaign.campaign_id}`}

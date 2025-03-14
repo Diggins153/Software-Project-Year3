@@ -33,13 +33,25 @@ async function ensureUserIsDungeonMaster(campaignId: number) {
     return campaigns[0].dungeon_master_id.toString() === session.user.id;
 }
 
-export async function kickPlayer(campaignId: number, characterId: number): Promise<CampaignPlayerResponse> {
+async function doChecks(campaignId: number, characterId: number): Promise<
+    { ok: false, message: string } |
+    { ok: true, character: Character }
+> {
     const isDM = await ensureUserIsDungeonMaster(campaignId);
     if (!isDM) return { ok: false, message: "You can only manage your own campaigns" };
     const character = await ensureCharacter(characterId);
     if (character === null) return { ok: false, message: "Could not find the specified character." };
     if (!await ensureCharacterInCampaign(characterId, campaignId))
         return { ok: false, message: "The specified character is not in this campaign" };
+
+    return { ok: true, character: character };
+}
+
+export async function kickPlayer(campaignId: number, characterId: number): Promise<CampaignPlayerResponse> {
+    const result = await doChecks(campaignId, characterId);
+    let character = null;
+    if (!result.ok) return result;
+    else character = result.character;
 
     await query("UPDATE campaign_characters SET status = 'kicked' WHERE character_id = ?", characterId);
     return { ok: true, message: `${ character.name } has been kicked` };

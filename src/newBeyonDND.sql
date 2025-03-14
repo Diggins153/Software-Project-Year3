@@ -106,6 +106,7 @@ CREATE TABLE campaign (
 CREATE TABLE campaign_characters (
                                      campaign_id INT UNSIGNED NOT NULL,
                                      character_id INT UNSIGNED NOT NULL,
+                                     status ENUM('invited', 'joined', 'kicked', 'abandoned') NULL DEFAULT 'invited',
                                      PRIMARY KEY (campaign_id, character_id),
                                      FOREIGN KEY (campaign_id) REFERENCES campaign(id) ON DELETE CASCADE,
                                      FOREIGN KEY (character_id) REFERENCES `character`(id) ON DELETE CASCADE

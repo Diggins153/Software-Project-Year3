@@ -29,7 +29,7 @@ async function ensureUserIsDungeonMaster(campaignId: number) {
     const session = await ensureSession();
     const campaigns = await query<Campaign[]>("SELECT dungeon_master_id FROM campaign WHERE id = ?", campaignId);
 
-    if (campaigns.length != 0) return false;
+    if (campaigns.length != 1) return false;
     return campaigns[0].dungeon_master_id.toString() === session.user.id;
 }
 

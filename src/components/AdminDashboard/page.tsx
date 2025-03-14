@@ -13,11 +13,18 @@ type ClassUsage = {
     usage_count: number;
 };
 
+type Campaign = {
+    id: number;
+    name: string;
+    dungeon_master_name: string;
+};
+
 type AdminDashboardProps = {
     mostUsedRaces: RaceUsage[];
     leastUsedRaces: RaceUsage[];
     mostUsedClasses: ClassUsage[];
     leastUsedClasses: ClassUsage[];
+    campaigns: Campaign[]; // new prop for campaigns
 };
 
 export default function AdminDashboardClient({
@@ -25,6 +32,7 @@ export default function AdminDashboardClient({
                                                  leastUsedRaces,
                                                  mostUsedClasses,
                                                  leastUsedClasses,
+                                                 campaigns,
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
 
@@ -75,7 +83,9 @@ export default function AdminDashboardClient({
             {/* Content Sections */}
             {activeTab === "statistics" && (
                 <section className="mb-8">
-                    <h2 className="text-3xl font-bold mb-4 text-center">Usage Statistics</h2>
+                    <h2 className="text-3xl font-bold mb-4 text-center">
+                        Usage Statistics
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <h3 className="text-2xl font-semibold mb-2 text-center">
@@ -176,7 +186,39 @@ export default function AdminDashboardClient({
             {activeTab === "campaigns" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">Campaign List</h2>
-                    <p className="text-center">You are viewing the Campaigns section.</p>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full border-collapse">
+                            <thead>
+                            <tr>
+                                <th className="border px-4 py-2">ID</th>
+                                <th className="border px-4 py-2">Campaign Name</th>
+                                <th className="border px-4 py-2">Dungeon Master</th>
+                                <th className="border px-4 py-2">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {campaigns.map((campaign: Campaign) => (
+                                <tr key={campaign.id}>
+                                    <td className="border px-4 py-2 text-center">{campaign.id}</td>
+                                    <td className="border px-4 py-2">{campaign.name}</td>
+                                    <td className="border px-4 py-2">{campaign.dungeon_master_name}</td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <details className="inline-block">
+                                            <summary className="cursor-pointer px-2 py-1 bg-gray-200 rounded">
+                                                Actions
+                                            </summary>
+                                            <ul className="mt-1 bg-white border rounded shadow">
+                                                <li className="px-4 py-2 hover:bg-gray-100">Edit</li>
+                                                <li className="px-4 py-2 hover:bg-gray-100">View</li>
+                                                <li className="px-4 py-2 hover:bg-gray-100">Delete</li>
+                                            </ul>
+                                        </details>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             )}
 
@@ -198,3 +240,10 @@ export default function AdminDashboardClient({
         </main>
     );
 }
+
+// Dummy campaigns data to simulate passed-in prop for campaigns in the "campaigns" tab.
+const campaigns: Campaign[] = [
+    { id: 1, name: "Lost Caverns", dungeon_master_name: "Alice" },
+    { id: 2, name: "Forest of Whispers", dungeon_master_name: "Bob" },
+    { id: 3, name: "Desert of Shadows", dungeon_master_name: "Charlie" },
+];

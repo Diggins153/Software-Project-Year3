@@ -56,3 +56,13 @@ export async function kickPlayer(campaignId: number, characterId: number): Promi
     await query("UPDATE campaign_characters SET status = 'kicked' WHERE character_id = ?", characterId);
     return { ok: true, message: `${ character.name } has been kicked` };
 }
+
+export async function banPlayer(campaignId: number, characterId: number): Promise<CampaignPlayerResponse> {
+    const result = await doChecks(campaignId, characterId);
+    let character = null;
+    if (!result.ok) return result;
+    else character = result.character;
+
+    await query("UPDATE campaign_characters SET status = 'banned' WHERE character_id = ?", characterId);
+    return { ok: true, message: `${ character.name } has been banned.` };
+}

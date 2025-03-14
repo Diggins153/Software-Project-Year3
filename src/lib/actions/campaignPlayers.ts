@@ -73,7 +73,7 @@ export async function removeBan(campaignId: number, characterId: number): Promis
     if (!result.ok) return result;
     else character = result.character;
 
-    await query("DELETE FROM campaign_characters WHERE campaign_id = ? AND character_id = ?", campaignId, character);
+    await query("DELETE FROM campaign_characters WHERE campaign_id = ? AND character_id = ?", campaignId, characterId);
     return { ok: true, message: `${ character.name } has been unbanned.` };
 }
 
@@ -83,6 +83,6 @@ export async function cancelInvitation(campaignId: number, characterId: number):
     if (!result.ok) return result;
     else character = result.character;
 
-    await query("DELETE FROM campaign_characters WHERE campaign_id = ? AND character_id = ?", campaignId, character);
+    await query("DELETE FROM campaign_characters WHERE campaign_id = ? AND character_id = ?", campaignId, characterId);
     return { ok: true, message: `Invitation to ${ character.name } has been cancelled.` };
 }

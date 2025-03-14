@@ -20,7 +20,7 @@ export enum ContentType {
     MESSAGE = "message",
 }
 
-export const CampaignReasons = {
+export const campaignReasons = {
     "name": "Offensive Name",
     "outline": "Offensive Outline",
     "banner": "Offensive Banner",

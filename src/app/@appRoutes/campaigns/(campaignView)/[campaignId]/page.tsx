@@ -168,9 +168,17 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                             <ChevronsUpDown size={ 16 }/>
                         </CollapsibleTrigger>
                         <CollapsibleContent className="space-y-4">
-                            <p>
-                                <strong>Dungeon Master:</strong> { campaign.dungeon_master_name }
-                            </p>
+                            <div className="flex items-center">
+                                <strong className="mr-1">Dungeon Master:</strong>
+                                { campaign.dungeon_master_name }
+                                <div className="scale-75">
+                                    <ReportContent
+                                        contentType={ ContentType.USER }
+                                        contentId={ campaign.dungeon_master_id }
+                                        discrete
+                                    />
+                                </div>
+                            </div>
                             <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
                             <div>
                                 <h2 className="text-xl mb-2">Party</h2>

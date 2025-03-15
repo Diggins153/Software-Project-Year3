@@ -15,7 +15,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { updateCharacter } from "@/lib/actions/characters";
 import { EditCharacterFormSchema } from "@/lib/formSchemas";
 import { Character } from "@/types/Character";
-import { CharacterClass } from "@/types/CharacterClass";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,9 +23,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export default function EditCharacterForm({ character, characterClasses, races, onSubmit, classes }: {
+export default function EditCharacterForm({ character, races, onSubmit, classes }: {
     character: Character,
-    characterClasses: CharacterClass[],
     races: Race[],
     onSubmit?(): void,
     classes: Class[],
@@ -40,8 +38,8 @@ export default function EditCharacterForm({ character, characterClasses, races, 
             handle: character.handle,
             image: "https://placehold.co/75.png",
             raceId: character.race_id,
-            classId: characterClasses[0].class_id,
-            level: characterClasses[0].level,
+            classId: character.class_id,
+            level: character.level,
         },
     });
 

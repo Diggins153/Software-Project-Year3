@@ -1,10 +1,6 @@
-import { CharacterClass } from "@/types/CharacterClass";
 import Image from "next/image";
 
-export default function ClassToken({ characterClass }: { characterClass: CharacterClass }) {
-    const level = characterClass.level;
-    const className: string = characterClass.class_name || "";
-
+export default function ClassToken({ className, level }: { className: string, level: number }) {
     return <div className="flex gap-1 items-center justify-center">
         <div className="bg-white border-2 rounded-full p-1">
             <Image
@@ -15,6 +11,6 @@ export default function ClassToken({ characterClass }: { characterClass: Charact
                 height={ 25 }
             />
         </div>
-        <span className="text-lg">Lvl. {level} { className }</span>
+        <span className="text-lg">Lvl. { level } { className }</span>
     </div>;
 }

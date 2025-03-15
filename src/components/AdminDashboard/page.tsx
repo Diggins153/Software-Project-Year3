@@ -333,11 +333,11 @@ export default function AdminDashboardClient({
                                                 >
                                                     Remove { report.content_type }
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    onSelect={ () => handleRemovePart(report.id) }
-                                                >
-                                                    Remove Offensive Part
-                                                </DropdownMenuItem>
+                                                {/*<DropdownMenuItem*/}
+                                                {/*    onSelect={ () => handleRemovePart(report.id) }*/}
+                                                {/*>*/}
+                                                {/*    Remove Offensive Part*/}
+                                                {/*</DropdownMenuItem>*/}
                                                 <DropdownMenuItem
                                                     onSelect={ () => handleBanUser(report.id) }
                                                 >

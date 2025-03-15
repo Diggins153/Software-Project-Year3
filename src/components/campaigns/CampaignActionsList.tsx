@@ -1,5 +1,15 @@
 "use client";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -10,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { transferOwnership } from "@/lib/actions/campaigns";
+import { deleteCampaign, transferOwnership } from "@/lib/actions/campaigns";
 import { TransferOwnershipFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -22,6 +32,7 @@ import { z } from "zod";
 export default function CampaignActionsList({ campaignId }: { campaignId: number }) {
     const router = useRouter();
     const [ isTransferOpen, setTransferOpen ] = useState(false);
+    const [ isDeleteOpen, setDeleteOpen ] = useState(false);
     const form = useForm<z.infer<typeof TransferOwnershipFormSchema>>({
         resolver: zodResolver(TransferOwnershipFormSchema),
         mode: "onBlur",
@@ -45,6 +56,18 @@ export default function CampaignActionsList({ campaignId }: { campaignId: number
         }
     }
 
+    async function handleCampaignDelete() {
+        setDeleteOpen(false);
+        const response = await deleteCampaign(campaignId);
+
+        if (response.ok) {
+            toast.success(response.message);
+            if (response.redirect) router.replace(response.redirect);
+        } else {
+            toast.error(response.message);
+        }
+    }
+
     return <>
         <div className="border rounded-lg grid grid-cols-1 divide-y">
             <div className="flex items-center space-x-4 p-4">
@@ -57,6 +80,17 @@ export default function CampaignActionsList({ campaignId }: { campaignId: number
                     </p>
                 </div>
                 <Button variant="destructive" onClick={ () => setTransferOpen(true) }>Transfer</Button>
+            </div>
+            <div className="flex items-center space-x-4 p-4">
+                <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                        Delete Campaign
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                        Delete this campaign and all data
+                    </p>
+                </div>
+                <Button variant="destructive" onClick={ () => setDeleteOpen(true) }>Delete</Button>
             </div>
         </div>
 
@@ -116,5 +150,20 @@ export default function CampaignActionsList({ campaignId }: { campaignId: number
                 </Form>
             </DialogContent>
         </Dialog>
+
+        <AlertDialog open={ isDeleteOpen } onOpenChange={ open => setDeleteOpen(open) }>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This will delete all data associated with this campaign. This action cannot be undone!
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={ handleCampaignDelete }>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     </>;
 };

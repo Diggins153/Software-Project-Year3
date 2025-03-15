@@ -17,7 +17,7 @@ export default async function DungeonMasterCampaignsPage() {
         { campaigns.length > 0
             ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 { campaigns.map((campaign) => (
-                    <Link key={ campaign.id } href={ `/campaigns/view?campaignId=${ campaign.id }` }>
+                    <Link key={ campaign.id } href={ `/campaigns/${ campaign.id }` }>
                         <CampaignCard campaign={ campaign }/>
                     </Link>
                 )) }

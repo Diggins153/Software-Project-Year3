@@ -20,28 +20,19 @@ type UserCharacter = {
 };
 
 type CampaignViewPageProps = {
-    searchParams: Promise<{ campaignId?: string }>;
+    params: Promise<{ campaignId?: string }>;
 };
 
-export default async function CampaignViewPage({ searchParams }: CampaignViewPageProps) {
+export default async function CampaignViewPage({ params }: CampaignViewPageProps) {
     const sessionData = await auth();
-    const campaignId = (await searchParams).campaignId;
+    const { campaignId } = await params;
     if (!campaignId) {
         redirect("/campaigns");
     }
 
     // Query campaign details.
     const campaigns = await query<Campaign[]>(`
-        SELECT
-            c.id,
-            c.name,
-            c.created_at,
-            c.signups_open,
-            c.dungeon_master_id,
-            c.max_players,
-            c.banner,
-            c.outline,
-            u.display_name AS dungeon_master_name
+        SELECT c.*, u.display_name AS dungeon_master_name
         FROM campaign c
                  JOIN \`user\` u ON u.id = c.dungeon_master_id
         WHERE c.id = ?
@@ -110,7 +101,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                         Manage Campaign
                     </Link>
                     <Link
-                        href={ `/src/app/@appRoutes/campaigns/(campaignView)/session/create?campaignId=${ campaign.id }` }
+                        href={ `/campaigns/${ campaign.id }/sessions/create` }
                         className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                     >
                         Create Session
@@ -208,7 +199,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                                     {currUserIsOwner && (
                                         <div className="mt-4">
                                             <Link
-                                                href={`/src/app/@appRoutes/campaigns/(campaignView)/session/delete?sessionId=${ sess.id }&campaignId=${ campaign.id }`}
+                                                href={`/campaigns/session/delete?sessionId=${ sess.id }&campaignId=${ campaign.id }`}
                                                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                                             >
                                                 Delete Session

@@ -182,6 +182,6 @@ CREATE TABLE reports (
                          content_id INT UNSIGNED,
                          reason VARCHAR(32),
                          user_description VARCHAR(256),
-                         status ENUM('active', 'ignored') NOT NULL DEFAULT 'active',
+                         status ENUM('active', 'user_banned', 'content_removed', 'ignored') NOT NULL DEFAULT 'active',
                          FOREIGN KEY (author_id) REFERENCES `user`(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

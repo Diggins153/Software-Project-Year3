@@ -1,4 +1,4 @@
-import CampaignCard from "@/components/CampaignCard";
+import CampaignCard from "@/components/campaigns/CampaignCard";
 import query from "@/lib/database";
 import { ensureSession } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";

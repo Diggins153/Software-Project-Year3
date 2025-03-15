@@ -1,4 +1,4 @@
-import CampaignCard from "@/components/CampaignCard";
+import CampaignCard from "@/components/campaigns/CampaignCard";
 import { CharacterCard } from "@/components/characters/CharacterCard";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";

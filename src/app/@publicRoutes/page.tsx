@@ -13,18 +13,20 @@ export default function UnauthenticatedHome() {
         setDiceRoll(Math.floor(Math.random() * 20) + 1);
     };
 
+    // @ts-ignore
     const navigateToLogin = (event) => {
         event.preventDefault();
         router.push("/login");
     };
 
+    // @ts-ignore
     const navigateToRegister = (event) => {
         event.preventDefault();
         router.push("/register");
     };
 
     return (
-        <div className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white p-6">
+        <div className="relative min-h-screen flex flex-col items-center justify-center  text-white p-6">
             {/* Magical Title Animation */}
             <motion.h1
                 className="text-5xl font-bold text-center text-red-600 drop-shadow-lg"
@@ -37,8 +39,8 @@ export default function UnauthenticatedHome() {
 
             {/* Foggy Ambiance */}
             <motion.div
-                className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-olive-800 to-transparent opacity-50"
-                animate={{ opacity: [0.3, 0.5, 0.3] }}
+                className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#321717] to-transparent opacity-50"
+                animate={{ opacity: [8, 4, 9] }}
                 transition={{ duration: 6, repeat: Infinity, repeatType: "mirror" }}
             ></motion.div>
 

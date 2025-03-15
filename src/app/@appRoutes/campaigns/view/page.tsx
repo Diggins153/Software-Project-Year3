@@ -5,7 +5,6 @@ import query from "@/lib/database";
 import { Campaign } from "@/types/Campaign";
 import { ContentType } from "@/types/Report";
 import { Session } from "@/types/Session";
-import { SessionProvider } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -102,35 +101,32 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
     return (
         <main className="p-6">
             {/* DM-only controls */}
-            {currUserIsOwner && (
-                <div className="flex justify-end mb-4 gap-2">
+            <div className="flex justify-end mb-4 gap-2">
+                { currUserIsOwner && (<>
                     <Link
-                        href={`/campaigns/${campaign.id}/manage`}
+                        href={ `/campaigns/${ campaign.id }/manage` }
                         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                     >
                         Manage Campaign
                     </Link>
                     <Link
-                        href={`/campaigns/session/create?campaignId=${campaign.id}`}
+                        href={ `/campaigns/session/create?campaignId=${ campaign.id }` }
                         className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                     >
                         Create Session
                     </Link>
-                    <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
-                </div>
-            )}
-
-            {/* For non-DM users who are not campaign members, display a join campaign button */}
-            {!currUserIsOwner && userCharacters.length === 0 && (
-                <div className="flex justify-end mb-4">
+                </>) }
+                {/* For non-DM users who are not campaign members, display a join campaign button */}
+                {!currUserIsOwner && userCharacters.length === 0 && (
                     <Link
                         href={`/campaigns/join?campaignId=${campaign.id}`}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
                         Join Campaign
                     </Link>
-                </div>
-            )}
+                )}
+                <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
+            </div>
 
             {/* Campaign details */}
             <h1 className="text-6xl font-bold text-center mb-8">

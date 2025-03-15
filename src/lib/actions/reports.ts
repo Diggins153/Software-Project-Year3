@@ -130,3 +130,17 @@ export async function banUser(reportId: number): Promise<
 
     return { ok: true };
 }
+
+export async function ignoreReport(reportId: number): Promise<boolean> {
+    await ensureSession();
+    const report = await ensureReport(reportId);
+    if (report === null) return false;
+
+    await query(`
+        UPDATE reports
+        SET status = 'ignored'
+        WHERE id = ?
+    `, reportId);
+
+    return true;
+}

@@ -1,5 +1,11 @@
 import Link from "next/link";
 
+/**
+ * Character selection page where users can create or view their characters
+ * Provides options to choose a premade character, create a new one, or manage existing characters
+ *
+ * @returns {JSX.Element} - The character selection page UI
+ */
 export default async function CharactersPage() {
     return (
         <main>

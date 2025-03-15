@@ -28,7 +28,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-
+/**
+ * Campaign actions component, allowing the transfer of campaign ownership
+ *
+ * @param {{ campaignId: number }} props - The campaign ID
+ * @returns {JSX.Element} - The campaign actions list UI
+ */
 export default function CampaignActionsList({ campaignId }: { campaignId: number }) {
     const router = useRouter();
     const [ isTransferOpen, setTransferOpen ] = useState(false);
@@ -44,7 +49,11 @@ export default function CampaignActionsList({ campaignId }: { campaignId: number
             confirmation: "",
         },
     });
-
+    /**
+     * Handles the ownership transfer process
+     *
+     * @param {z.infer<typeof TransferOwnershipFormSchema>} formData - The form data for ownership transfer
+     */
     async function handleOwnershipTransfer(formData: z.infer<typeof TransferOwnershipFormSchema>) {
         const response = await transferOwnership(formData);
 

@@ -137,6 +137,10 @@ const premadeCharacters: PremadeCharacter[] = [
     }
 ];
 
+/**
+ * Component for displaying and selecting premade characters
+ * @returns {JSX.Element} - The premade characters selection UI
+ */
 export default function PremadeCharactersPage() {
     return (
         <main className="p-6 grid grid-cols-4 gap-2 ml-36">

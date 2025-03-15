@@ -39,7 +39,7 @@ export async function createSession(
         return {
             ok: true,
             message: "Session created successfully",
-            redirect: `/campaigns/view?campaignId=${campaignId}`,
+            redirect: `/campaigns/${ campaignId }`,
         };
     } catch (error) {
         console.error("Error creating session:", error);
@@ -60,7 +60,7 @@ export async function deleteSession(sessionId: number, campaignId: number) {
         return {
             ok: true,
             message: "Session deleted successfully",
-            redirect: `/campaigns/view?campaignId=${campaignId}`,
+            redirect: `/campaigns/${ campaignId }`,
         };
     } catch (error) {
         console.error("Error deleting session:", error);

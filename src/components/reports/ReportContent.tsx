@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { sendReport } from "@/lib/actions/reports";
 import { ReportContentFormSchema } from "@/lib/formSchemas";
+import { cn } from "@/lib/utils";
 import { ContentType, getContentTypeDialogName, getReasons } from "@/types/Report";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FlagIcon, Loader2 } from "lucide-react";
@@ -18,9 +19,10 @@ import { z } from "zod";
 type ReportCampaignProps = {
     contentType: ContentType;
     contentId: number;
+    discrete?: boolean
 }
 
-export default function ReportContent({ contentType, contentId }: ReportCampaignProps) {
+export default function ReportContent({ contentType, contentId, discrete }: ReportCampaignProps) {
     const [ isOpen, setOpen ] = useState(false);
     const form = useForm<z.infer<typeof ReportContentFormSchema>>({
         resolver: zodResolver(ReportContentFormSchema),
@@ -43,7 +45,9 @@ export default function ReportContent({ contentType, contentId }: ReportCampaign
     }
 
     return <Dialog open={ isOpen } onOpenChange={ open => setOpen(open) }>
-        <DialogTrigger className={ buttonVariants({ variant: "destructive" }) }><FlagIcon/></DialogTrigger>
+        <DialogTrigger className={ cn(buttonVariants({ variant: discrete ? "ghost" : "destructive" }), { "light": discrete }) }>
+            <FlagIcon/>
+        </DialogTrigger>
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>{ getContentTypeDialogName(contentType) }</DialogTitle>

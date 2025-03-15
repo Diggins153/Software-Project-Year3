@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import query from "@/lib/database";
 import { redirect } from "next/navigation";
 import { Character } from "@/types/Character";
-import CharacterCard from "@/components/characters/CharacterCard";
+import { CharacterCard, EmptyCharacterCard } from "@/components/characters/CharacterCard";
 import Link from "next/link";
 
 export default async function CharactersPage() {
@@ -29,13 +29,14 @@ export default async function CharactersPage() {
                         />
                     </Link>
                     { characters.length > 0
-                        ? characters.map(character => <Link href={ `/characters/${ character.id }` }>
-                            <CharacterCard
-                                key={ character.id }
-                                character={ character }
-                            />
-                        </Link>)
-                        : <CharacterCard/> }
+                        ? characters.map(character => (
+                            <Link key={ character.id } href={ `/characters/${ character.id }` }>
+                                <CharacterCard
+                                    character={ character }
+                                />
+                            </Link>
+                        ))
+                        : <EmptyCharacterCard message={ "Oh no! You don't have any characters" }/> }
                 </div>
             </div>
         </main>

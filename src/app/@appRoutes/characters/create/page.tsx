@@ -32,7 +32,10 @@ const races = [
     { name: "Genasi", description: "Born of the elemental planes, Genasi carry the essence of air, earth, fire, or water." },
     { name: "Goliath", description: "Towering and strong, goliaths are a hardy people of the mountains." }
 ];
-
+/**
+ * Character creation component with a step-by-step selection process
+ * @returns {JSX.Element} - The character creation UI
+ */
 export default function CreateCharacter() {
     // currentPage 0: Race Selection; 1: Class Selection; 2: Review & Confirm
     const [currentPage, setCurrentPage] = useState(0);
@@ -45,6 +48,9 @@ export default function CreateCharacter() {
     const [level, setLevel] = useState(1);
     const [isSaving, setIsSaving] = useState(false);
 
+    /**
+     * Navigates to the next page if possible
+     */
     const goNext = () => {
         if (currentPage < totalPages - 1) {
             setCurrentPage(currentPage + 1);
@@ -56,7 +62,9 @@ export default function CreateCharacter() {
             setCurrentPage(currentPage - 1);
         }
     };
-
+    /**
+     * Handles character confirmation and submission
+     */
     const handleConfirm = async () => {
         if (!selectedRace || !selectedClass || !characterName.trim()) return;
         setIsSaving(true);

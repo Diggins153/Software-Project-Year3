@@ -6,12 +6,16 @@ export default async function SettingsPage() {
         await signIn();
     }
 
-    return <main>
-        User: <br/>
-        <pre>
-            <code>
-                { JSON.stringify(session) }
-            </code>
-        </pre>
+    return <main className="p-1.5">
+        <div>
+            User:
+        </div>
+        <div>
+            <pre className="w-full text-wrap">
+                <code>
+                    { JSON.stringify(session, undefined, " ") }
+                </code>
+            </pre>
+        </div>
     </main>;
 }

@@ -23,7 +23,7 @@ type UserInfo = {
     id: number;
     display_name: string;
     email: string;
-    // You can add a field for the user's characters if available.
+    characters?: { id: number; name: string }[];
 };
 
 type Report = {
@@ -111,7 +111,7 @@ export default function AdminDashboardClient({
                 </ul>
             </nav>
 
-            {/* Content Sections */}
+            {/* Statistics Section */}
             {activeTab === "statistics" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">
@@ -214,6 +214,7 @@ export default function AdminDashboardClient({
                 </section>
             )}
 
+            {/* Campaigns Section */}
             {activeTab === "campaigns" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">Campaign List</h2>
@@ -239,9 +240,15 @@ export default function AdminDashboardClient({
                                                 Actions
                                             </summary>
                                             <ul className="mt-1 bg-white border rounded shadow">
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">Edit</li>
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">View</li>
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">Delete</li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                    Edit
+                                                </li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                    View
+                                                </li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                    Delete
+                                                </li>
                                             </ul>
                                         </details>
                                     </td>
@@ -253,6 +260,7 @@ export default function AdminDashboardClient({
                 </section>
             )}
 
+            {/* Users Section */}
             {activeTab === "users" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">User List</h2>
@@ -278,10 +286,20 @@ export default function AdminDashboardClient({
                                                 Characters
                                             </summary>
                                             <ul className="mt-1 bg-white border rounded shadow">
-                                                {/* Replace with actual user character data */}
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
-                                                    [User's Characters]
-                                                </li>
+                                                {user.characters && user.characters.length > 0 ? (
+                                                    user.characters.map((character: any) => (
+                                                        <li
+                                                            key={character.id}
+                                                            className="px-4 py-2 hover:bg-gray-100 text-black"
+                                                        >
+                                                            {character.name}
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                        No Characters
+                                                    </li>
+                                                )}
                                             </ul>
                                         </details>
                                     </td>
@@ -293,6 +311,7 @@ export default function AdminDashboardClient({
                 </section>
             )}
 
+            {/* Reports Section */}
             {activeTab === "reports" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">Report List</h2>
@@ -308,7 +327,7 @@ export default function AdminDashboardClient({
                             </tr>
                             </thead>
                             <tbody>
-                            {reports.map((report: Report) => (
+                            {reports.map((report) => (
                                 <tr key={report.id}>
                                     <td className="border px-4 py-2 text-center">{report.id}</td>
                                     <td className="border px-4 py-2">{report.content_type}</td>

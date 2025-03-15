@@ -1,4 +1,5 @@
 // app/campaigns/view/page.tsx
+import CharacterCard from "@/components/characters/CharacterCard";
 import ReportContent from "@/components/reports/ReportContent";
 import { buttonVariants } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -7,6 +8,7 @@ import query from "@/lib/database";
 import { artifika } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
+import { Character } from "@/types/Character";
 import { ContentType } from "@/types/Report";
 import { Session } from "@/types/Session";
 import { ArrowLeft, ChevronsUpDown } from "lucide-react";
@@ -96,6 +98,13 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
         `, sessionData.user.id, campaign.id);
     }
 
+    const charactersInCampaign = await query<Character[]>(`
+        SELECT c.*
+        FROM campaign_characters cc
+                 JOIN \`character\` c ON c.id = cc.character_id
+        WHERE campaign_id = ?
+    `, campaignId)
+
     return (
         <main className="space-y-4">
             <div className="flex justify-between items-center mb-4">
@@ -151,13 +160,30 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                     />
                 ) }
                 <div className="w-full md:w-3/4 lg:w-1/2 mx-auto">
-                    <Collapsible >
-                        <CollapsibleTrigger className={ cn("flex items-center gap-2 mb-4", buttonVariants({variant: "ghost"})) }>Details <ChevronsUpDown size={ 16 }/></CollapsibleTrigger>
+                    <Collapsible>
+                        <CollapsibleTrigger
+                            className={ cn("flex items-center gap-2 mb-4", buttonVariants({ variant: "ghost" })) }
+                        >
+                            Details
+                            <ChevronsUpDown size={ 16 }/>
+                        </CollapsibleTrigger>
                         <CollapsibleContent className="space-y-4">
                             <p>
                                 <strong>Dungeon Master:</strong> { campaign.dungeon_master_name }
                             </p>
                             <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
+                            <div>
+                                <h2 className="text-xl mb-2">Party Members</h2>
+                                <div className="grid grid-cols-2 gap-2">
+                                    { charactersInCampaign.map(character => (
+                                        <div key={ character.id } className="basis-1/2">
+                                            <CharacterCard
+                                                character={ character }
+                                            />
+                                        </div>
+                                    )) }
+                                </div>
+                            </div>
                         </CollapsibleContent>
                     </Collapsible>
                 </div>

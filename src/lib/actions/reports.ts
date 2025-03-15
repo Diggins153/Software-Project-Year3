@@ -48,9 +48,9 @@ export async function removeContent(reportId: number): Promise<
     if (report === null) return { ok: false, message: "Could not find the specified report" };
 
     switch (report.content_type) {
-        // case ContentType.USER:
-        //     await deleteUser(report.content_id);
-        //     break;
+        case ContentType.USER:
+            await banUser(reportId);
+            break;
         // case ContentType.CAMPAIGN:
         //     await deleteCampaign(report.content_id);
         //     break;

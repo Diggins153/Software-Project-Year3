@@ -11,6 +11,7 @@ export default function CampaignsLayout({ children }: { children: Readonly<React
     const sections: { title: string, url: string; }[] = [
         { title: "Joined Campaigns", url: "/campaigns/joined" },
         { title: "DM Campaigns", url: "/campaigns/dm" },
+        { title: "Public Campaigns", url: "/campaigns/public" },
     ];
 
     return <>

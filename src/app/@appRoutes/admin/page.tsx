@@ -24,6 +24,14 @@ type User = {
     email: string;
 };
 
+type Report = {
+    id: number;
+    content_type: string;
+    content_id: number;
+    reason: string;
+    user_description: string;
+};
+
 export default async function AdminDashboardPage() {
     // Query for most used races (by counting characters per race)
     const mostUsedRaces: RaceUsage[] = await query<RaceUsage[]>(`
@@ -71,8 +79,15 @@ export default async function AdminDashboardPage() {
 
     // Query for users (fetch id, display_name, email)
     const users: User[] = await query<User[]>(`
-    SELECT id, display_name, email
-    FROM \`user\`
+        SELECT id, display_name, email
+        FROM \`user\`
+        ORDER BY id ASC
+    `);
+
+    // Query for reports
+    const reports: Report[] = await query<Report[]>(`
+    SELECT id, content_type, content_id, reason, user_description
+    FROM reports
     ORDER BY id ASC
   `);
 
@@ -86,6 +101,8 @@ export default async function AdminDashboardPage() {
             campaigns={campaigns}
             // @ts-ignore
             users={users}
+            // @ts-ignore
+            reports={reports}
         />
     );
 }

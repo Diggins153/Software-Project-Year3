@@ -23,6 +23,15 @@ type UserInfo = {
     id: number;
     display_name: string;
     email: string;
+    // You can add a field for the user's characters if available.
+};
+
+type Report = {
+    id: number;
+    content_type: string;
+    content_id: number;
+    reason: string;
+    user_description: string | null;
 };
 
 type AdminDashboardProps = {
@@ -32,6 +41,7 @@ type AdminDashboardProps = {
     leastUsedClasses: ClassUsage[];
     campaigns: Campaign[];
     users: UserInfo[];
+    reports: Report[];
 };
 
 export default function AdminDashboardClient({
@@ -41,6 +51,7 @@ export default function AdminDashboardClient({
                                                  leastUsedClasses,
                                                  campaigns,
                                                  users,
+                                                 reports,
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
 
@@ -83,6 +94,18 @@ export default function AdminDashboardClient({
                             }`}
                         >
                             Users
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            onClick={() => setActiveTab("reports")}
+                            className={`px-4 py-2 font-semibold rounded transition-colors ${
+                                activeTab === "reports"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                            }`}
+                        >
+                            Reports
                         </button>
                     </li>
                 </ul>
@@ -212,10 +235,10 @@ export default function AdminDashboardClient({
                                     <td className="border px-4 py-2">{campaign.dungeon_master_name}</td>
                                     <td className="border px-4 py-2 text-center">
                                         <details className="inline-block">
-                                            <summary className="cursor-pointer px-2 py-1 bg-gray-200 text-black rounded">
+                                            <summary className="cursor-pointer px-2 py-1 bg-gray-200 rounded text-black">
                                                 Actions
                                             </summary>
-                                            <ul className="mt-1 bg-white text-black border rounded shadow">
+                                            <ul className="mt-1 bg-white border rounded shadow">
                                                 <li className="px-4 py-2 hover:bg-gray-100 text-black">Edit</li>
                                                 <li className="px-4 py-2 hover:bg-gray-100 text-black">View</li>
                                                 <li className="px-4 py-2 hover:bg-gray-100 text-black">Delete</li>
@@ -255,10 +278,44 @@ export default function AdminDashboardClient({
                                                 Characters
                                             </summary>
                                             <ul className="mt-1 bg-white border rounded shadow">
-                                                {/* Use actual data here when available */}
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">[User's Characters]</li>
+                                                {/* Replace with actual user character data */}
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                    [User's Characters]
+                                                </li>
                                             </ul>
                                         </details>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            )}
+
+            {activeTab === "reports" && (
+                <section className="mb-8">
+                    <h2 className="text-3xl font-bold mb-4 text-center">Report List</h2>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full border-collapse">
+                            <thead>
+                            <tr>
+                                <th className="border px-4 py-2">ID</th>
+                                <th className="border px-4 py-2">Content Type</th>
+                                <th className="border px-4 py-2">Content ID</th>
+                                <th className="border px-4 py-2">Reason</th>
+                                <th className="border px-4 py-2">User Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {reports.map((report: Report) => (
+                                <tr key={report.id}>
+                                    <td className="border px-4 py-2 text-center">{report.id}</td>
+                                    <td className="border px-4 py-2">{report.content_type}</td>
+                                    <td className="border px-4 py-2 text-center">{report.content_id}</td>
+                                    <td className="border px-4 py-2">{report.reason}</td>
+                                    <td className="border px-4 py-2">
+                                        {report.user_description || "N/A"}
                                     </td>
                                 </tr>
                             ))}

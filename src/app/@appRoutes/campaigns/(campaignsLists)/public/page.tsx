@@ -4,6 +4,16 @@ import { ensureSession } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import Link from "next/link";
 
+
+/**
+ * DungeonMasterCampaignsPage renders a list of public campaigns
+ *
+ * This page queries the database for campaigns that are marked as public
+ * and displays them in a responsive grid layout using the CampaignCard component
+ * If no public campaigns are found, an appropriate message is displayed
+ *
+ * @returns {Promise<JSX.Element>} A React component displaying public campaigns
+ */
 export default async function DungeonMasterCampaignsPage() {
     const { user } = await ensureSession();
     const campaigns = await query<Campaign[]>(`

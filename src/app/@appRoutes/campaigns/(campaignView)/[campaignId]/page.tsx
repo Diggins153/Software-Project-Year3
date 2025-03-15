@@ -116,10 +116,13 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
         `, sessionData.user.id, campaign.id);
     }
 
+    // Query all characters in campaign
     const charactersInCampaign = await query<Character[]>(`
-        SELECT c.*
+        SELECT c.*,
+               cl.name AS class_name
         FROM campaign_characters cc
                  JOIN \`character\` c ON c.id = cc.character_id
+                 JOIN class cl ON cl.id = c.class_id
         WHERE campaign_id = ?
     `, campaignId)
 

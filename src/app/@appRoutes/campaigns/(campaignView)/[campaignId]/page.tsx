@@ -135,7 +135,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                         href="/campaigns"
                         className={ buttonVariants({ variant: "ghost" }) }
                     >
-                        <ArrowLeft/><span>Campaigns</span>
+                        <ArrowLeft/><span className="hidden lg:inline">Campaigns</span>
                     </Link>
                     <h1 className="text-2xl font-bold text-center">
                         { campaign.name }

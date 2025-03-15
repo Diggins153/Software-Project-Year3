@@ -18,7 +18,13 @@ export default async function CharactersPage() {
         redirect("/");
     }
 
-    const characters = await query<Character[]>("SELECT * FROM `character` WHERE owner_id = ?", session.user.id);
+    const characters = await query<Character[]>(`
+        SELECT c.*,
+               cl.name AS class_name
+        FROM \`character\` c
+                 JOIN class cl ON cl.id = c.class_id
+        WHERE c.owner_id = ?
+    `, session.user.id);
 
     return (
         <main>

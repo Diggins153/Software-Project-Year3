@@ -5,6 +5,7 @@ import query from "@/lib/database";
 import { CampaignFormSchema, TransferOwnershipFormSchema } from "@/lib/formSchemas";
 import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
+import { Character } from "@/types/Character";
 import { User } from "@/types/User";
 import { z } from "zod";
 
@@ -76,7 +77,9 @@ export async function updateCampaign(campaignId: number, data: z.infer<typeof Ca
         params.push(isPublic);
     }
     if (parametrizedKeys.length == 0) return { ok: true };
-    let statement = `UPDATE campaign SET ${ parametrizedKeys.join(", ") } WHERE id = ?`;
+    let statement = `UPDATE campaign
+                     SET ${ parametrizedKeys.join(", ") }
+                     WHERE id = ?`;
 
     try {
         await query(statement, ...params, campaignId);
@@ -132,8 +135,9 @@ type CampaignRow = {
     name: string;
     dungeon_master_id: number;
 };
+
 export async function deleteCampaign(
-    campaignId: number
+    campaignId: number,
 ): Promise<{ ok: boolean; message: string; redirect?: string }> {
     // 1) Authenticate
     const session = await auth();
@@ -142,9 +146,9 @@ export async function deleteCampaign(
     }
 
     // 2) Retrieve the campaign to ensure it exists and check ownership
-    const [campaign] = await query<CampaignRow[]>(
+    const [ campaign ] = await query<CampaignRow[]>(
         "SELECT * FROM campaign WHERE id = ?",
-        [campaignId]
+        [ campaignId ],
     );
     if (!campaign) {
         return { ok: false, message: "Campaign not found." };
@@ -158,32 +162,65 @@ export async function deleteCampaign(
     // 4) Clean up related data (if you don’t have ON DELETE CASCADE)
 
     // 4a) Delete messages tied to this campaign
-    await query("DELETE FROM messages WHERE campaign_id = ?", [campaignId]);
+    await query("DELETE FROM messages WHERE campaign_id = ?", [ campaignId ]);
 
     // 4b) Delete from campaign_characters bridging table
-    await query("DELETE FROM campaign_characters WHERE campaign_id = ?", [campaignId]);
+    await query("DELETE FROM campaign_characters WHERE campaign_id = ?", [ campaignId ]);
 
     // 4c) Delete from session_characters
     //     (but first find all sessions for this campaign)
     //     We join session_characters (sc) to session (s) on session_id
     //     and delete only rows that belong to the campaign
     await query(`
-    DELETE sc
-    FROM session_characters sc
-    JOIN session s ON s.id = sc.session_id
-    WHERE s.campaign_id = ?
-  `, [campaignId]);
+        DELETE sc
+        FROM session_characters sc
+                 JOIN session s ON s.id = sc.session_id
+        WHERE s.campaign_id = ?
+    `, [ campaignId ]);
 
     // 4d) Delete sessions themselves
-    await query("DELETE FROM session WHERE campaign_id = ?", [campaignId]);
+    await query("DELETE FROM session WHERE campaign_id = ?", [ campaignId ]);
 
     // 5) Finally, delete the campaign
-    await query("DELETE FROM campaign WHERE id = ?", [campaignId]);
+    await query("DELETE FROM campaign WHERE id = ?", [ campaignId ]);
 
     // 6) Return success
     return {
         ok: true,
-        message: `Campaign "${campaign.name}" deleted successfully.`,
+        message: `Campaign "${ campaign.name }" deleted successfully.`,
         redirect: "/campaigns",
     };
+}
+
+export async function leaveCampaign(campaignId: number) {
+    const { user } = await ensureSession();
+    const campaign = (await query<Campaign[]>(`
+        SELECT *
+        FROM campaign
+        WHERE id = ?
+    `, campaignId))[0] ?? null;
+    if (campaign === null) return { ok: false, message: "Could not find the specified campaign" };
+
+    // Has user characters in campaign
+    const characters = await query<Character[]>(`
+        SELECT c.*
+        FROM campaign_characters cc
+                 JOIN \`character\` c ON cc.character_id = c.id
+        WHERE cc.campaign_id = ?
+          AND c.owner_id = ?
+    `, campaignId, user.id);
+
+    if (characters.length < 1) return { ok: false, message: "You don't have any characters in this campaign" };
+
+    const characterIds = characters.map(character => character.id);
+    const args: string[] = [];
+    characterIds.forEach(() => args.push("?"));
+
+    await query(`
+        UPDATE campaign_characters
+        SET status = 'abandoned'
+        WHERE character_id IN (${ args.join(",") })
+    `, ...characterIds);
+
+    return { ok: true, message: `You have left ${ campaign.name }` };
 }

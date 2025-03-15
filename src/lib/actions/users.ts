@@ -52,6 +52,12 @@ export async function deleteAccount(): Promise<{ ok: boolean, message: string }>
     try {
         await query(`
             DELETE
+            FROM session_characters
+            WHERE session_id IN
+                  (SELECT id FROM session WHERE campaign_id IN (SELECT id FROM campaign WHERE dungeon_master_id = ?))
+        `, user.id);
+        await query(`
+            DELETE
             FROM session
             WHERE campaign_id IN (SELECT id FROM campaign WHERE dungeon_master_id = ?)
         `, user.id);

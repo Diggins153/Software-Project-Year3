@@ -11,10 +11,9 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,7 +23,6 @@ import {
 import { deleteCharacter } from "@/lib/actions/characters";
 import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
-import { CharacterClass } from "@/types/CharacterClass";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { AlertCircle, Ellipsis, PencilIcon, ShapesIcon, Trash2Icon } from "lucide-react";
@@ -32,9 +30,8 @@ import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function CharacterActionsDropdown({ character, characterClasses, races, classes, characterCampaigns }: {
+export default function CharacterActionsDropdown({ character, races, classes, characterCampaigns }: {
     character: Character,
-    characterClasses: CharacterClass[],
     races: Race[],
     classes: Class[],
     characterCampaigns: Campaign[],
@@ -81,7 +78,6 @@ export default function CharacterActionsDropdown({ character, characterClasses, 
                     </DialogHeader>
                     <EditCharacterForm
                         character={ character }
-                        characterClasses={ characterClasses }
                         races={ races }
                         onSubmit={ () => setDetailsOpen(false) }
                         classes={ classes }

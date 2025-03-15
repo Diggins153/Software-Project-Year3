@@ -3,7 +3,6 @@
 import query from "@/lib/database";
 import { EditCharacterFormSchema } from "@/lib/formSchemas";
 import { Character } from "@/types/Character";
-import { CharacterClass } from "@/types/CharacterClass";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { fetchUser } from "@/lib/actions/authentication";
@@ -15,7 +14,7 @@ export async function createCharacter(
     name: string,
     race: string,
     charClass: string,
-    level: number
+    level: number,
 ) {
     const session = await auth();
     if (!session || !session.user) return redirect("/");
@@ -33,25 +32,24 @@ export async function createCharacter(
 
     // Insert the new character with race_id, class_id, and level.
     await query(
-        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, '', ?)",
+        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, 'https://placehold.co/75.png', ?)",
         name,
-        `@${name}`,
+        `@${ name }`,
         dbRace.id,
         dbClass.id,
         level,
-        session.user.id
+        session.user.id,
     );
 
     return redirect("/characters");
 }
 
 
-
 export async function createPremadeCharacter(
     name: string,
     race: string,
     charClass: string,
-    level: number
+    level: number,
 ) {
     const session = await auth();
     if (!session || !session.user) return redirect("/");
@@ -66,13 +64,13 @@ export async function createPremadeCharacter(
     }
 
     await query(
-        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, '', ?)",
+        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, 'https://placehold.co/75.png', ?)",
         name,
-        `@${name}`,
+        `@${ name }`,
         dbRace.id,
         dbClass.id,
         level,
-        session.user.id
+        session.user.id,
     );
 
     return redirect("/characters");
@@ -95,7 +93,6 @@ export async function updateCharacter(characterId: number, formData: z.infer<typ
     // Check the character exists
     let character = (await query<Character[]>("SELECT * FROM `character` WHERE id = ?", characterId))[0] || null;
     if (!character) return { ok: false, message: "Could not find that character" };
-    let characterClasses = await query<CharacterClass[]>("SELECT * FROM character_class WHERE character_id = ?", characterId);
 
     // Check owner
     if (character.owner_id.toString() !== session.user.id)
@@ -122,17 +119,20 @@ export async function updateCharacter(characterId: number, formData: z.infer<typ
         parametrizedKeys.push("race_id = ?");
         params.push(formData.raceId);
     }
-    if (formData.classId !== characterClasses[0].class_id) {
-        await query("UPDATE character_class SET class_id = ? WHERE character_id = ? AND class_id = ?", formData.classId, characterId, characterClasses[0].class_id);
-        characterClasses[0].class_id = formData.classId;
+    if (formData.classId !== character.class_id) {
+        parametrizedKeys.push("class_id = ?");
+        params.push(formData.classId);
     }
-    if (formData.level !== characterClasses[0].level) {
-        await query("UPDATE character_class SET level = ? WHERE character_id = ? AND class_id = ?", formData.level, characterId, characterClasses[0].class_id);
+    if (formData.level !== character.level) {
+        parametrizedKeys.push("level = ?");
+        params.push(formData.level);
     }
 
     // Do update
     if (parametrizedKeys.length == 0) return { ok: true };
-    let statement = `UPDATE \`character\` SET ${ parametrizedKeys.join(", ") } WHERE id = ?`;
+    let statement = `UPDATE \`character\`
+                     SET ${ parametrizedKeys.join(", ") }
+                     WHERE id = ?`;
 
     try {
         await query(statement, ...params, characterId);

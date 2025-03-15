@@ -125,7 +125,7 @@ export async function updateCharacter(characterId: number, formData: z.infer<typ
     }
     if (formData.level !== character.level) {
         parametrizedKeys.push("level = ?");
-        params.push(formData.classId);
+        params.push(formData.level);
     }
 
     // Do update

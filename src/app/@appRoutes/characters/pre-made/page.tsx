@@ -1,5 +1,6 @@
 "use client";
 
+import { createPremadeCharacter } from "@/lib/actions/characters";
 import Image from "next/image";
 
 type PremadeCharacter = {
@@ -8,6 +9,7 @@ type PremadeCharacter = {
     race: string;
     class: string;
     description: string;
+    level: number;
     // image: string;
 };
 
@@ -18,7 +20,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Grog the Mighty",
         race: "Goliath",
         class: "Barbarian",
-        description: "Loves smashing things. Not so great at math. Has won many battles and lost many arguments.",
+        description:
+            "Loves smashing things. Not so great at math. Has won many battles and lost many arguments.",
+        level: 3,
         // image: "/images/grog.jpg",
     },
     {
@@ -26,7 +30,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Elara the Swift",
         race: "Elf",
         class: "Rogue",
-        description: "Steals hearts... and your gold pouch. Will definitely flirt with the enemy mid-fight.",
+        description:
+            "Steals hearts... and your gold pouch. Will definitely flirt with the enemy mid-fight.",
+        level: 3,
         // image: "/images/elara.jpg",
     },
     {
@@ -34,7 +40,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Zymar the Arcane",
         race: "Human",
         class: "Wizard",
-        description: "Magic runs through their veins... sometimes too much. Once accidentally polymorphed into a duck.",
+        description:
+            "Magic runs through their veins... sometimes too much. Once accidentally polymorphed into a duck.",
+        level: 3,
         // image: "/images/zymar.jpg",
     },
     {
@@ -42,7 +50,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Seraphina Lightbringer",
         race: "Half-Orc",
         class: "Paladin",
-        description: "Holy warrior, radiant smile, terrifying smites. Will heal you, then guilt-trip you for needing healing.",
+        description:
+            "Holy warrior, radiant smile, terrifying smites. Will heal you, then guilt-trip you for needing healing.",
+        level: 3,
         // image: "/images/seraphina.jpg",
     },
     {
@@ -50,7 +60,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Brom Ironfist",
         race: "Dwarf",
         class: "Fighter",
-        description: "Stubborn, tough, and swings an axe like it's an extension of his beard. Loves ale and battle equally.",
+        description:
+            "Stubborn, tough, and swings an axe like it's an extension of his beard. Loves ale and battle equally.",
+        level: 3,
         // image: "/images/brom.jpg",
     },
     {
@@ -58,7 +70,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Nyx the Shadow",
         race: "Tiefling",
         class: "Warlock",
-        description: "Pacts with dark forces? Check. Shadowy past? Check. Really good at dramatic pauses? Absolutely.",
+        description:
+            "Pacts with dark forces? Check. Shadowy past? Check. Really good at dramatic pauses? Absolutely.",
+        level: 3,
         // image: "/images/nyx.jpg",
     },
     {
@@ -66,7 +80,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Finn Songfoot",
         race: "Halfling",
         class: "Bard",
-        description: "Plays the lute, charms the crowd, and probably knows more gossip than a noble’s servant.",
+        description:
+            "Plays the lute, charms the crowd, and probably knows more gossip than a noble’s servant.",
+        level: 3,
         // image: "/images/finn.jpg",
     },
     {
@@ -74,7 +90,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Ignis Stormborn",
         race: "Dragonborn",
         class: "Sorcerer",
-        description: "Born with power, breathes magic, and occasionally sets things on fire... on purpose.",
+        description:
+            "Born with power, breathes magic, and occasionally sets things on fire... on purpose.",
+        level: 3,
         // image: "/images/ignis.jpg",
     },
     {
@@ -82,7 +100,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Willow Thistlebloom",
         race: "Gnome",
         class: "Druid",
-        description: "Can turn into a bear, but prefers to chat with squirrels. Deeply concerned about deforestation.",
+        description:
+            "Can turn into a bear, but prefers to chat with squirrels. Deeply concerned about deforestation.",
+        level: 3,
         // image: "/images/willow.jpg",
     },
     {
@@ -90,7 +110,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Kaelen Shadowstep",
         race: "Half-Elf",
         class: "Ranger",
-        description: "Silent, deadly, and has a wolf companion that’s more social than he is.",
+        description:
+            "Silent, deadly, and has a wolf companion that’s more social than he is.",
+        level: 3,
         // image: "/images/kaelen.jpg",
     },
     {
@@ -98,7 +120,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Torug the Serene",
         race: "Orc",
         class: "Monk",
-        description: "Once punched a tree so hard it apologized. Finds inner peace through disciplined fury.",
+        description:
+            "Once punched a tree so hard it apologized. Finds inner peace through disciplined fury.",
+        level: 3,
         // image: "/images/torug.jpg",
     },
     {
@@ -106,7 +130,9 @@ const premadeCharacters: PremadeCharacter[] = [
         name: "Zibzok the Tinkerer",
         race: "Goblin",
         class: "Artificer",
-        description: "Builds crazy gadgets, some of which explode. Claims that’s ‘just a feature.’",
+        description:
+            "Builds crazy gadgets, some of which explode. Claims that’s ‘just a feature.’",
+        level: 3,
         // image: "/images/zibzok.jpg",
     }
 ];
@@ -114,29 +140,73 @@ const premadeCharacters: PremadeCharacter[] = [
 export default function PremadeCharactersPage() {
     return (
         <main className="p-6 grid grid-cols-4 gap-2 ml-36">
-
-        {premadeCharacters.map((character) => (
+            {premadeCharacters.map((character) => (
                 <div
                     key={character.id}
-                    className="w-[300px] h-[500px] bg-gray-100 rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-transform duration-200 cursor-pointer"
+                    className="relative w-[300px] h-[500px] group"
+                    style={{ perspective: "1000px" }}
+                    onClick={async () =>
+                        await createPremadeCharacter(
+                            character.name,
+                            character.race,
+                            character.class,
+                            character.level
+                        )
+                    }
                 >
-                    {/* Character Image (Top 300px) */}
-                    <div className="h-[300px] relative">
-                        {/*<Image src={character.image} alt={character.name} layout="fill" objectFit="cover"/>*/}
-                    </div>
-
-                    {/* Character Info (Bottom 200px) */}
-                    <div className="h-[200px] p-4 flex flex-col justify-center text-center">
-                        <h2 className="text-xl font-bold">{character.name}</h2>
-                        <p className="text-md text-gray-700 mt-1">
-                            {character.race} {character.class}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-2">
-                            {character.description}
-                        </p>
+                    <div
+                        className={`flip-card-inner w-full h-full bg-yellow-200 rounded-lg shadow-lg cursor-pointer transition-transform duration-700 border border-gray-200`}
+                    >
+                        {/* Front Side */}
+                        <div className="flip-card-front absolute w-full h-full flex flex-col">
+                            {/* Title at the Top */}
+                            <div className="p-4 text-center">
+                                <h2 className="text-xl font-bold text-gray-700">
+                                    {character.name}
+                                </h2>
+                            </div>
+                            {/* Image Section */}
+                            <div className="h-[300px] relative">
+                                {/* Uncomment and update Image component if needed */}
+                                {/* <Image src={character.image} alt={character.name} layout="fill" objectFit="cover" /> */}
+                            </div>
+                            {/* Description at the Bottom */}
+                            <div className="mt-auto p-4 text-center">
+                                <p className="text-md text-gray-700">
+                                    {character.race} {character.class} (Lvl {character.level})
+                                </p>
+                                <p className="text-sm text-gray-700 mt-2">
+                                    {character.description}
+                                </p>
+                            </div>
+                        </div>
+                        {/* Back Side */}
+                        <div className="flip-card-back absolute w-full h-full flex items-center justify-center bg-yellow-200 rounded-lg shadow-lg">
+                            <p className="text-xl font-bold text-gray-700">
+                                Select {character.name}?
+                            </p>
+                        </div>
                     </div>
                 </div>
             ))}
+            <style jsx>{`
+                .flip-card-inner {
+                    transform-style: preserve-3d;
+                }
+                .flip-card-front,
+                .flip-card-back {
+                    backface-visibility: hidden;
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                }
+                .flip-card-back {
+                    transform: rotateY(180deg);
+                }
+                .group:hover .flip-card-inner {
+                    transform: rotateY(180deg);
+                }
+            `}</style>
         </main>
     );
 }

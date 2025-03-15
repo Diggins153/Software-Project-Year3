@@ -20,6 +20,7 @@ export default function RegistrationForm() {
             displayName: "",
             email: "",
             password: "",
+            passwordCheck: "",
             gdpr: false,
         },
     });
@@ -43,6 +44,7 @@ export default function RegistrationForm() {
                     </FormItem>
                 ) }
             />
+
             <FormField
                 control={ form.control }
                 name="email"
@@ -92,6 +94,20 @@ export default function RegistrationForm() {
                         <FormControl>
                             <Input type="password" { ...field }/>
                         </FormControl>
+                        <FormMessage/>
+                    </FormItem>
+                ) }
+            />
+
+            <FormField
+                control={ form.control }
+                name="passwordCheck"
+                render={ ({ field }) => (
+                    <FormItem>
+                        <FormLabel>Repeat Password</FormLabel>
+                        <FormControl>
+                            <Input type="password" { ...field }/>
+                        </FormControl >
                         <FormMessage/>
                     </FormItem>
                 ) }

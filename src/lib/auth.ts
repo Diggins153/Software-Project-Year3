@@ -5,14 +5,10 @@ import bcrypt from "bcryptjs";
 import NextAuth, { type NextAuthResult, type User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ZodError } from "zod";
-import { User as OrmUser, UserRole } from "@/entities/User";
+import { User as OrmUser } from "@/types/User";
 
 declare module "next-auth" {
-    interface User {
-        displayName: string;
-        role: UserRole;
-        isPaying: boolean;
-        lastConsentDate: Date;
+    interface User extends OrmUser {
     }
 }
 
@@ -58,11 +54,8 @@ export const { handlers, auth, signIn, signOut }: NextAuthResult & { signIn: any
 
             const user: AuthUser = {
                 ...session.user,
-                email: dbUser.email,
-                displayName: dbUser.displayName,
-                role: dbUser.role,
-                isPaying: dbUser.isPaying,
-                lastConsentDate: dbUser.lastConsentDate,
+                ...dbUser,
+                id: dbUser.id.toString(),
             };
 
             return {

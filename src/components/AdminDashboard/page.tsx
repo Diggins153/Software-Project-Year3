@@ -357,7 +357,7 @@ export default function AdminDashboardClient({
                                                 <DropdownMenuItem
                                                     onSelect={ () => handleRemoveContent(report.id) }
                                                 >
-                                                    Remove { report.content_type }
+                                                    Delete { report.content_type }
                                                 </DropdownMenuItem>
                                                 {/*<DropdownMenuItem*/}
                                                 {/*    onSelect={ () => handleRemovePart(report.id) }*/}

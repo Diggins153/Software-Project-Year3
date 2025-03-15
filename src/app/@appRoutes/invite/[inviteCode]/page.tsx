@@ -9,15 +9,15 @@ import { Character } from "@/types/Character";
 import { CircleHelpIcon } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import { ReactNode } from "react";
 
 export default async function InvitePage({ params }: { params: Promise<{ inviteCode: string }> }) {
     const { user } = await ensureSession();
     const { inviteCode } = await params;
     const campaign = (await query<Campaign[]>(`
-        SELECT *, u.display_name AS dungeon_master_name
-        FROM campaign
+        SELECT c.*, u.display_name AS dungeon_master_name
+        FROM campaign c
                  JOIN \`user\` u ON u.id = dungeon_master_id
         WHERE invite = ?
     `, inviteCode))[0] || null;
@@ -30,13 +30,19 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
         "SELECT * FROM `character` WHERE owner_id = ? AND id NOT IN (SELECT character_id FROM campaign_characters WHERE campaign_id = ? AND status NOT IN ('kicked'))",
         user.id, campaign.id);
 
-    async function addCharacter(character: Character) {
+    async function addCharacter(campaignId: number, characterId: number) {
         "use server";
         const campaignUrl = `/campaigns/${ campaign.id }`;
-        await query("INSERT INTO campaign_characters (campaign_id, character_id, status) VALUE (?, ?, 'joined') ON DUPLICATE KEY UPDATE status = 'joined'", campaign!.id, character.id);
+        await query(`
+                    INSERT INTO campaign_characters (campaign_id, character_id, status)
+                        VALUE (?, ?, 'joined')
+                    ON DUPLICATE KEY
+                        UPDATE status = 'joined'
+            `, campaignId, characterId,
+        );
         revalidatePath("/campaigns");
         revalidatePath(campaignUrl);
-        redirect(campaignUrl);
+        redirect(campaignUrl, RedirectType.replace);
     }
 
     if (!campaign!.signups_open) return <SignupsClosed><CampaignCard campaign={ campaign }/></SignupsClosed>;
@@ -64,7 +70,7 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
                     key={ character.id }
                     action={ async () => {
                         "use server";
-                        await addCharacter(character);
+                        await addCharacter(campaign?.id, character.id);
                     } }
                 >
                     <Button type="submit" className="h-min w-full px-2 rounded-xl" variant="ghost">

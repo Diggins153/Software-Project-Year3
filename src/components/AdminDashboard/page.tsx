@@ -7,10 +7,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { banUser, removeContent } from "@/lib/actions/reports";
 import { getReasons, type Report } from "@/types/Report";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type RaceUsage = {
     name: string;
@@ -55,6 +57,40 @@ export default function AdminDashboardClient({
                                                  reports,
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
+
+    async function handleRemoveContent(reportId: number) {
+        const response = await removeContent(reportId);
+
+        if (response.ok) {
+            toast.success(response.message);
+        } else {
+            toast.error(response.message);
+        }
+    }
+
+    // async function handleRemovePart(reportId: number) {
+    //     const response = await removePart(reportId);
+    // }
+
+    async function handleBanUser(reportId: number) {
+        const response = await banUser(reportId);
+
+        if (response.ok) {
+            toast.success("User was banned");
+        } else {
+            toast.error(response.message);
+        }
+    }
+
+    async function handleIgnoreReport(reportId: number) {
+        const response = await ignoreReport(reportId);
+
+        if (response.ok) {
+            toast.success(response.message);
+        } else {
+            toast.error(response.message);
+        }
+    }
 
     return (
         <main className="p-6">

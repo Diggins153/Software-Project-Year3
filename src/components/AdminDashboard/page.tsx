@@ -59,7 +59,10 @@ export default function AdminDashboardClient({
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
     const router = useRouter();
-
+    /**
+     * Handles content removal for a report.
+     * @param {number} reportId - The ID of the report to be removed.
+     */
     async function handleRemoveContent(reportId: number) {
         const response = await removeContent(reportId);
 
@@ -73,7 +76,10 @@ export default function AdminDashboardClient({
     // async function handleRemovePart(reportId: number) {
     //     const response = await removePart(reportId);
     // }
-
+    /**
+     * Handles banning a user related to a report.
+     * @param {number} reportId - The ID of the report related to the user.
+     */
     async function handleBanUser(reportId: number) {
         const response = await banUser(reportId);
 
@@ -83,7 +89,10 @@ export default function AdminDashboardClient({
             toast.error(response.message);
         }
     }
-
+    /**
+     * Handles ignoring a report.
+     * @param {number} reportId - The ID of the report to be ignored.
+     */
     async function handleIgnoreReport(reportId: number) {
         const response = await ignoreReport(reportId);
 

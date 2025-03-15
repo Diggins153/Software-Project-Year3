@@ -157,3 +157,55 @@ export const ReportContentFormSchema = z.object({
         .max(256, "Description cannot have more than 256 characters")
         .optional(),
 });
+
+export const UpdateUserFormSchema = z.object({
+    id: z
+        .coerce
+        .number(),
+    displayName: z
+        .string()
+        .min(1, "Please enter a name")
+        .max(40, "Display name can only be 40 characters long")
+        .optional(),
+    email: z
+        .string()
+        .email("Please enter an email address")
+        .max(64, "Email can only be 60 characters long")
+        .optional(),
+    password: z
+        .string()
+        .optional()
+        .superRefine((value, ctx) => {
+            if (!value) return;
+            if (value.length < 10) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Password must have at least 10 characters" });
+            }
+            if (!hasSpecialCharacter(value)) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Password must have a special character." });
+            }
+
+            if (!hasDigits(value)) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Password must have a digit." });
+            }
+
+            if (!hasUppercase(value)) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Password must have an uppercase letter." });
+            }
+
+            if (!hasLowercase(value)) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Password must have a lowercase letter." });
+            }
+        }),
+    passwordCheck: z
+        .string()
+        .optional(),
+}).superRefine((arg, ctx) => {
+    if (!arg.password && !arg.passwordCheck) return;
+    if (arg.password !== arg.passwordCheck) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Passwords need to match",
+            path: [ "passwordCheck" ],
+        });
+    }
+});

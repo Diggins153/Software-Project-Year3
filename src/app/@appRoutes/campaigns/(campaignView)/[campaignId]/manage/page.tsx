@@ -21,6 +21,19 @@ export const metadata: Metadata = {
     title: "Manage Campaign",
 };
 
+/**
+ * ManageCampaignPage is the main page component for managing a campaign
+ * It displays the campaign form (for editing), the list of characters in the campaign
+ * and the available campaign actions (e.g., transfer ownership, delete campaign, etc.)
+ *
+ * This component first ensures the current session and retrieves the campaign based on the provided
+ * campaignId parameter. If the campaign is not found or the current user is not the Dungeon Master,
+ * it will redirect or show a notFound page.
+ *
+ * @param {Object} props - The component props.
+ * @param {Promise<{ campaignId: number }>} props.params - A promise resolving to an object containing the campaignId.
+ * @returns {Promise<JSX.Element>} A React component that renders the campaign management page.
+ */
 export default async function ManageCampaignPage({ params }: { params: Promise<{ campaignId: number }> }) {
     const session = await ensureSession();
     const { campaignId } = await params;

@@ -114,6 +114,7 @@ export default async function AdminDashboardPage() {
             leastUsedClasses={leastUsedClasses}
             campaigns={campaigns}
             users={usersWithCharacters}
+            //@ts-ignore
             reports={reports}
         />
     );

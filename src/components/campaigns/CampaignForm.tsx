@@ -29,6 +29,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
         banner: "",
         maxPlayers: 4,
         signupsOpen: true,
+        isPublic: false,
     };
     const form = useForm<z.infer<typeof CampaignFormSchema>>({
         resolver: zodResolver(CampaignFormSchema),
@@ -126,6 +127,22 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
                             <Textarea { ...field } rows={ 10 }/>
                         </FormControl>
                         <FormDescription>Add a capturing hook for your potential players.</FormDescription>
+                        <FormMessage/>
+                    </FormItem>
+                }
+            />
+
+            <FormField
+                name="isPublic"
+                control={ form.control }
+                render={ ({ field }) =>
+                    <FormItem>
+                        <div className="flex items-center space-x-4">
+                            <FormControl>
+                                <Switch checked={ field.value } onCheckedChange={ field.onChange }/>
+                            </FormControl>
+                            <FormLabel>Public Campaign</FormLabel>
+                        </div>
                         <FormMessage/>
                     </FormItem>
                 }

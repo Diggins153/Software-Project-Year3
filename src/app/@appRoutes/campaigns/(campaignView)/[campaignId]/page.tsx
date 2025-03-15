@@ -186,9 +186,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                                     { charactersInCampaign.length > 0
                                         ? charactersInCampaign.map(character => (
                                             <div key={ character.id } className="basis-1/2">
-                                                <CharacterCard
-                                                    character={ character }
-                                                />
+                                                <CharacterCard character={ character } showReport/>
                                             </div>
                                         ))
                                         : <EmptyCharacterCard message="The party is empty"/>

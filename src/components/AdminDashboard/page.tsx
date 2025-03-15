@@ -1,5 +1,14 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { getReasons, type Report } from "@/types/Report";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -24,14 +33,6 @@ type UserInfo = {
     display_name: string;
     email: string;
     // You can add a field for the user's characters if available.
-};
-
-type Report = {
-    id: number;
-    content_type: string;
-    content_id: number;
-    reason: string;
-    user_description: string | null;
 };
 
 type AdminDashboardProps = {
@@ -305,6 +306,7 @@ export default function AdminDashboardClient({
                                 <th className="border px-4 py-2">Content ID</th>
                                 <th className="border px-4 py-2">Reason</th>
                                 <th className="border px-4 py-2">User Description</th>
+                                <th className="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -313,9 +315,41 @@ export default function AdminDashboardClient({
                                     <td className="border px-4 py-2 text-center">{report.id}</td>
                                     <td className="border px-4 py-2">{report.content_type}</td>
                                     <td className="border px-4 py-2 text-center">{report.content_id}</td>
-                                    <td className="border px-4 py-2">{report.reason}</td>
+                                    <td className="border px-4 py-2">
+                                        { getReasons(report.content_type)[report.reason] }
+                                    </td>
                                     <td className="border px-4 py-2">
                                         {report.user_description || "N/A"}
+                                    </td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className={ buttonVariants() }>
+                                                Actions
+                                                <ChevronDown/>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuItem
+                                                    onSelect={ () => handleRemoveContent(report.id) }
+                                                >
+                                                    Remove { report.content_type }
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onSelect={ () => handleRemovePart(report.id) }
+                                                >
+                                                    Remove Offensive Part
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onSelect={ () => handleBanUser(report.id) }
+                                                >
+                                                    Ban User
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onSelect={()=>handleIgnoreReport(report.id)}
+                                                >
+                                                    Ignore Report
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </td>
                                 </tr>
                             ))}

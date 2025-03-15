@@ -102,6 +102,21 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
             />
 
             <FormField
+                name="outline"
+                control={ form.control }
+                render={ ({ field }) =>
+                    <FormItem>
+                        <FormLabel>Campaign Outline</FormLabel>
+                        <FormControl>
+                            <Textarea { ...field } rows={ 10 }/>
+                        </FormControl>
+                        <FormDescription>Add a capturing hook for your potential players.</FormDescription>
+                        <FormMessage/>
+                    </FormItem>
+                }
+            />
+
+            <FormField
                 name="signupsOpen"
                 control={ form.control }
                 render={ ({ field }) =>
@@ -112,21 +127,6 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
                             </FormControl>
                             <FormLabel>Signups Open</FormLabel>
                         </div>
-                        <FormMessage/>
-                    </FormItem>
-                }
-            />
-
-            <FormField
-                name="outline"
-                control={ form.control }
-                render={ ({ field }) =>
-                    <FormItem>
-                        <FormLabel>Campaign Outline</FormLabel>
-                        <FormControl>
-                            <Textarea { ...field } rows={ 10 }/>
-                        </FormControl>
-                        <FormDescription>Add a capturing hook for your potential players.</FormDescription>
                         <FormMessage/>
                     </FormItem>
                 }

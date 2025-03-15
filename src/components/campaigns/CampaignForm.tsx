@@ -143,6 +143,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
                             </FormControl>
                             <FormLabel>Public Campaign</FormLabel>
                         </div>
+                        <FormDescription>Whether the campaign is viewable by outside users</FormDescription>
                         <FormMessage/>
                     </FormItem>
                 }

@@ -1,5 +1,5 @@
 // app/campaigns/view/page.tsx
-import CharacterCard from "@/components/characters/CharacterCard";
+import { CharacterCard, EmptyCharacterCard } from "@/components/characters/CharacterCard";
 import ReportContent from "@/components/reports/ReportContent";
 import { buttonVariants } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -173,15 +173,18 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                             </p>
                             <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
                             <div>
-                                <h2 className="text-xl mb-2">Party Members</h2>
+                                <h2 className="text-xl mb-2">Party</h2>
                                 <div className="grid grid-cols-2 gap-2">
-                                    { charactersInCampaign.map(character => (
-                                        <div key={ character.id } className="basis-1/2">
-                                            <CharacterCard
-                                                character={ character }
-                                            />
-                                        </div>
-                                    )) }
+                                    { charactersInCampaign.length > 0
+                                        ? charactersInCampaign.map(character => (
+                                            <div key={ character.id } className="basis-1/2">
+                                                <CharacterCard
+                                                    character={ character }
+                                                />
+                                            </div>
+                                        ))
+                                        : <EmptyCharacterCard message="The party is empty"/>
+                                    }
                                 </div>
                             </div>
                         </CollapsibleContent>

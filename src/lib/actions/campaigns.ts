@@ -126,3 +126,64 @@ export async function transferOwnership(data: z.infer<typeof TransferOwnershipFo
         redirectTo: "/campaigns",
     };
 }
+
+type CampaignRow = {
+    id: number;
+    name: string;
+    dungeon_master_id: number;
+};
+export async function deleteCampaign(
+    campaignId: number
+): Promise<{ ok: boolean; message: string; redirect?: string }> {
+    // 1) Authenticate
+    const session = await auth();
+    if (!session?.user) {
+        return { ok: false, message: "You are not logged in." };
+    }
+
+    // 2) Retrieve the campaign to ensure it exists and check ownership
+    const [campaign] = await query<CampaignRow[]>(
+        "SELECT * FROM campaign WHERE id = ?",
+        [campaignId]
+    );
+    if (!campaign) {
+        return { ok: false, message: "Campaign not found." };
+    }
+
+    // 3) Verify the user is the DM
+    if (campaign.dungeon_master_id.toString() !== session.user.id) {
+        return { ok: false, message: "You are not authorized to delete this campaign." };
+    }
+
+    // 4) Clean up related data (if you don’t have ON DELETE CASCADE)
+
+    // 4a) Delete messages tied to this campaign
+    await query("DELETE FROM messages WHERE campaign_id = ?", [campaignId]);
+
+    // 4b) Delete from campaign_characters bridging table
+    await query("DELETE FROM campaign_characters WHERE campaign_id = ?", [campaignId]);
+
+    // 4c) Delete from session_characters
+    //     (but first find all sessions for this campaign)
+    //     We join session_characters (sc) to session (s) on session_id
+    //     and delete only rows that belong to the campaign
+    await query(`
+    DELETE sc
+    FROM session_characters sc
+    JOIN session s ON s.id = sc.session_id
+    WHERE s.campaign_id = ?
+  `, [campaignId]);
+
+    // 4d) Delete sessions themselves
+    await query("DELETE FROM session WHERE campaign_id = ?", [campaignId]);
+
+    // 5) Finally, delete the campaign
+    await query("DELETE FROM campaign WHERE id = ?", [campaignId]);
+
+    // 6) Return success
+    return {
+        ok: true,
+        message: `Campaign "${campaign.name}" deleted successfully.`,
+        redirect: "/campaigns",
+    };
+}

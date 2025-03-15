@@ -1,10 +1,14 @@
 // app/campaigns/view/page.tsx
 import ReportContent from "@/components/reports/ReportContent";
+import { buttonVariants } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
+import { artifika } from "@/lib/fonts";
 import { Campaign } from "@/types/Campaign";
 import { ContentType } from "@/types/Report";
 import { Session } from "@/types/Session";
+import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -36,7 +40,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
         FROM campaign c
                  JOIN \`user\` u ON u.id = c.dungeon_master_id
         WHERE c.id = ?
-    `, [campaignId]);
+    `, [ campaignId ]);
 
     const campaign = campaigns[0];
     if (!campaign) {
@@ -55,7 +59,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
         FROM session
         WHERE campaign_id = ?
         ORDER BY session_date ASC
-    `, [campaign.id]);
+    `, [ campaign.id ]);
 
     // Query signups for sessions.
     let signups: SessionSignup[] = [];
@@ -65,7 +69,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
             SELECT sc.session_id, c.id AS character_id, c.name AS character_name
             FROM session_characters sc
                      JOIN \`character\` c ON c.id = sc.character_id
-            WHERE sc.session_id IN (${sessionIds})
+            WHERE sc.session_id IN (${ sessionIds })
         `);
     }
     const signupsBySession: Record<number, SessionSignup[]> = {};
@@ -83,69 +87,73 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
             SELECT c.id AS character_id, c.name AS character_name
             FROM user_characters uc
                      JOIN \`character\` c ON c.id = uc.character_id
-            WHERE uc.user_id = ? AND c.id IN (
-                SELECT character_id FROM campaign_characters WHERE campaign_id = ?
-            )
+            WHERE uc.user_id = ?
+              AND c.id IN (SELECT character_id
+                           FROM campaign_characters
+                           WHERE campaign_id = ?)
         `, sessionData.user.id, campaign.id);
     }
 
     return (
-        <main className="p-6">
-            {/* DM-only controls */}
-            <div className="flex justify-end mb-4 gap-2">
-                { currUserIsOwner && (<>
+        <main className="p-2">
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex gap-4">
                     <Link
-                        href={ `/campaigns/${ campaign.id }/manage` }
-                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                        href="/campaigns"
+                        className={ buttonVariants({ variant: "ghost" }) }
                     >
-                        Manage Campaign
+                        <ArrowLeft/><span>Campaigns</span>
                     </Link>
-                    <Link
-                        href={ `/campaigns/${ campaign.id }/sessions/create` }
-                        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                    >
-                        Create Session
-                    </Link>
-                </>) }
-                {/* For non-DM users who are not campaign members, display a join campaign button */}
-                {!currUserIsOwner && userCharacters.length === 0 && (
-                    <Link
-                        href={`/campaigns/join?campaignId=${campaign.id}`}
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                        Join Campaign
-                    </Link>
-                )}
-                <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
+                    <h1 className="text-3xl font-bold text-center">
+                        { campaign.name }
+                    </h1>
+                </div>
+                {/* DM-only controls */}
+                <div className="flex justify-end gap-2">
+                    { currUserIsOwner && (<>
+                        <Link
+                            href={ `/campaigns/${ campaign.id }/manage` }
+                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                        >
+                            Manage Campaign
+                        </Link>
+                        <Link
+                            href={ `/campaigns/${ campaign.id }/sessions/create` }
+                            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                        >
+                            Create Session
+                        </Link>
+                    </>) }
+                    {/* For non-DM users who are not campaign members, display a join campaign button */}
+                    { !currUserIsOwner && userCharacters.length === 0 && (
+                        <Link
+                            href={ `/campaigns/join?campaignId=${ campaign.id }` }
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        >
+                            Join Campaign
+                        </Link>
+                    ) }
+                    <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
+                </div>
             </div>
 
             {/* Campaign details */}
-            <h1 className="text-6xl font-bold text-center mb-8">
-                {campaign.name}
-            </h1>
-            <div className="max-w-3xl mx-auto space-y-4 text-lg">
-                <p>
-                    <strong>Dungeon Master:</strong> {campaign.dungeon_master_name}
-                </p>
-                <p>
-                    <strong>Created At:</strong> {campaign.created_at.toLocaleDateString("en-UK")}
-                </p>
-                <p>
-                    <strong>Max Players:</strong> {campaign.max_players}
-                </p>
-                <p>
-                    <strong>Signups Open:</strong> {campaign.signups_open ? "Yes" : "No"}
-                </p>
-                <p>
-                    <strong>Outline:</strong> {campaign.outline}
-                </p>
-                {campaign.banner && (
-                    <img
-                        src={campaign.banner}
-                        alt={`${campaign.name} Banner`}
-                        className="w-full h-auto mt-4"
+            <div className="space-y-8 flex flex-col items-center">
+                { campaign.banner && (
+                    <Image
+                        width={ 1500 }
+                        height={ 500 }
+                        src={ campaign.banner }
+                        alt={ `${ campaign.name } Banner` }
+                        className="rounded-lg max-w-[1000px]"
                     />
-                )}
+                ) }
+                <div className="max-w-3xl mx-auto space-y-4 text-lg">
+                    <p>
+                        <strong>Dungeon Master:</strong> { campaign.dungeon_master_name }
+                    </p>
+                    <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
+                </div>
             </div>
 
             {/* Sessions Section */}
@@ -221,16 +229,6 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                         No sessions have been scheduled for this campaign.
                     </p>
                 )}
-            </div>
-
-            {/* Back link */}
-            <div className="mt-8 text-center">
-                <Link
-                    href="/campaigns"
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                    Back to Campaigns
-                </Link>
             </div>
         </main>
     );

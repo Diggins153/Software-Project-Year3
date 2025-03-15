@@ -7,9 +7,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { banUser, removeContent } from "@/lib/actions/reports";
+import { banUser, ignoreReport, removeContent } from "@/lib/actions/reports";
 import { getReasons, type Report } from "@/types/Report";
 import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -57,6 +58,7 @@ export default function AdminDashboardClient({
                                                  reports,
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
+    const router = useRouter();
 
     async function handleRemoveContent(reportId: number) {
         const response = await removeContent(reportId);
@@ -80,6 +82,15 @@ export default function AdminDashboardClient({
         } else {
             toast.error(response.message);
         }
+    }
+
+    async function handleIgnoreReport(reportId: number) {
+        const response = await ignoreReport(reportId);
+
+        if (response) {
+            toast.success("Report Ignored");
+            router.refresh();
+        } else toast.error("Error in Ignoring report");
     }
 
     return (
@@ -368,6 +379,11 @@ export default function AdminDashboardClient({
                                                     onSelect={ () => handleBanUser(report.id) }
                                                 >
                                                     Ban User
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onSelect={() => handleIgnoreReport(report.id)}
+                                                >
+                                                    Ignore Report
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>

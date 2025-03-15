@@ -31,6 +31,24 @@ type CampaignViewPageProps = {
     params: Promise<{ campaignId?: string }>;
 };
 
+/**
+ * CampaignViewPage renders the view for a single campaign
+ *
+ * This page component performs the following tasks:
+ *  Authenticates the current user
+ *  Retrieves campaign details from the database
+ *  Verifies that a valid campaignId is provided otherwise it redirects
+ *  Checks if the current user is the campaign Dungeon Master (DM)
+ *  Queries sessions related to the campaign, along with session signups
+ *  Retrieves current user's characters that are part of this campaign (for non-DM users)
+ *  Retrieves all characters that belong to the campaign
+ *  Renders the campaign header, details (collapsible section), character party and sessions list
+ *  Displays DM-only controls (Manage Campaign, Create Session) and join options for non-DM users
+ *
+ * @param {CampaignViewPageProps} props - The component props containing params with campaignId
+ * @returns {Promise<JSX.Element>} A React component displaying the campaign view
+ */
+
 export default async function CampaignViewPage({ params }: CampaignViewPageProps) {
     const sessionData = await auth();
     const { campaignId } = await params;

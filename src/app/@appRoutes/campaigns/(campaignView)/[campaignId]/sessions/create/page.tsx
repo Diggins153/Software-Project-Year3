@@ -11,6 +11,20 @@ type DungeonMasterRow = {
     dungeon_master_id: number;
 };
 
+/**
+ * SessionCreatePage renders the page for creating a new session for a specific campaign
+ *
+ * This page ensures that:
+ * - The user is authenticated
+ * - The campaign exists
+ * - The current user is the Dungeon Master (DM) of the campaign
+ *
+ * If any of these conditions fail the user is redirected to the /campaigns page
+ * Otherwise the page displays a form (CreateSessionForm) to create a new session for the campaign
+ *
+ * @param {SessionCreatePageProps} props  The component props
+ * @returns {Promise<JSX.Element>} A React component that renders the session creation form
+ */
 export default async function SessionCreatePage({ params }: SessionCreatePageProps) {
     const session = await auth();
     const { campaignId } = await params;

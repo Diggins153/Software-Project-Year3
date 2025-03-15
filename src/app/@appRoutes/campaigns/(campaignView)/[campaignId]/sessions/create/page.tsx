@@ -4,25 +4,16 @@ import query from "@/lib/database";
 import CreateSessionForm from "@/components/sessions/CreateSessionForm";
 
 type SessionCreatePageProps = {
-    searchParams: Promise<{ campaignId?: string }>;
+    params: Promise<{ campaignId: number }>;
 };
 
 type DungeonMasterRow = {
     dungeon_master_id: number;
 };
 
-export default async function SessionCreatePage({ searchParams }: SessionCreatePageProps) {
+export default async function SessionCreatePage({ params }: SessionCreatePageProps) {
     const session = await auth();
-    const cId = (await searchParams).campaignId;
-    if (!cId) {
-        redirect("/campaigns");
-    }
-
-    // Convert the campaignId to a number
-    const campaignId = Number(cId);
-    if (isNaN(campaignId)) {
-        redirect("/campaigns");
-    }
+    const { campaignId } = await params;
 
     // Make sure campaign exists and that user is the DM
     const campaigns = await query<DungeonMasterRow[]>(

@@ -107,14 +107,16 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
     if (sessionData?.user && !currUserIsOwner) {
         userCharacters = await query<UserCharacter[]>(`
             SELECT c.id AS character_id, c.name AS character_name
-            FROM user_characters uc
-                     JOIN \`character\` c ON c.id = uc.character_id
-            WHERE uc.user_id = ?
-              AND c.id IN (SELECT character_id
-                           FROM campaign_characters
-                           WHERE campaign_id = ?)
+            FROM \`character\` c
+            WHERE c.owner_id = ?
+              AND c.id IN (
+                SELECT character_id
+                FROM campaign_characters
+                WHERE campaign_id = ?
+            )
         `, sessionData.user.id, campaign.id);
     }
+
 
     const charactersInCampaign = await query<Character[]>(`
         SELECT c.*

@@ -1,13 +1,15 @@
 // app/campaigns/view/page.tsx
 import ReportContent from "@/components/reports/ReportContent";
 import { buttonVariants } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
 import { artifika } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { ContentType } from "@/types/Report";
 import { Session } from "@/types/Session";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronsUpDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -95,7 +97,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
     }
 
     return (
-        <main className="p-2">
+        <main className="space-y-4">
             <div className="flex justify-between items-center mb-4">
                 <div className="flex gap-4">
                     <Link
@@ -138,26 +140,31 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
             </div>
 
             {/* Campaign details */}
-            <div className="space-y-8 flex flex-col items-center">
+            <div className="space-y-4 flex flex-col items-start">
                 { campaign.banner && (
                     <Image
                         width={ 1500 }
                         height={ 500 }
                         src={ campaign.banner }
                         alt={ `${ campaign.name } Banner` }
-                        className="rounded-lg max-w-[1000px]"
+                        className="rounded-lg max-w-[1000px] self-center"
                     />
                 ) }
-                <div className="max-w-3xl mx-auto space-y-4 text-lg">
-                    <p>
-                        <strong>Dungeon Master:</strong> { campaign.dungeon_master_name }
-                    </p>
-                    <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
+                <div className="w-full md:w-3/4 lg:w-1/2 mx-auto">
+                    <Collapsible >
+                        <CollapsibleTrigger className={ cn("flex items-center gap-2 mb-4", buttonVariants({variant: "ghost"})) }>Details <ChevronsUpDown size={ 16 }/></CollapsibleTrigger>
+                        <CollapsibleContent className="space-y-4">
+                            <p>
+                                <strong>Dungeon Master:</strong> { campaign.dungeon_master_name }
+                            </p>
+                            <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
+                        </CollapsibleContent>
+                    </Collapsible>
                 </div>
             </div>
 
             {/* Sessions Section */}
-            <div className="mt-8">
+            <div>
                 <h2 className="text-3xl font-semibold text-center mb-4">Upcoming Sessions</h2>
                 {sessions.length > 0 ? (
                     <div className="grid grid-cols-1 gap-6">

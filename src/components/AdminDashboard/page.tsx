@@ -82,16 +82,6 @@ export default function AdminDashboardClient({
         }
     }
 
-    async function handleIgnoreReport(reportId: number) {
-        const response = await ignoreReport(reportId);
-
-        if (response.ok) {
-            toast.success(response.message);
-        } else {
-            toast.error(response.message);
-        }
-    }
-
     return (
         <main className="p-6">
             {/* Navbar */}
@@ -378,11 +368,6 @@ export default function AdminDashboardClient({
                                                     onSelect={ () => handleBanUser(report.id) }
                                                 >
                                                     Ban User
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    onSelect={()=>handleIgnoreReport(report.id)}
-                                                >
-                                                    Ignore Report
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>

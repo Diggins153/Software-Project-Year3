@@ -116,6 +116,10 @@ export const CampaignFormSchema = z.object({
         .max(60_000, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
         .optional(),
     banner: z.any(),
+    isPublic: z
+        .coerce
+        .boolean()
+        .default(false),
 });
 
 export const SessionFormSchema = z.object({

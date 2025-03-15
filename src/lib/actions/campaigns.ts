@@ -41,7 +41,7 @@ export async function updateCampaign(campaignId: number, data: z.infer<typeof Ca
     const parseResult = CampaignFormSchema.safeParse(data);
 
     if (!parseResult.success) return { ok: false, message: "Please check all data is correct" };
-    const { name, banner, outline, maxPlayers, signupsOpen } = parseResult.data;
+    const { name, banner, outline, maxPlayers, signupsOpen, isPublic } = parseResult.data;
 
     // Check campaign exists
     const campaign = (await query<Campaign[]>("SELECT * FROM campaign WHERE id = ?", campaignId))[0] || null;
@@ -70,6 +70,10 @@ export async function updateCampaign(campaignId: number, data: z.infer<typeof Ca
     if (campaign.signups_open !== signupsOpen) {
         parametrizedKeys.push("signups_open = ?");
         params.push(signupsOpen);
+    }
+    if (campaign.public !== isPublic) {
+        parametrizedKeys.push("public = ?");
+        params.push(isPublic);
     }
     if (parametrizedKeys.length == 0) return { ok: true };
     let statement = `UPDATE campaign SET ${ parametrizedKeys.join(", ") } WHERE id = ?`;

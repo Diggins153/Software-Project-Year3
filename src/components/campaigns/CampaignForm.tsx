@@ -29,6 +29,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
         banner: "",
         maxPlayers: 4,
         signupsOpen: true,
+        isPublic: false,
     };
     const form = useForm<z.infer<typeof CampaignFormSchema>>({
         resolver: zodResolver(CampaignFormSchema),
@@ -57,7 +58,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
     }
 
     return <Form { ...form }>
-        <form onSubmit={ form.handleSubmit(formSubmit) } className="space-y-4">
+        <form onSubmit={ form.handleSubmit(formSubmit) } className="space-y-8">
             <FormField
                 name="banner"
                 control={ form.control }
@@ -101,6 +102,21 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
             />
 
             <FormField
+                name="outline"
+                control={ form.control }
+                render={ ({ field }) =>
+                    <FormItem>
+                        <FormLabel>Campaign Outline</FormLabel>
+                        <FormControl>
+                            <Textarea { ...field } rows={ 10 }/>
+                        </FormControl>
+                        <FormDescription>Add a capturing hook for your potential players.</FormDescription>
+                        <FormMessage/>
+                    </FormItem>
+                }
+            />
+
+            <FormField
                 name="signupsOpen"
                 control={ form.control }
                 render={ ({ field }) =>
@@ -117,15 +133,17 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
             />
 
             <FormField
-                name="outline"
+                name="isPublic"
                 control={ form.control }
                 render={ ({ field }) =>
                     <FormItem>
-                        <FormLabel>Campaign Outline</FormLabel>
-                        <FormControl>
-                            <Textarea { ...field } rows={ 10 }/>
-                        </FormControl>
-                        <FormDescription>Add a capturing hook for your potential players.</FormDescription>
+                        <div className="flex items-center space-x-4">
+                            <FormControl>
+                                <Switch checked={ field.value } onCheckedChange={ field.onChange }/>
+                            </FormControl>
+                            <FormLabel>Public Campaign</FormLabel>
+                        </div>
+                        <FormDescription>Whether the campaign is viewable by outside users</FormDescription>
                         <FormMessage/>
                     </FormItem>
                 }

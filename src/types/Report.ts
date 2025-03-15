@@ -40,17 +40,37 @@ export function getContentTypeDialogName(type: ContentType) {
 export function getReasons(type: ContentType): IIndexable<string> {
     switch (type) {
         case ContentType.USER:
-            return {};
+            return {
+                "name": "Offensive or Inappropriate name",
+                "behaviour": "Inappropriate behaviour",
+                "harassment": "Harassment or Bullying",
+                "discrimination": "Hate Speech or Discrimination",
+                "violence": "Violence or Threatening Behavior",
+                "Other": "Other",
+            };
         case ContentType.CHARACTER:
-            return {};
+            return {
+                "name": "Offensive or Inappropriate Name",
+                "image": "Inappropriate Image",
+                "bio-offensive": "Offensive Bio",
+                "bio-inappropriate": "Discriminatory or Inappropriate Bio",
+                "handle": "Offensive handle",
+                "other": "Other",
+            };
         case ContentType.CAMPAIGN:
             return {
-                "name": "Offensive Name",
+                "name": "Offensive or Inappropriate Name",
                 "outline": "Offensive Outline",
                 "banner": "Offensive Banner",
+                "other": "Other",
             };
         case ContentType.SESSION:
-            return {};
+            return {
+                "title": "Offensive or Inappropriate Title",
+                "excerpt": "Offensive or Inappropriate Excerpt",
+                "writeup": "Offensive or Inappropriate Writeup",
+                "other": "Other",
+            };
         case ContentType.MESSAGE:
             return {};
     }

@@ -7,7 +7,7 @@ import Link from "next/link";
 export default async function JoinedCampaignsPage() {
     const { user } = await ensureSession();
     const campaigns = await query<Campaign[]>(`
-        SELECT c.*, u.display_name AS dungeon_master_name
+        SELECT DISTINCT c.*, u.display_name AS dungeon_master_name
         FROM campaign_characters cc
                  JOIN campaign c ON cc.campaign_id = c.id
                  JOIN \`user\` u ON u.id = c.dungeon_master_id

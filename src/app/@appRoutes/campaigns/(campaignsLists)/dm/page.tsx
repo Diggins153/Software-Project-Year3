@@ -13,6 +13,15 @@ export default async function DungeonMasterCampaignsPage() {
         WHERE c.dungeon_master_id = ?
     `, user.id);
 
+
+    /**
+     * DungeonMasterCampaignsPage displays all campaigns created by the currently logged-in Dungeon Master
+     *
+     * This page fetches all campaigns from the database where the dungeon_master_id matches the current user's id
+     * then displays them in a responsive grid. If no campaigns are found, a message is shown
+     *
+     * @returns {Promise<JSX.Element>} A React component rendering the Dungeon Master's campaigns.
+     */
     return <main>
         { campaigns.length > 0
             ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -6,6 +6,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
+
+/**
+ * CampaignsLayout component that renders a header with campaign sections
+ * and a Create Campaign button. It also displays navigation links for
+ * various campaign categories (Joined, DM, Public) and renders child components
+ *
+ * @param {Object} props - The component props
+ * @param {Readonly<ReactNode>} props.children - The child components to be rendered
+ * @returns {JSX.Element} The CampaignsLayout component
+ */
 export default function CampaignsLayout({ children }: { children: Readonly<ReactNode> }) {
     const pathname = usePathname();
     const sections: { title: string, url: string; }[] = [

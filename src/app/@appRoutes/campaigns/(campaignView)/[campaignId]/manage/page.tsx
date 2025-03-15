@@ -50,7 +50,7 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
     }
 
     return <main>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between p-4 sticky top-0 bg-theme">
             <div className="flex gap-4">
                 <Link
                     href={ `/campaigns/${ campaignId }` }
@@ -58,7 +58,7 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
                 >
                     <ArrowLeft/><span>{ campaign.name }</span>
                 </Link>
-                <h1 className="text-3xl font-bold text-center">
+                <h1 className="text-2xl font-bold text-center">
                     Manage
                 </h1>
             </div>

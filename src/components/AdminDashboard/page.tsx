@@ -1,7 +1,19 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { banUser, ignoreReport, removeContent } from "@/lib/actions/reports";
+import { getReasons, type Report } from "@/types/Report";
+import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type RaceUsage = {
     name: string;
@@ -23,15 +35,7 @@ type UserInfo = {
     id: number;
     display_name: string;
     email: string;
-    // You can add a field for the user's characters if available.
-};
-
-type Report = {
-    id: number;
-    content_type: string;
-    content_id: number;
-    reason: string;
-    user_description: string | null;
+    characters?: { id: number; name: string }[];
 };
 
 type AdminDashboardProps = {
@@ -54,6 +58,40 @@ export default function AdminDashboardClient({
                                                  reports,
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
+    const router = useRouter();
+
+    async function handleRemoveContent(reportId: number) {
+        const response = await removeContent(reportId);
+
+        if (response.ok) {
+            toast.success(response.message);
+        } else {
+            toast.error(response.message);
+        }
+    }
+
+    // async function handleRemovePart(reportId: number) {
+    //     const response = await removePart(reportId);
+    // }
+
+    async function handleBanUser(reportId: number) {
+        const response = await banUser(reportId);
+
+        if (response.ok) {
+            toast.success("User was banned");
+        } else {
+            toast.error(response.message);
+        }
+    }
+
+    async function handleIgnoreReport(reportId: number) {
+        const response = await ignoreReport(reportId);
+
+        if (response) {
+            toast.success("Report Ignored");
+            router.refresh();
+        } else toast.error("Error in Ignoring report");
+    }
 
     return (
         <main className="p-6">
@@ -111,7 +149,7 @@ export default function AdminDashboardClient({
                 </ul>
             </nav>
 
-            {/* Content Sections */}
+            {/* Statistics Section */}
             {activeTab === "statistics" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">
@@ -214,6 +252,7 @@ export default function AdminDashboardClient({
                 </section>
             )}
 
+            {/* Campaigns Section */}
             {activeTab === "campaigns" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">Campaign List</h2>
@@ -239,9 +278,15 @@ export default function AdminDashboardClient({
                                                 Actions
                                             </summary>
                                             <ul className="mt-1 bg-white border rounded shadow">
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">Edit</li>
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">View</li>
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">Delete</li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                    Edit
+                                                </li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                    View
+                                                </li>
+                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                    Delete
+                                                </li>
                                             </ul>
                                         </details>
                                     </td>
@@ -253,6 +298,7 @@ export default function AdminDashboardClient({
                 </section>
             )}
 
+            {/* Users Section */}
             {activeTab === "users" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">User List</h2>
@@ -278,10 +324,20 @@ export default function AdminDashboardClient({
                                                 Characters
                                             </summary>
                                             <ul className="mt-1 bg-white border rounded shadow">
-                                                {/* Replace with actual user character data */}
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
-                                                    [User's Characters]
-                                                </li>
+                                                {user.characters && user.characters.length > 0 ? (
+                                                    user.characters.map((character: any) => (
+                                                        <li
+                                                            key={character.id}
+                                                            className="px-4 py-2 hover:bg-gray-100 text-black"
+                                                        >
+                                                            {character.name}
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                        No Characters
+                                                    </li>
+                                                )}
                                             </ul>
                                         </details>
                                     </td>
@@ -293,6 +349,7 @@ export default function AdminDashboardClient({
                 </section>
             )}
 
+            {/* Reports Section */}
             {activeTab === "reports" && (
                 <section className="mb-8">
                     <h2 className="text-3xl font-bold mb-4 text-center">Report List</h2>
@@ -305,17 +362,50 @@ export default function AdminDashboardClient({
                                 <th className="border px-4 py-2">Content ID</th>
                                 <th className="border px-4 py-2">Reason</th>
                                 <th className="border px-4 py-2">User Description</th>
+                                <th className="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {reports.map((report: Report) => (
+                            {reports.map((report) => (
                                 <tr key={report.id}>
                                     <td className="border px-4 py-2 text-center">{report.id}</td>
                                     <td className="border px-4 py-2">{report.content_type}</td>
                                     <td className="border px-4 py-2 text-center">{report.content_id}</td>
-                                    <td className="border px-4 py-2">{report.reason}</td>
+                                    <td className="border px-4 py-2">
+                                        { getReasons(report.content_type)[report.reason] }
+                                    </td>
                                     <td className="border px-4 py-2">
                                         {report.user_description || "N/A"}
+                                    </td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className={ buttonVariants() }>
+                                                Actions
+                                                <ChevronDown/>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuItem
+                                                    onSelect={ () => handleRemoveContent(report.id) }
+                                                >
+                                                    Delete { report.content_type }
+                                                </DropdownMenuItem>
+                                                {/*<DropdownMenuItem*/}
+                                                {/*    onSelect={ () => handleRemovePart(report.id) }*/}
+                                                {/*>*/}
+                                                {/*    Remove Offensive Part*/}
+                                                {/*</DropdownMenuItem>*/}
+                                                <DropdownMenuItem
+                                                    onSelect={ () => handleBanUser(report.id) }
+                                                >
+                                                    Ban User
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onSelect={() => handleIgnoreReport(report.id)}
+                                                >
+                                                    Ignore Report
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </td>
                                 </tr>
                             ))}

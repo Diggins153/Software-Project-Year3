@@ -18,10 +18,11 @@ type Campaign = {
     dungeon_master_name: string;
 };
 
-type User = {
+type UserInfo = {
     id: number;
     display_name: string;
     email: string;
+    characters?: { id: number; name: string }[];
 };
 
 type Report = {
@@ -78,16 +79,30 @@ export default async function AdminDashboardPage() {
     `);
 
     // Query for users (fetch id, display_name, email)
-    const users: User[] = await query<User[]>(`
+    const users: UserInfo[] = await query<UserInfo[]>(`
         SELECT id, display_name, email
         FROM \`user\`
         ORDER BY id ASC
     `);
 
+    // Query for characters (fetch id, name, and owner_id)
+    const characters: { id: number; name: string; owner_id: number }[] = await query(`
+        SELECT id, name, owner_id
+        FROM \`character\`
+        ORDER BY id ASC
+    `);
+
+    // Group characters by user (owner_id)
+    const usersWithCharacters = users.map((user) => ({
+        ...user,
+        characters: characters.filter((character) => character.owner_id === user.id),
+    }));
+
     // Query for reports
     const reports: Report[] = await query<Report[]>(`
     SELECT id, content_type, content_id, reason, user_description
     FROM reports
+    WHERE status = 'active'
     ORDER BY id ASC
   `);
 
@@ -97,11 +112,8 @@ export default async function AdminDashboardPage() {
             leastUsedRaces={leastUsedRaces}
             mostUsedClasses={mostUsedClasses}
             leastUsedClasses={leastUsedClasses}
-            // @ts-ignore
             campaigns={campaigns}
-            // @ts-ignore
-            users={users}
-            // @ts-ignore
+            users={usersWithCharacters}
             reports={reports}
         />
     );

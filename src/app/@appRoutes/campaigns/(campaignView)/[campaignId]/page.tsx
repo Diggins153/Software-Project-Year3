@@ -106,8 +106,8 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
     `, campaignId)
 
     return (
-        <main className="space-y-4">
-            <div className="flex justify-between items-center mb-4">
+        <main>
+            <div className="flex justify-between items-center mb-4 sticky top-0 bg-theme p-4">
                 <div className="flex gap-4">
                     <Link
                         href="/campaigns"
@@ -115,7 +115,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                     >
                         <ArrowLeft/><span>Campaigns</span>
                     </Link>
-                    <h1 className="text-3xl font-bold text-center">
+                    <h1 className="text-2xl font-bold text-center">
                         { campaign.name }
                     </h1>
                 </div>
@@ -197,6 +197,8 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                     </Collapsible>
                 </div>
             </div>
+
+            {/*<div className="block min-h-[2000px] min-w-10 bg-red-500"></div>*/}
 
             {/* Sessions Section */}
             <div>

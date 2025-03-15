@@ -10,6 +10,8 @@ export type User = {
     role: Role;
 
     gdpr_consent: Date;
+
+    banned: boolean;
 }
 
 export type Role = "user" | "admin";

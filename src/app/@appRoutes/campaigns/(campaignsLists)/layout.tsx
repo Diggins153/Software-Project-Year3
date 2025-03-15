@@ -20,7 +20,8 @@ export default function CampaignsLayout({ children }: { children: Readonly<React
                 Create Campaign
             </Link>
         </div>
-        <div className="mx-auto flex gap-2">
+        <div className="mx-auto flex gap-2 mb-4">
+            {/* Styles from shadcn/tabs */}
             <div className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
                 { sections.map(({ title, url }) => (
                     <Link

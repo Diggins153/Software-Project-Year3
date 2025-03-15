@@ -102,6 +102,7 @@ export default async function AdminDashboardPage() {
     const reports: Report[] = await query<Report[]>(`
     SELECT id, content_type, content_id, reason, user_description
     FROM reports
+    WHERE status = 'active'
     ORDER BY id ASC
   `);
 

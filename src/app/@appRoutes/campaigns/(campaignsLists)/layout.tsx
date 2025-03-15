@@ -22,7 +22,7 @@ export default function CampaignsLayout({ children }: { children: Readonly<React
             </Link>
         </div>
         <div className="mx-auto flex gap-2 mb-4">
-            {/* Styles from shadcn/tabs */}
+            {/* Styles from shadcn/tabs */ }
             <div className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
                 { sections.map(({ title, url }) => (
                     <Link
@@ -43,6 +43,8 @@ export default function CampaignsLayout({ children }: { children: Readonly<React
             {/*    <SearchIcon/>*/ }
             {/*</Link>*/ }
         </div>
-        { children }
+        <div className="p-1.5">
+            { children }
+        </div>
     </>;
 }

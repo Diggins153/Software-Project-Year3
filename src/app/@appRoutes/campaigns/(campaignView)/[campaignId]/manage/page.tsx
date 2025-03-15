@@ -36,6 +36,7 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
         maxPlayers: campaign.max_players,
         outline: campaign.outline,
         signupsOpen: campaign.signups_open,
+        isPublic: campaign.public,
     };
 
     if (!campaign.invite) {

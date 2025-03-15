@@ -58,7 +58,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
     }
 
     return <Form { ...form }>
-        <form onSubmit={ form.handleSubmit(formSubmit) } className="space-y-4">
+        <form onSubmit={ form.handleSubmit(formSubmit) } className="space-y-8">
             <FormField
                 name="banner"
                 control={ form.control }

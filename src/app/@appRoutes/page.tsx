@@ -16,12 +16,12 @@ export default async function AuthenticatedHome() {
     `, user.id);
 
     return <main>
-        <div className="p-2 bg-theme">
+        <div className="p-2 bg-theme mb-4">
             <h1 className="text-3xl font-bold">Welcome, { user.display_name }</h1>
         </div>
         <div className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto p-1.5">
             <div>
-                <h2 className="text-2xl font-bold">Upcoming Sessions</h2>
+                <h2 className="text-2xl font-bold mb-2">Upcoming Sessions</h2>
                 { upcomingSessions.map(session => (
                     <Link key={ session.id } href={ `/campaigns/${ session.campaign_id }` }>
                         <div className="py-2 px-3 rounded bg-yellow-200 text-black">

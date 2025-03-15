@@ -110,7 +110,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                         Manage Campaign
                     </Link>
                     <Link
-                        href={ `/campaigns/session/create?campaignId=${ campaign.id }` }
+                        href={ `/src/app/@appRoutes/campaigns/(campaignView)/session/create?campaignId=${ campaign.id }` }
                         className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                     >
                         Create Session
@@ -197,7 +197,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                                     {userCharacters.length > 0 && !userHasJoined && (
                                         <div className="mt-4">
                                             <Link
-                                                href={`/campaigns/session/join?sessionId=${sess.id}&campaignId=${campaign.id}&characterId=${userCharacters[0].character_id}`}
+                                                href={`/src/app/@appRoutes/campaigns/(campaignView)/session/join?sessionId=${ sess.id }&campaignId=${ campaign.id }&characterId=${ userCharacters[0].character_id }`}
                                                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                                             >
                                                 Join Session
@@ -208,7 +208,7 @@ export default async function CampaignViewPage({ searchParams }: CampaignViewPag
                                     {currUserIsOwner && (
                                         <div className="mt-4">
                                             <Link
-                                                href={`/campaigns/session/delete?sessionId=${sess.id}&campaignId=${campaign.id}`}
+                                                href={`/src/app/@appRoutes/campaigns/(campaignView)/session/delete?sessionId=${ sess.id }&campaignId=${ campaign.id }`}
                                                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                                             >
                                                 Delete Session

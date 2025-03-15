@@ -1,47 +1,40 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import query from "@/lib/database";
 import { Campaign } from "@/types/Campaign";
-import styles from "./CampaignCard.module.css";
+import Image from "next/image";
 
-export default function CampaignCard({ campaign }: { campaign: Campaign }) {
-    const router = useRouter();
-    const {
-        id: campaign_id,
-        name: campaign_name,
-        created_at,
-        max_players,
-        outline,
-        dungeon_master_name,
-    } = campaign;
-
-    const handleClick = () => {
-        console.log("Campaign clicked, id:", campaign_id);
-        // Navigate to the campaign view page with the campaign id as a query parameter.
-        router.push(`/campaigns/view?campaignId=${campaign_id}`);
-    };
+export default async function CampaignCard({ campaign }: { campaign: Campaign }) {
+    const nextSessionDate = (await query<{ session_date?: Date }[]>(`
+        SELECT session_date
+        FROM session
+        WHERE campaign_id = ?
+        ORDER BY session_date
+        LIMIT 1
+    `, campaign.id))[0]?.session_date || null;
 
     return (
-        <button type="button" onClick={handleClick} className={styles.cardButton}>
-            <div className={styles.card}>
-                <div className={styles.textSection}>
-                    <div className={styles.header}>
-                        <h2>{campaign_name}</h2>
-                    </div>
-                    <div className={styles.body}>
-                        <p><strong>ID:</strong> {campaign_id}</p>
-                        <p>
-                            <strong>Created At:</strong> {created_at.toLocaleDateString("en-UK")}
-                        </p>
-                        <p><strong>Dungeon Master:</strong> {dungeon_master_name}</p>
-                        <p><strong>Max Players:</strong> {max_players}</p>
-                        <p><strong>Outline:</strong> {outline}</p>
-                    </div>
-                </div>
-                <div className={styles.imageSection}>
-                    <img className={styles.cardImage} src="https://placehold.co/400" alt="Placeholder" />
+        <div className="bg-yellow-200 text-black rounded-lg overflow-clip">
+            <div className="">
+                { !!campaign.banner
+                    ? <Image
+                        src={ campaign.banner }
+                        alt=""
+                        width={ 1500 }
+                        height={ 500 }
+                        className="object-center"
+                    />
+                    : <div className="aspect-[3/1] bg-white"></div>
+                }
+            </div>
+            <div className="p-2 flex justify-between items-center">
+                <div>
+                    <h4 className="md:text-lg font-bold">{ campaign.name }</h4>
+                    <p className="text-sm md:text-base">by { campaign.dungeon_master_name }</p>
+                    <p>{ nextSessionDate != null
+                        ? `Next: ${ nextSessionDate.toLocaleDateString("en-UK") }`
+                        : "No session scheduled"
+                    }</p>
                 </div>
             </div>
-        </button>
+        </div>
     );
 }

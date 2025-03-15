@@ -7,6 +7,8 @@ export type Character = {
 
     class_id: number;
 
+    class_name?: string;
+
     level: number;
 
     race_id: number;

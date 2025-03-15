@@ -1,7 +1,19 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { banUser, ignoreReport, removeContent } from "@/lib/actions/reports";
+import { getReasons, type Report } from "@/types/Report";
+import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type RaceUsage = {
     name: string;
@@ -26,14 +38,6 @@ type UserInfo = {
     // You can add a field for the user's characters if available.
 };
 
-type Report = {
-    id: number;
-    content_type: string;
-    content_id: number;
-    reason: string;
-    user_description: string | null;
-};
-
 type AdminDashboardProps = {
     mostUsedRaces: RaceUsage[];
     leastUsedRaces: RaceUsage[];
@@ -54,6 +58,40 @@ export default function AdminDashboardClient({
                                                  reports,
                                              }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState("statistics");
+    const router = useRouter();
+
+    async function handleRemoveContent(reportId: number) {
+        const response = await removeContent(reportId);
+
+        if (response.ok) {
+            toast.success(response.message);
+        } else {
+            toast.error(response.message);
+        }
+    }
+
+    // async function handleRemovePart(reportId: number) {
+    //     const response = await removePart(reportId);
+    // }
+
+    async function handleBanUser(reportId: number) {
+        const response = await banUser(reportId);
+
+        if (response.ok) {
+            toast.success("User was banned");
+        } else {
+            toast.error(response.message);
+        }
+    }
+
+    async function handleIgnoreReport(reportId: number) {
+        const response = await ignoreReport(reportId);
+
+        if (response) {
+            toast.success("Report Ignored");
+            router.refresh();
+        } else toast.error("Error in Ignoring report");
+    }
 
     return (
         <main className="p-6">
@@ -305,6 +343,7 @@ export default function AdminDashboardClient({
                                 <th className="border px-4 py-2">Content ID</th>
                                 <th className="border px-4 py-2">Reason</th>
                                 <th className="border px-4 py-2">User Description</th>
+                                <th className="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -313,9 +352,41 @@ export default function AdminDashboardClient({
                                     <td className="border px-4 py-2 text-center">{report.id}</td>
                                     <td className="border px-4 py-2">{report.content_type}</td>
                                     <td className="border px-4 py-2 text-center">{report.content_id}</td>
-                                    <td className="border px-4 py-2">{report.reason}</td>
+                                    <td className="border px-4 py-2">
+                                        { getReasons(report.content_type)[report.reason] }
+                                    </td>
                                     <td className="border px-4 py-2">
                                         {report.user_description || "N/A"}
+                                    </td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className={ buttonVariants() }>
+                                                Actions
+                                                <ChevronDown/>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuItem
+                                                    onSelect={ () => handleRemoveContent(report.id) }
+                                                >
+                                                    Delete { report.content_type }
+                                                </DropdownMenuItem>
+                                                {/*<DropdownMenuItem*/}
+                                                {/*    onSelect={ () => handleRemovePart(report.id) }*/}
+                                                {/*>*/}
+                                                {/*    Remove Offensive Part*/}
+                                                {/*</DropdownMenuItem>*/}
+                                                <DropdownMenuItem
+                                                    onSelect={ () => handleBanUser(report.id) }
+                                                >
+                                                    Ban User
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onSelect={() => handleIgnoreReport(report.id)}
+                                                >
+                                                    Ignore Report
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </td>
                                 </tr>
                             ))}

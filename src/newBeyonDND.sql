@@ -29,7 +29,8 @@ CREATE TABLE `user` (
                         email VARCHAR(64) UNIQUE NOT NULL,
                         password VARCHAR(128) NOT NULL,
                         role ENUM('user','admin') NOT NULL DEFAULT 'user',
-                        gdpr_consent DATETIME
+                        gdpr_consent DATETIME,
+                        banned BOOL NOT NULL DEFAULT FALSE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- RACES
@@ -181,5 +182,6 @@ CREATE TABLE reports (
                          content_id INT UNSIGNED,
                          reason VARCHAR(32),
                          user_description VARCHAR(256),
+                         status ENUM('active', 'user_banned', 'content_removed', 'ignored') NOT NULL DEFAULT 'active',
                          FOREIGN KEY (author_id) REFERENCES `user`(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -101,7 +101,7 @@ export const EditCharacterFormSchema = z.object({
         .max(50, "Handle cannot have more than 50 characters")
         .regex(/[a-z0-9-]+/, "Handle can only contain lowercase letters and - (dashes)")
         .transform(value => value.replaceAll(/(?![a-z0-9-]+)./g, "")),
-    image: z.any(),
+    image: ZImage,
 })
     .superRefine(async (arg, ctx) => {
         const isUnique = await isHandleUnique(arg.handle, arg.id);
@@ -131,7 +131,7 @@ export const CampaignFormSchema = z.object({
         .string()
         .max(60_000, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
         .optional(),
-    banner: z.any(),
+    banner: ZImage,
     isPublic: z
         .coerce
         .boolean()

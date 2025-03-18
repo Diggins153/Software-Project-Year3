@@ -2,7 +2,10 @@ import DeleteAccountDialog from "@/components/settings/DeleteAccountDialog";
 import UpdateUserForm from "@/components/settings/UpdateUserForm";
 import { ensureSession } from "@/lib/utils";
 import { User } from "@/types/User";
-
+/**
+ * Settings page where users can update their details or delete their account.
+ * @returns {Promise<JSX.Element>} - The settings page UI.
+ */
 export default async function SettingsPage() {
     const { user } = await ensureSession();
 

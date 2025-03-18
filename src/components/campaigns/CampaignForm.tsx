@@ -21,6 +21,20 @@ type UpdateCampaignFormProps = {
     campaignId?: number,
 }
 
+/**
+ * Props type for CampaignForm component.
+ * @typedef {Object} UpdateCampaignFormProps
+ * @property {z.infer<typeof CampaignFormSchema>} [formData] - The campaign form data for editing
+ * @property {boolean} [asEditForm=false] - Indicates if the form is used for editing an existing campaign
+ * @property {number} [campaignId] - The ID of the campaign being edited
+ */
+
+/**
+ * CampaignForm component for creating or editing campaigns.
+ *
+ * @param {UpdateCampaignFormProps} props - Component props.
+ * @returns {JSX.Element} - The campaign form UI.
+ */
 export default function CampaignForm({ formData, asEditForm = false, campaignId }: UpdateCampaignFormProps) {
     const router = useRouter();
     const defaultValues = !!formData ? formData : {

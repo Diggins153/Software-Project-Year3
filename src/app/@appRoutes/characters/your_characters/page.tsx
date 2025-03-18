@@ -5,6 +5,12 @@ import { Character } from "@/types/Character";
 import { CharacterCard, EmptyCharacterCard } from "@/components/characters/CharacterCard";
 import Link from "next/link";
 
+/**
+ * Characters page that displays the user's created characters
+ * Users can view their characters or create a new on
+ *
+ * @returns {Promise<JSX.Element>} - The characters page ui
+ */
 export default async function CharactersPage() {
     const session = await auth();
 

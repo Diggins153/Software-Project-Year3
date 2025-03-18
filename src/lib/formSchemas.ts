@@ -3,6 +3,22 @@ import { isHandleUnique, isValidClass, isValidRace, userExists } from "@/lib/for
 import { ContentType } from "@/types/Report";
 import { z } from "zod";
 
+const fileSizeLimit = 4e+6; // 4MB to Byte
+const ZImage = z
+    .any()
+    .refine(file => {
+        if (typeof window === "undefined") {
+            return file[0] instanceof File;
+        } else return true;
+    }, "Not a file")
+    .refine(file =>
+            [
+                "image/png",
+                "image/jpeg",
+            ].includes(file[0].type)
+        , "Unsupported file type")
+    .refine(file => file[0].size <= fileSizeLimit, "File exceeds maximum size");
+
 export const LoginFormSchema = z.object({
     email: z
         .string()

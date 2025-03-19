@@ -7,6 +7,8 @@ import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 import { User } from "@/types/User";
+import { put } from "@vercel/blob";
+import { ResultSetHeader } from "mysql2";
 import { z } from "zod";
 
 export async function createCampaign(formValues: z.infer<typeof CampaignFormSchema>): Promise<
@@ -14,22 +16,31 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
     { ok: false, errors: z.inferFormattedError<typeof CampaignFormSchema> } |
     { ok: true, message: string, redirect: string }
 > {
-    const session = await auth();
-    if (!session || !session.user) {
-        return { ok: false, message: "Something went wrong." };
-    }
+    const { user } = await ensureSession();
     const parseResult = CampaignFormSchema.safeParse(formValues);
 
     if (!parseResult.success) return { ok: false, errors: parseResult.error.format() };
 
     const { name, banner, outline, maxPlayers, signupsOpen } = parseResult.data;
+    const bannerExt = (<File>banner[0]).name.split(".")[1] ?? ".png";
+    const bannerBody = await (<File>banner[0]).bytes();
 
-    // TODO: Upload banner to blob storage
-    // TODO: Set banner in query
+    const result: ResultSetHeader = await query(`
+        INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/1500x500', ?)
+    `, name, user.id, signupsOpen, maxPlayers, outline);
 
-    await query(
-        "INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/720/200', ?)",
-        name, session.user.id, signupsOpen, maxPlayers, outline);
+    // Naming convention: /banners/$campaignId.{file extension}
+    try {
+        const uploadResult = await put(`/banners/${ result.insertId }.${ bannerExt }`, Buffer.from(bannerBody), { access: "public" });
+        await query(`
+            UPDATE campaign
+            SET banner = ?
+            WHERE id = ?
+        `, uploadResult.url, result.insertId);
+    } catch (e) {
+        console.error(e);
+        return { ok: false, message: "Campaign created, but banner failed to upload" };
+    }
 
     return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };
 }

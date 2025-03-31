@@ -21,7 +21,18 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
     if (!parseResult.success) return { ok: false, errors: parseResult.error.format() };
 
     const { name, outline, maxPlayers, signupsOpen } = parseResult.data;
+
+    // Create campaign
+    const insertResult: ResultSetHeader = await query(`
+        INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/1500x500', ?)
+    `, name, user.id, signupsOpen, maxPlayers, outline);
+
+    // Handle banner (if any)
     const bannerParse = await ZImage.safeParseAsync(parseResult.data.banner[0]);
+    if (typeof bannerParse.data == "undefined") {
+        // Banner not set, return
+        return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };
+    }
     if (!bannerParse.success) {
         return { ok: false, message: "Invalid banner image." };
     }
@@ -33,10 +44,6 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
     })();
     const bannerBody = await banner.bytes();
 
-    const insertResult: ResultSetHeader = await query(`
-        INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/1500x500', ?)
-    `, name, user.id, signupsOpen, maxPlayers, outline);
-
     // Naming convention: /banners/$campaignId.$fileExtension
     try {
         const uploadResult = await put(`/banners/${ insertResult.insertId }.${ bannerExt }`, Buffer.from(bannerBody), { access: "public" });
@@ -47,10 +54,8 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
         `, uploadResult.url, insertResult.insertId);
     } catch (e) {
         console.error(e);
-        return { ok: false, message: "Campaign created, but banner failed to upload" };
     }
-
-    return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };
+    return { ok: true, message: "Campaign created, but banner failed to upload", redirect: "/campaigns" };
 }
 
 export async function updateCampaign(campaignId: number, data: z.infer<typeof CampaignFormSchema>): Promise<

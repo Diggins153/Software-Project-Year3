@@ -102,7 +102,9 @@ export async function updateCampaign(campaignId: number, data: z.infer<typeof Ca
         parametrizedKeys.push("name = ?");
         params.push(name);
     }
-    // TODO: Banner
+    if (!!banner && (Array.isArray(banner) && banner.length > 0)) {
+        await setCampaignBanner(campaignId, banner[0]);
+    }
     if (campaign.outline !== outline) {
         parametrizedKeys.push("outline = ?");
         params.push(outline);

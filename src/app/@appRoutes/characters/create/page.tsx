@@ -41,19 +41,6 @@ export default async function CharactersPage() {
                             </div>
                         </div>
                     </Link>
-
-                    <Link href="/characters/your_characters">
-                        <div className="w-[300px] h-[750px] p-6 bg-yellow-200 rounded-lg shadow-lg border border-gray-200 transition-all duration-200 hover:shadow-2xl hover:scale-105 hover:border-gray-400 active:scale-95 cursor-pointer flex flex-col">
-                            <div className="mt-4 text-center">
-                                <h2 className="text-xl font-bold text-gray-800">View Your Characters</h2>
-                            </div>
-                            <div className="flex-grow flex items-center justify-center">
-                                <p className="text-gray-600 text-center">
-                                    See a detailed list of all your created characters and manage them.
-                                </p>
-                            </div>
-                        </div>
-                    </Link>
                 </div>
 
             </div>

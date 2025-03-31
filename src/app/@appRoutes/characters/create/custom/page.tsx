@@ -233,25 +233,6 @@ export default function CreateCharacter() {
                     </section>
                 ) }
             </div>
-
-            <style jsx>{ `
-                .flip-card-inner {
-                    transform-style: preserve-3d;
-                }
-
-                .flip-card-front,
-                .flip-card-back {
-                    backface-visibility: hidden;
-                }
-
-                .flip-card-back {
-                    transform: rotateY(180deg);
-                }
-
-                .group:hover .flip-card-inner {
-                    transform: rotateY(180deg);
-                }
-            ` }</style>
         </main>
     );
 }

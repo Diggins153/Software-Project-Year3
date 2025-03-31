@@ -36,13 +36,15 @@ CREATE TABLE `user` (
 -- RACES
 CREATE TABLE race (
                       id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                      name VARCHAR(40) NOT NULL
+                      name VARCHAR(40) NOT NULL,
+                      description VARCHAR(256) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CLASSES
 CREATE TABLE `class` (
                          id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                         name VARCHAR(40) NOT NULL
+                         name VARCHAR(40) NOT NULL,
+                         description VARCHAR(256) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CHARACTERS

@@ -45,20 +45,15 @@ export async function createCharacter(
 }
 
 
-export async function createPremadeCharacter(
-    name: string,
-    race: string,
-    charClass: string,
-    level: number,
-) {
+export async function createPremadeCharacter(name: string, raceId: number, classId: number, level: number) {
     const session = await auth();
     if (!session || !session.user) return redirect("/");
 
-    const dbRace = (await query<Race[]>("SELECT id, name FROM race WHERE name = ?", race))[0] || null;
+    const dbRace = (await query<Race[]>("SELECT id FROM race WHERE id = ?", raceId))[0] || null;
     if (dbRace == null) {
         return { ok: false, message: "Invalid race" };
     }
-    const dbClass = (await query<Class[]>("SELECT id, name FROM `class` WHERE name = ?", charClass))[0] || null;
+    const dbClass = (await query<Class[]>("SELECT id FROM `class` WHERE id = ?", classId))[0] || null;
     if (dbClass == null) {
         return { ok: false, message: "Invalid class" };
     }

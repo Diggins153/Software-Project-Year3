@@ -103,6 +103,8 @@ export async function updateCampaign(campaignId: number, data: z.infer<typeof Ca
         params.push(name);
     }
     if (!!banner && (Array.isArray(banner) && banner.length > 0)) {
+        if (campaign.banner)
+            await del(campaign.banner);
         await setCampaignBanner(campaignId, banner[0]);
     }
     if (campaign.outline !== outline) {

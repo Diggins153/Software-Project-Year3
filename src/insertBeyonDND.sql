@@ -45,11 +45,11 @@ INSERT INTO `character` (id, name, handle, class_id, level, race_id, image, owne
                                                                          (19, 'Grog the Mighty', 1, 1, '@Grog the Mighty', 2, 'https://placehold.co/75.png', 6),
                                                                          (20, 'Grog the Mighty', 1, 1, '@Grog the Mighty', 2, '', 7);
 
-INSERT INTO campaign (id, name, signups_open, dungeon_master_id, max_players, banner, outline) VALUES
-                                                                                                   (3, 'The Lost Caverns', 1, 2, 5, '', 'Explore the deep mysteries of the lost caverns.'),
-                                                                                                   (4, 'Forest of Whispers', 1, 3, 4, '', 'Uncover secrets in a magical forest.'),
-                                                                                                   (5, 'Dreadhold Escape', 1, 4, 6, '', 'Break out from the high-security fortress Dreadhold.'),
-                                                                                                   (6, 'Desert of Shadows', 1, 5, 8, '', 'Survive the treacherous sands of the Desert of Shadows.');
+INSERT INTO campaign (id, name, signups_open, dungeon_master_id, max_players, outline) VALUES
+                                                                                                   (3, 'The Lost Caverns', 1, 2, 5, 'Explore the deep mysteries of the lost caverns.'),
+                                                                                                   (4, 'Forest of Whispers', 1, 3, 4, 'Uncover secrets in a magical forest.'),
+                                                                                                   (5, 'Dreadhold Escape', 1, 4, 6, 'Break out from the high-security fortress Dreadhold.'),
+                                                                                                   (6, 'Desert of Shadows', 1, 5, 8, 'Survive the treacherous sands of the Desert of Shadows.');
 
 INSERT INTO campaign_characters (campaign_id, character_id, status) VALUES
                                                                        (3, 13, 'joined'),

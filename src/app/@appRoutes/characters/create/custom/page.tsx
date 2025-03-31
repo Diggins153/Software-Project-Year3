@@ -1,37 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Class } from "@/types/Class";
+import { Race } from "@/types/Race";
+import { Loader2, MoveLeftIcon, MoveRightIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { createCharacter } from "@/lib/actions/characters";
 
-const classes = [
-    { name: "Barbarian", description: "A fierce warrior who can enter a battle rage." },
-    { name: "Bard", description: "An inspiring magician whose power echoes the music of creation." },
-    { name: "Cleric", description: "A priestly champion who wields divine magic in service of a higher power." },
-    { name: "Druid", description: "A priest of the Old Faith, wielding the powers of nature and adopting animal forms." },
-    { name: "Fighter", description: "A master of martial combat, skilled with a variety of weapons and armor." },
-    { name: "Monk", description: "A master of martial arts, harnessing the power of the body and mind." },
-    { name: "Paladin", description: "A holy warrior bound to a sacred oath." },
-    { name: "Ranger", description: "A warrior who uses martial prowess and nature magic to combat threats." },
-    { name: "Rogue", description: "A scoundrel who uses stealth and trickery to overcome obstacles and enemies." },
-    { name: "Sorcerer", description: "A spellcaster who draws on inherent magic from a gift or bloodline." },
-    { name: "Warlock", description: "A wielder of magic derived from a bargain with an extraplanar entity." },
-    { name: "Wizard", description: "A scholarly magic-user capable of manipulating the structures of reality." }
-];
-
-const races = [
-    { name: "Human", description: "Versatile and ambitious, humans are found in every corner of the world." },
-    { name: "Elf", description: "Graceful, keen, and long-lived, elves possess a natural affinity for magic." },
-    { name: "Dwarf", description: "Sturdy and resilient, dwarves are known for their craftsmanship and combat prowess." },
-    { name: "Halfling", description: "Small and nimble, halflings are resourceful and cheerful." },
-    { name: "Gnome", description: "Inventive and quirky, gnomes have an innate knack for magic and engineering." },
-    { name: "Half-Elf", description: "Blending human versatility with elven grace, half-elves are charismatic and adaptable." },
-    { name: "Half-Orc", description: "Strong and tough, half-orcs combine human determination with orcish might." },
-    { name: "Tiefling", description: "Descendants of infernal heritage, tieflings possess a mysterious and charismatic nature." },
-    { name: "Dragonborn", description: "Born of draconic lineage, dragonborn combine honor with elemental power." },
-    { name: "Aarakocra", description: "Avian humanoids that soar through the skies with grace and agility." },
-    { name: "Genasi", description: "Born of the elemental planes, Genasi carry the essence of air, earth, fire, or water." },
-    { name: "Goliath", description: "Towering and strong, goliaths are a hardy people of the mountains." }
-];
 /**
  * Character creation component with a step-by-step selection process
  * @returns {JSX.Element} - The character creation UI
@@ -41,12 +15,44 @@ export default function CreateCharacter() {
     const [currentPage, setCurrentPage] = useState(0);
     const totalPages = 3;
     const pageTitles = ["Race Selection", "Class Selection", "Review & Confirm"];
+    const [isLoading, setLoading] = useState<boolean>(true);
+    const [classes, setClasses] = useState<Class[]>([]);
+    const [races, setRaces] = useState<Race[]>([]);
 
     const [selectedRace, setSelectedRace] = useState<string | null>(null);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
     const [characterName, setCharacterName] = useState("");
     const [level, setLevel] = useState(1);
     const [isSaving, setIsSaving] = useState(false);
+
+    useEffect(() => {
+        async function fetchClasses() {
+            const res = await fetch("/api/classes", { cache: "force-cache" });
+            if (res.ok) {
+                setClasses(await res.json());
+            } else {
+
+            }
+        }
+
+        async function fetchRaces() {
+            const res = await fetch("/api/races", { cache: "force-cache" });
+            if (res.ok) {
+                setRaces(await res.json());
+            }
+        }
+
+        fetchClasses();
+        fetchRaces();
+    }, []);
+
+    useEffect(() => {
+        if (classes.length > 0 && races.length > 0) {
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
+    }, [classes, races]);
 
     /**
      * Navigates to the next page if possible
@@ -76,32 +82,32 @@ export default function CreateCharacter() {
         }
     };
 
+    if (isLoading) return <main className="flex items-center justify-center gap-4 relative p-8 min-h-screen">
+        <Loader2 className="animate-spin ease-in-out" size={48}/>
+        <h3 className="text-xl">Loading Character Creator</h3>
+    </main>
 
     return (
         <main className="relative p-8 min-h-screen">
             {/* Pagination Navigation with Arrow Buttons, Labels, and Hover Effects */}
             <div className="absolute top-4 left-4 flex items-center group">
                 {currentPage > 0 && (
-                    <>
-                        <button onClick={goBack} className="text-3xl mr-2 transition-all duration-300 group-hover:scale-125">
-                            &larr;
-                        </button>
+                    <button onClick={goBack} className="flex items-center text-3xl mr-2 transition-all duration-300 group-hover:scale-125 origin-left">
+                        <MoveLeftIcon/>
                         <span className="text-lg font-medium transition-all duration-300 opacity-0 group-hover:opacity-100">
-              Previous: {pageTitles[currentPage - 1]}
-            </span>
-                    </>
+                            Previous: {pageTitles[currentPage - 1]}
+                        </span>
+                    </button>
                 )}
             </div>
             <div className="absolute top-4 right-4 flex items-center group">
                 {currentPage < totalPages - 1 && (
-                    <>
-            <span className="text-lg font-medium mr-2 transition-all duration-300 opacity-0 group-hover:opacity-100">
-              Next: {pageTitles[currentPage + 1]}
-            </span>
-                        <button onClick={goNext} className="text-3xl transition-all duration-300 group-hover:scale-125">
-                            &rarr;
-                        </button>
-                    </>
+                    <button onClick={goNext} className="flex items-center text-3xl transition-all duration-300 group-hover:scale-125 origin-right">
+                        <span className="text-lg font-medium mr-2 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                            Next: {pageTitles[currentPage + 1]}
+                        </span>
+                        <MoveRightIcon/>
+                    </button>
                 )}
             </div>
 

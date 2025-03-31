@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
-import { CampaignFormSchema, TransferOwnershipFormSchema } from "@/lib/formSchemas";
+import { CampaignFormSchema, TransferOwnershipFormSchema, ZImage } from "@/lib/formSchemas";
 import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
@@ -12,8 +12,7 @@ import { ResultSetHeader } from "mysql2";
 import { z } from "zod";
 
 export async function createCampaign(formValues: z.infer<typeof CampaignFormSchema>): Promise<
-    { ok: false, message?: string } |
-    { ok: false, errors: z.inferFormattedError<typeof CampaignFormSchema> } |
+    { ok: false, message?: string, errors?: z.inferFormattedError<typeof CampaignFormSchema> } |
     { ok: true, message: string, redirect: string }
 > {
     const { user } = await ensureSession();
@@ -21,22 +20,31 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
 
     if (!parseResult.success) return { ok: false, errors: parseResult.error.format() };
 
-    const { name, banner, outline, maxPlayers, signupsOpen } = parseResult.data;
-    const bannerExt = (<File>banner[0]).name.split(".")[1] ?? ".png";
-    const bannerBody = await (<File>banner[0]).bytes();
+    const { name, outline, maxPlayers, signupsOpen } = parseResult.data;
+    const bannerParse = await ZImage.safeParseAsync(parseResult.data.banner[0]);
+    if (!bannerParse.success) {
+        return { ok: false, message: "Invalid banner image." };
+    }
+    const banner: File = bannerParse.data;
+    const bannerExt = (() => {
+        const fragments = banner.name.split(".");
+        if (fragments.length < 2) return "";
+        else return fragments[1];
+    })();
+    const bannerBody = await banner.bytes();
 
-    const result: ResultSetHeader = await query(`
+    const insertResult: ResultSetHeader = await query(`
         INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/1500x500', ?)
     `, name, user.id, signupsOpen, maxPlayers, outline);
 
-    // Naming convention: /banners/$campaignId.{file extension}
+    // Naming convention: /banners/$campaignId.$fileExtension
     try {
-        const uploadResult = await put(`/banners/${ result.insertId }.${ bannerExt }`, Buffer.from(bannerBody), { access: "public" });
+        const uploadResult = await put(`/banners/${ insertResult.insertId }.${ bannerExt }`, Buffer.from(bannerBody), { access: "public" });
         await query(`
             UPDATE campaign
             SET banner = ?
             WHERE id = ?
-        `, uploadResult.url, result.insertId);
+        `, uploadResult.url, insertResult.insertId);
     } catch (e) {
         console.error(e);
         return { ok: false, message: "Campaign created, but banner failed to upload" };

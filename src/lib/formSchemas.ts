@@ -4,7 +4,7 @@ import { ContentType } from "@/types/Report";
 import { z } from "zod";
 
 const fileSizeLimit = 4e+6; // 4MB to Byte
-const ZImage = z
+export const ZImage = z
     .any()
     .superRefine((file, ctx) => {
         if (!Array.isArray(file)) return;

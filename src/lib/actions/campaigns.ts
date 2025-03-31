@@ -11,6 +11,44 @@ import { put, del } from "@vercel/blob";
 import { ResultSetHeader } from "mysql2";
 import { z } from "zod";
 
+/**
+ * Set a banner image to a campaign.
+ * @param campaignId - The ID of the campaign to be updated
+ * @param banner - Form value of the banner. Further validation is done by the function.
+ * @returns boolean - True if banner has been uploaded and saved to the campaign. False if validation failed or otherwise.
+ */
+async function setCampaignBanner(campaignId: number, banner: File | File[]): Promise<boolean> {
+    // If by any chance the file is an array, get only the first element
+    if (Array.isArray(banner)) {
+        banner = banner[0];
+    }
+    const bannerParse = await ZImage.safeParseAsync(banner);
+    if (!bannerParse.success || typeof bannerParse.data === "undefined") return false;
+
+    // Get banner file extension
+    const bannerExt = (() => {
+        const fragments = banner.name.split(".");
+        if (fragments.length < 2) return "";
+        else return fragments[1];
+    })();
+    // Get file contents
+    const bannerBody = await banner.bytes();
+
+    // Naming convention: /banners/$campaignId.$fileExtension
+    try {
+        const uploadResult = await put(`/banners/${ campaignId }.${ bannerExt }`, Buffer.from(bannerBody), { access: "public" });
+        await query(`
+            UPDATE campaign
+            SET banner = ?
+            WHERE id = ?
+        `, uploadResult.url, campaignId);
+    } catch (e) {
+        console.error(e);
+    }
+
+    return true;
+}
+
 export async function createCampaign(formValues: z.infer<typeof CampaignFormSchema>): Promise<
     { ok: false, message?: string, errors?: z.inferFormattedError<typeof CampaignFormSchema> } |
     { ok: true, message: string, redirect: string }
@@ -20,42 +58,23 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
 
     if (!parseResult.success) return { ok: false, errors: parseResult.error.format() };
 
-    const { name, outline, maxPlayers, signupsOpen } = parseResult.data;
+    const { name, banner, outline, maxPlayers, signupsOpen, isPublic } = parseResult.data;
 
     // Create campaign
     const insertResult: ResultSetHeader = await query(`
-        INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/1500x500', ?)
-    `, name, user.id, signupsOpen, maxPlayers, outline);
+        INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, outline, public) VALUE (?, ?, ?, ?, ?, ?)
+    `, name, user.id, signupsOpen, maxPlayers, outline, isPublic);
 
-    // Handle banner (if any)
-    const bannerParse = await ZImage.safeParseAsync(parseResult.data.banner[0]);
-    if (typeof bannerParse.data == "undefined") {
-        // Banner not set, return
-        return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };
+    let message = `${ name } created.`;
+    if (!!banner) {
+        const bannerSet = await setCampaignBanner(insertResult.insertId, banner[0]);
+        if (!bannerSet) message = `${ name } created, but banner failed to upload`;
     }
-    if (!bannerParse.success) {
-        return { ok: false, message: "Invalid banner image." };
-    }
-    const banner: File = bannerParse.data;
-    const bannerExt = (() => {
-        const fragments = banner.name.split(".");
-        if (fragments.length < 2) return "";
-        else return fragments[1];
-    })();
-    const bannerBody = await banner.bytes();
-
-    // Naming convention: /banners/$campaignId.$fileExtension
-    try {
-        const uploadResult = await put(`/banners/${ insertResult.insertId }.${ bannerExt }`, Buffer.from(bannerBody), { access: "public" });
-        await query(`
-            UPDATE campaign
-            SET banner = ?
-            WHERE id = ?
-        `, uploadResult.url, insertResult.insertId);
-    } catch (e) {
-        console.error(e);
-    }
-    return { ok: true, message: "Campaign created, but banner failed to upload", redirect: "/campaigns" };
+    return {
+        ok: true,
+        message,
+        redirect: "/campaigns",
+    };
 }
 
 export async function updateCampaign(campaignId: number, data: z.infer<typeof CampaignFormSchema>): Promise<

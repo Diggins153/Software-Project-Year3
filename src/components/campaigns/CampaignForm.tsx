@@ -56,19 +56,20 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
     const [ bannerImageUrl, setBannerImageUr ] = useState<string>();
 
     useEffect(() => {
-        // Did user supply their own image?
-        if (form.formState.dirtyFields.banner) {
-            setBannerImageUr(URL.createObjectURL(form.getValues("banner")[0]));
-        }
         // Is this an edit form?
-        else if (!!formData?.banner) {
+        if (!!formData?.banner) {
             setBannerImageUr(formData.banner);
         }
         // No Image
         else {
             setBannerImageUr(undefined);
         }
-    }, [ formData?.banner, form.formState.dirtyFields.banner ]);
+
+        return () => {
+            if (bannerImageUrl?.startsWith("blob:"))
+                URL.revokeObjectURL(bannerImageUrl);
+        };
+    }, [ formData?.banner ]);
 
     async function formSubmit(data: z.infer<typeof CampaignFormSchema>) {
         if (asEditForm) {
@@ -107,6 +108,10 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
                                         type="file"
                                         accept="image/png,image/jpeg" { ...bannerRef }
                                         className="border-none file:border file:border-solid file:active:border-accent file:rounded-md file:px-4 px-0"
+                                        onChange={ e => {
+                                            const file = e.target.files?.[0];
+                                            setBannerImageUr(file ? URL.createObjectURL(file) : undefined);
+                                        } }
                                     />
                                 </FormControl>
                             </div>

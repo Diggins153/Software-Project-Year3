@@ -1,10 +1,15 @@
 import TopBar from "@/components/TopBar";
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Character } from "@/types/Character";
 import { CharacterCard, EmptyCharacterCard } from "@/components/characters/CharacterCard";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+    title: "Characters",
+};
 
 /**
  * Characters page that displays the user's created characters

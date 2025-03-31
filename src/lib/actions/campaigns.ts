@@ -7,7 +7,7 @@ import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 import { User } from "@/types/User";
-import { put } from "@vercel/blob";
+import { put, del } from "@vercel/blob";
 import { ResultSetHeader } from "mysql2";
 import { z } from "zod";
 
@@ -149,12 +149,6 @@ export async function transferOwnership(data: z.infer<typeof TransferOwnershipFo
     };
 }
 
-type CampaignRow = {
-    id: number;
-    name: string;
-    dungeon_master_id: number;
-};
-
 export async function deleteCampaign(
     campaignId: number,
 ): Promise<{ ok: boolean; message: string; redirect?: string }> {
@@ -165,7 +159,7 @@ export async function deleteCampaign(
     }
 
     // 2) Retrieve the campaign to ensure it exists and check ownership
-    const [ campaign ] = await query<CampaignRow[]>(
+    const [ campaign ] = await query<Campaign[]>(
         "SELECT * FROM campaign WHERE id = ?",
         [ campaignId ],
     );
@@ -199,6 +193,10 @@ export async function deleteCampaign(
 
     // 4d) Delete sessions themselves
     await query("DELETE FROM session WHERE campaign_id = ?", [ campaignId ]);
+
+    // Delete the campaign banner
+    if (campaign.banner)
+        await del(campaign.banner);
 
     // 5) Finally, delete the campaign
     await query("DELETE FROM campaign WHERE id = ?", [ campaignId ]);

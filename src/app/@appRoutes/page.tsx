@@ -1,3 +1,4 @@
+import TopBar from "@/components/TopBar";
 import query from "@/lib/database";
 import { ensureSession } from "@/lib/utils";
 import { Session } from "@/types/Session";
@@ -16,9 +17,7 @@ export default async function AuthenticatedHome() {
     `, user.id);
 
     return <main>
-        <div className="p-2 bg-theme mb-4">
-            <h1 className="text-3xl font-bold">Welcome, { user.display_name }</h1>
-        </div>
+        <TopBar title={`Welcome, ${user.display_name}`}/>
         <div className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto p-1.5">
             <div>
                 <h2 className="text-2xl font-bold mb-2">Upcoming Sessions</h2>

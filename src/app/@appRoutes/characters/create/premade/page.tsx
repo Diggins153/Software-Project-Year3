@@ -5,7 +5,7 @@ import { createPremadeCharacter } from "@/lib/actions/characters";
 import { PremadeCharacter } from "@/types/PremadeCharacter";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import "./page.css"
+import "../cards.css"
 
 /**
  * Component for displaying and selecting premade characters

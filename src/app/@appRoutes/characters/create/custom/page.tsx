@@ -6,6 +6,7 @@ import { Race } from "@/types/Race";
 import { Loader2, MoveLeftIcon, MoveRightIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createCharacter } from "@/lib/actions/characters";
+import "../cards.css"
 
 /**
  * Character creation component with a step-by-step selection process

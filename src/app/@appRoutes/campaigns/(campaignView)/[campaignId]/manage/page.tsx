@@ -2,8 +2,8 @@ import CampaignActionsList from "@/components/campaigns/CampaignActionsList";
 import CampaignForm from "@/components/campaigns/CampaignForm";
 import InviteDialog from "@/components/campaigns/InviteDialog";
 import ManageCampaignCharacters from "@/components/campaigns/ManageCampaignCharacters";
+import TopBar from "@/components/TopBar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { buttonVariants } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import query from "@/lib/database";
 import { CampaignFormSchema } from "@/lib/formSchemas";
@@ -11,9 +11,7 @@ import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { CharacterStatus } from "@/types/CampaignCharacters";
 import { Character } from "@/types/Character";
-import { ArrowLeft } from "lucide-react";
 import { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -50,6 +48,7 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
         outline: campaign.outline,
         signupsOpen: campaign.signups_open,
         isPublic: campaign.public,
+        banner: campaign.banner,
     };
 
     if (!campaign.invite) {
@@ -63,20 +62,12 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
     }
 
     return <main>
-        <div className="flex items-center justify-between p-4 sticky top-0 bg-theme">
-            <div className="flex gap-4">
-                <Link
-                    href={ `/campaigns/${ campaignId }` }
-                    className={ buttonVariants({ variant: "ghost" }) }
-                >
-                    <ArrowLeft/><span>{ campaign.name }</span>
-                </Link>
-                <h1 className="text-2xl font-bold text-center">
-                    Manage
-                </h1>
-            </div>
-            <InviteDialog inviteCode={ campaign.invite } campaignId={ campaignId }/>
-        </div>
+        <TopBar
+            title={ "Manage" }
+            backText={ campaign.name }
+            backLink={ `/campaigns/${ campaignId }` }
+            endContent={ <InviteDialog inviteCode={ campaign.invite } campaignId={ campaignId }/> }
+        />
         <div className="w-full md:w-1/2 mx-auto space-y-8">
             <div>
                 <CampaignForm formData={ formData } asEditForm campaignId={ campaignId }/>

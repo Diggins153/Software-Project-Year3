@@ -1,6 +1,7 @@
 // app/campaigns/view/page.tsx
 import { CharacterCard, EmptyCharacterCard } from "@/components/characters/CharacterCard";
 import ReportContent from "@/components/reports/ReportContent";
+import TopBar from "@/components/TopBar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { leaveCampaign } from "@/lib/actions/campaigns";
@@ -12,7 +13,7 @@ import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 import { ContentType } from "@/types/Report";
 import { Session } from "@/types/Session";
-import { ArrowLeft, ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -128,54 +129,48 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
 
     return (
         <main>
-            <div className="flex justify-between items-center mb-4 sticky top-0 bg-theme p-4">
-                <div className="flex gap-4">
-                    <Link
-                        href="/campaigns"
-                        className={ buttonVariants({ variant: "ghost" }) }
-                    >
-                        <ArrowLeft/><span className="hidden lg:inline">Campaigns</span>
-                    </Link>
-                    <h1 className="text-2xl font-bold text-center">
-                        { campaign.name }
-                    </h1>
-                </div>
-                {/* DM-only controls */ }
-                <div className="flex justify-end gap-2">
-                    { currUserIsOwner && (<>
-                        <Link
-                            href={ `/campaigns/${ campaign.id }/manage` }
-                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                        >
-                            Manage Campaign
-                        </Link>
-                        <Link
-                            href={ `/campaigns/${ campaign.id }/sessions/create` }
-                            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                        >
-                            Create Session
-                        </Link>
-                    </>) }
-                    {/* For non-DM users who are not campaign members, display a join campaign button */ }
-                    {/*{ !currUserIsOwner && userCharacters.length === 0 && (*/ }
-                    {/*    <Link*/ }
-                    {/*        href={ `/campaigns/join?campaignId=${ campaign.id }` }*/ }
-                    {/*        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"*/ }
-                    {/*    >*/ }
-                    {/*        Join Campaign*/ }
-                    {/*    </Link>*/ }
-                    {/*) }*/ }
-                    { !currUserIsOwner && userCharacters.length > 0 &&
-                        <form
-                            action={ async () => {
-                                "use server";
-                                await leaveCampaign(campaign.id);
-                            } }
-                        ><Button type="submit" variant="destructive">Leave</Button></form>
-                    }
-                    <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
-                </div>
-            </div>
+            <TopBar
+                title={ campaign.name }
+                backText={ "Campaigns" }
+                backLink={ "/campaigns" }
+                endContent={
+                    /* DM-only controls */
+                    <div className="flex justify-end gap-2">
+                        { currUserIsOwner && (<>
+                            <Link
+                                href={ `/campaigns/${ campaign.id }/manage` }
+                                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                            >
+                                Manage Campaign
+                            </Link>
+                            <Link
+                                href={ `/campaigns/${ campaign.id }/sessions/create` }
+                                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                            >
+                                Create Session
+                            </Link>
+                        </>) }
+                        {/* For non-DM users who are not campaign members, display a join campaign button */ }
+                        {/*{ !currUserIsOwner && userCharacters.length === 0 && (*/ }
+                        {/*    <Link*/ }
+                        {/*        href={ `/campaigns/join?campaignId=${ campaign.id }` }*/ }
+                        {/*        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"*/ }
+                        {/*    >*/ }
+                        {/*        Join Campaign*/ }
+                        {/*    </Link>*/ }
+                        {/*) }*/ }
+                        { !currUserIsOwner && userCharacters.length > 0 &&
+                            <form
+                                action={ async () => {
+                                    "use server";
+                                    await leaveCampaign(campaign.id);
+                                } }
+                            ><Button type="submit" variant="destructive">Leave</Button></form>
+                        }
+                        <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
+                    </div>
+                }
+            />
 
             {/* Campaign details */ }
             <div className="space-y-4 flex flex-col items-start">

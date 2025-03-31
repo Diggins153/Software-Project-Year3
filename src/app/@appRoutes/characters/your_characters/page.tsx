@@ -1,3 +1,4 @@
+import TopBar from "@/components/TopBar";
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
 import { redirect } from "next/navigation";
@@ -26,31 +27,28 @@ export default async function CharactersPage() {
         WHERE c.owner_id = ?
     `, session.user.id);
 
-    return (
-        <main>
-            <div className="space-y-4">
-                <h1 className="text-3xl font-bold text-center">Your Characters</h1>
-                <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                    <Link href="/characters/create">
-                        <CharacterCard
-                            character={ {
-                                id: "create",
-                                name: "Create a new Character",
-                                image: "/icons/plus.png",
-                            } as any as Character }
-                        />
-                    </Link>
-                    { characters.length > 0
-                        ? characters.map(character => (
-                            <Link key={ character.id } href={ `/characters/${ character.id }` }>
-                                <CharacterCard
-                                    character={ character }
-                                />
-                            </Link>
-                        ))
-                        : <EmptyCharacterCard message={ "Oh no! You don't have any characters" }/> }
-                </div>
+    return <main>
+        <TopBar title="Your Characters"/>
+        <div className="space-y-4 p-1.5">
+            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+                <Link href="/characters/create">
+                    <CharacterCard
+                        character={ {
+                            id: "create",
+                            name: "Create a new Character",
+                            image: "/icons/plus.png",
+                        } as any as Character }
+                    />
+                </Link>
+                { characters.length > 0
+                    ? characters.map(character =>
+                        <Link key={ character.id } href={ `/characters/${ character.id }` }>
+                            <CharacterCard
+                                character={ character }
+                            />
+                        </Link>)
+                    : <EmptyCharacterCard message={ "Oh no! You don't have any characters" }/> }
             </div>
-        </main>
-    );
+        </div>
+    </main>;
 }

@@ -40,7 +40,7 @@ export default function PremadeCharactersPage() {
 
     return (
         <main>
-            <TopBar title="Choose from Premade Characters" backText="Create Character" backLink="/characters/create"/>
+            <TopBar title="Choose from Premade Characters" backText="Characters" backLink="/characters"/>
             <div className="p-6 grid grid-cols-4 gap-2 ml-36">
                 { premadeCharacters.map((character) => (
                     <div

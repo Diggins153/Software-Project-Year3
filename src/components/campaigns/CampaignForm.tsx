@@ -85,7 +85,9 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
 
             if (response.ok) {
                 toast(response.message);
-                redirect(response.redirect!);
+                redirect(response.redirect);
+            } else {
+                toast.error("Could not create campaign");
             }
         }
     }
@@ -122,7 +124,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
                             You can upload PNG and JPG files, capped at 4 MiB. For more details, <ExtraLink
                             href="/faq"
                             inNewTab
-                            icon={ <Icon iconNode={tabArrowUpRight}/> }
+                            icon={ <Icon iconNode={ tabArrowUpRight }/> }
                         >check out the FAQ page</ExtraLink>.
                         </FormDescription>
                         <FormMessage/>

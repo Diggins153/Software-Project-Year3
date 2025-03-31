@@ -66,7 +66,7 @@ export async function createCampaign(formValues: z.infer<typeof CampaignFormSche
     `, name, user.id, signupsOpen, maxPlayers, outline, isPublic);
 
     let message = `${ name } created.`;
-    if (!!banner) {
+    if (!!banner && (Array.isArray(banner) && banner.length > 0)) {
         const bannerSet = await setCampaignBanner(insertResult.insertId, banner[0]);
         if (!bannerSet) message = `${ name } created, but banner failed to upload`;
     }

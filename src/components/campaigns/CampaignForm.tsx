@@ -43,7 +43,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
     const defaultValues = !!formData ? formData : {
         name: "",
         outline: "",
-        banner: [],
+        banner: "",
         maxPlayers: 4,
         signupsOpen: true,
         isPublic: false,

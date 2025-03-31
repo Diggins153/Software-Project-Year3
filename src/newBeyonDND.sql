@@ -96,7 +96,7 @@ CREATE TABLE campaign (
                           signups_open BOOL NOT NULL DEFAULT FALSE,
                           dungeon_master_id INT UNSIGNED NOT NULL,
                           max_players INT NOT NULL DEFAULT 4,
-                          banner VARCHAR(255) NOT NULL,
+                          banner VARCHAR(255) NULL,
                           outline TEXT NOT NULL,
                           public BOOL DEFAULT FALSE,
                           invite VARCHAR(7) DEFAULT NULL,

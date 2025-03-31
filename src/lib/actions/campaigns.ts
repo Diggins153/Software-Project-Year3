@@ -2,36 +2,79 @@
 
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
-import { CampaignFormSchema, TransferOwnershipFormSchema } from "@/lib/formSchemas";
+import { CampaignFormSchema, TransferOwnershipFormSchema, ZImage } from "@/lib/formSchemas";
 import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 import { User } from "@/types/User";
+import { put, del } from "@vercel/blob";
+import { ResultSetHeader } from "mysql2";
 import { z } from "zod";
 
+/**
+ * Set a banner image to a campaign.
+ * @param campaignId - The ID of the campaign to be updated
+ * @param banner - Form value of the banner. Further validation is done by the function.
+ * @returns boolean - True if banner has been uploaded and saved to the campaign. False if validation failed or otherwise.
+ */
+async function setCampaignBanner(campaignId: number, banner: File | File[]): Promise<boolean> {
+    // If by any chance the file is an array, get only the first element
+    if (Array.isArray(banner)) {
+        banner = banner[0];
+    }
+    const bannerParse = await ZImage.safeParseAsync(banner);
+    if (!bannerParse.success || typeof bannerParse.data === "undefined") return false;
+
+    // Get banner file extension
+    const bannerExt = (() => {
+        const fragments = banner.name.split(".");
+        if (fragments.length < 2) return "";
+        else return fragments[1];
+    })();
+    // Get file contents
+    const bannerBody = await banner.bytes();
+
+    // Naming convention: /banners/$campaignId.$fileExtension
+    try {
+        const uploadResult = await put(`/banners/${ campaignId }.${ bannerExt }`, Buffer.from(bannerBody), { access: "public" });
+        await query(`
+            UPDATE campaign
+            SET banner = ?
+            WHERE id = ?
+        `, uploadResult.url, campaignId);
+    } catch (e) {
+        console.error(e);
+    }
+
+    return true;
+}
+
 export async function createCampaign(formValues: z.infer<typeof CampaignFormSchema>): Promise<
-    { ok: false, message?: string } |
-    { ok: false, errors: z.inferFormattedError<typeof CampaignFormSchema> } |
+    { ok: false, message?: string, errors?: z.inferFormattedError<typeof CampaignFormSchema> } |
     { ok: true, message: string, redirect: string }
 > {
-    const session = await auth();
-    if (!session || !session.user) {
-        return { ok: false, message: "Something went wrong." };
-    }
+    const { user } = await ensureSession();
     const parseResult = CampaignFormSchema.safeParse(formValues);
 
     if (!parseResult.success) return { ok: false, errors: parseResult.error.format() };
 
-    const { name, banner, outline, maxPlayers, signupsOpen } = parseResult.data;
+    const { name, banner, outline, maxPlayers, signupsOpen, isPublic } = parseResult.data;
 
-    // TODO: Upload banner to blob storage
-    // TODO: Set banner in query
+    // Create campaign
+    const insertResult: ResultSetHeader = await query(`
+        INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, outline, public) VALUE (?, ?, ?, ?, ?, ?)
+    `, name, user.id, signupsOpen, maxPlayers, outline, isPublic);
 
-    await query(
-        "INSERT INTO campaign (name, dungeon_master_id, signups_open, max_players, banner, outline) VALUE (?, ?, ?, ?, 'https://placehold.co/720/200', ?)",
-        name, session.user.id, signupsOpen, maxPlayers, outline);
-
-    return { ok: true, message: `${ name } created.`, redirect: "/campaigns" };
+    let message = `${ name } created.`;
+    if (!!banner && (Array.isArray(banner) && banner.length > 0)) {
+        const bannerSet = await setCampaignBanner(insertResult.insertId, banner[0]);
+        if (!bannerSet) message = `${ name } created, but banner failed to upload`;
+    }
+    return {
+        ok: true,
+        message,
+        redirect: "/campaigns",
+    };
 }
 
 export async function updateCampaign(campaignId: number, data: z.infer<typeof CampaignFormSchema>): Promise<
@@ -59,7 +102,11 @@ export async function updateCampaign(campaignId: number, data: z.infer<typeof Ca
         parametrizedKeys.push("name = ?");
         params.push(name);
     }
-    // TODO: Banner
+    if (!!banner && (Array.isArray(banner) && banner.length > 0)) {
+        if (campaign.banner)
+            await del(campaign.banner);
+        await setCampaignBanner(campaignId, banner[0]);
+    }
     if (campaign.outline !== outline) {
         parametrizedKeys.push("outline = ?");
         params.push(outline);
@@ -130,12 +177,6 @@ export async function transferOwnership(data: z.infer<typeof TransferOwnershipFo
     };
 }
 
-type CampaignRow = {
-    id: number;
-    name: string;
-    dungeon_master_id: number;
-};
-
 export async function deleteCampaign(
     campaignId: number,
 ): Promise<{ ok: boolean; message: string; redirect?: string }> {
@@ -146,7 +187,7 @@ export async function deleteCampaign(
     }
 
     // 2) Retrieve the campaign to ensure it exists and check ownership
-    const [ campaign ] = await query<CampaignRow[]>(
+    const [ campaign ] = await query<Campaign[]>(
         "SELECT * FROM campaign WHERE id = ?",
         [ campaignId ],
     );
@@ -180,6 +221,10 @@ export async function deleteCampaign(
 
     // 4d) Delete sessions themselves
     await query("DELETE FROM session WHERE campaign_id = ?", [ campaignId ]);
+
+    // Delete the campaign banner
+    if (campaign.banner)
+        await del(campaign.banner);
 
     // 5) Finally, delete the campaign
     await query("DELETE FROM campaign WHERE id = ?", [ campaignId ]);

@@ -6,18 +6,32 @@ import { z } from "zod";
 const fileSizeLimit = 4e+6; // 4MB to Byte
 const ZImage = z
     .any()
-    .refine(file => {
+    .superRefine((file, ctx) => {
+        if (!Array.isArray(file)) return;
         if (typeof window === "undefined") {
-            return file[0] instanceof File;
-        } else return true;
-    }, "Not a file")
-    .refine(file =>
-            [
-                "image/png",
-                "image/jpeg",
-            ].includes(file[0].type)
-        , "Unsupported file type")
-    .refine(file => file[0].size <= fileSizeLimit, "File exceeds maximum size");
+            if (file[0] instanceof File) ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Not a file",
+                path: ctx.path,
+            });
+        }
+    })
+    .superRefine((file, ctx) => {
+        if (!Array.isArray(file)) return;
+
+        if (![
+            "image/png",
+            "image/jpeg",
+        ].includes(file[0].type)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Unsupported file type", path: ctx.path });
+        }
+    })
+    .superRefine((file, ctx) => {
+        if (!Array.isArray(file)) return;
+        if (file[0].size >= fileSizeLimit) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: "File exceeds maximum size", path: ctx.path });
+        }
+    });
 
 export const LoginFormSchema = z.object({
     email: z
@@ -101,7 +115,9 @@ export const EditCharacterFormSchema = z.object({
         .max(50, "Handle cannot have more than 50 characters")
         .regex(/[a-z0-9-]+/, "Handle can only contain lowercase letters and - (dashes)")
         .transform(value => value.replaceAll(/(?![a-z0-9-]+)./g, "")),
-    image: ZImage,
+    image: z
+        .any()
+        .optional(),
 })
     .superRefine(async (arg, ctx) => {
         const isUnique = await isHandleUnique(arg.handle, arg.id);
@@ -131,7 +147,9 @@ export const CampaignFormSchema = z.object({
         .string()
         .max(60_000, "Damn, that's long 😳 Unfortunately we cannot save such a long text. Please make it at most 65 000 characters or less.")
         .optional(),
-    banner: ZImage,
+    banner: z
+        .any()
+        .optional(),
     isPublic: z
         .coerce
         .boolean()

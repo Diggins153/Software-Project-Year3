@@ -61,7 +61,7 @@ export default function CharacterActionsDropdown({ character, races, classes, ch
                     <PencilIcon/>
                     <span>Edit Details</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={ () => setLevelsOpen(true) } disabled={ true }>
+                <DropdownMenuItem onSelect={ () => setLevelsOpen(true) } disabled className="hidden">
                     <ShapesIcon/>
                     <span>Edit Levels</span>
                 </DropdownMenuItem>

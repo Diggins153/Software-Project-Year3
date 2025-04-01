@@ -40,14 +40,14 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
             id: character.id,
             name: character.name,
             handle: character.handle,
-            image: "https://placehold.co/75.png",
+            image: character.image,
             raceId: character.race_id,
             classId: character.class_id,
             level: character.level,
         },
     });
 
-    // const imageRef = form.register("image");
+    const imageRef = form.register("image");
 
     async function handleUpdateCharacter(data: z.infer<typeof EditCharacterFormSchema>) {
         const response = await updateCharacter(character.id, data);
@@ -62,6 +62,20 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
 
     return <Form { ...form }>
         <form onSubmit={ form.handleSubmit(handleUpdateCharacter) } className="space-y-8">
+            <FormField
+                control={ form.control }
+                name="image"
+                render={ () =>
+                    <FormItem>
+                        <FormLabel>Image</FormLabel>
+                        <FormControl>
+                            <Input type="file" { ...imageRef }/>
+                        </FormControl>
+                        <FormMessage></FormMessage>
+                    </FormItem>
+                }
+            />
+
             <FormField
                 control={ form.control }
                 name="name"
@@ -161,20 +175,6 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
                     </FormItem>
                 }
             />
-
-            {/*<FormField*/ }
-            {/*    control={ form.control }*/ }
-            {/*    name="image"*/ }
-            {/*    render={ () =>*/ }
-            {/*        <FormItem>*/ }
-            {/*            <FormLabel>Image</FormLabel>*/ }
-            {/*            <FormControl>*/ }
-            {/*                <Input type="file" { ...imageRef }/>*/ }
-            {/*            </FormControl>*/ }
-            {/*            <FormMessage></FormMessage>*/ }
-            {/*        </FormItem>*/ }
-            {/*    }*/ }
-            {/*/>*/ }
 
             <div className="flex justify-end">
                 <Button type="submit">Save Changes</Button>

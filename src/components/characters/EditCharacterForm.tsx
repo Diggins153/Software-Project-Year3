@@ -23,12 +23,16 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export default function EditCharacterForm({ character, races, onSubmit, classes }: {
-    character: Character,
-    races: Race[],
-    onSubmit?(): void,
-    classes: Class[],
-}) {
+interface EditCharacterFormProps {
+    character: Character;
+    races: Race[];
+    classes: Class[];
+    isEditForm: boolean;
+
+    onSubmit?(): void;
+}
+
+export default function EditCharacterForm({ character, races, onSubmit, classes }: EditCharacterFormProps) {
     const router = useRouter();
     const form = useForm<z.infer<typeof EditCharacterFormSchema>>({
         resolver: zodResolver(EditCharacterFormSchema),

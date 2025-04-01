@@ -26,7 +26,7 @@ export default async function CampaignCard({ campaign }: { campaign: Campaign })
                         alt=""
                         width={ 1500 }
                         height={ 500 }
-                        className="object-center"
+                        className="campaign-banner"
                     />
                     : <div className="aspect-[3/1] bg-white"></div>
                 }

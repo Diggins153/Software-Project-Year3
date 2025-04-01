@@ -121,7 +121,7 @@ export default function CampaignForm({ formData, asEditForm = false, campaignId 
                                     alt="File Input Preview"
                                     width={ 1500 }
                                     height={ 500 }
-                                    className="rounded-md mb-2 mt-1"
+                                    className="rounded-md mb-2 mt-1 campaign-banner"
                                 />
                             }
                         </div>

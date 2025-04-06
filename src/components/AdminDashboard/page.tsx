@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import {deleteCharacter} from "@/lib/actions/characters";
 
 type RaceUsage = {
     name: string;
@@ -325,12 +326,18 @@ export default function AdminDashboardClient({
                                             </summary>
                                             <ul className="mt-1 bg-white border rounded shadow">
                                                 {user.characters && user.characters.length > 0 ? (
-                                                    user.characters.map((character: any) => (
+                                                    user.characters.map((character) => (
                                                         <li
                                                             key={character.id}
-                                                            className="px-4 py-2 hover:bg-gray-100 text-black"
+                                                            className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-black"
                                                         >
-                                                            {character.name}
+                                                            <span>{character.name}</span>
+                                                            <button
+                                                                className="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                                                // onClick handler can be added here for delete functionality
+                                                            >
+                                                                Delete
+                                                            </button>
                                                         </li>
                                                     ))
                                                 ) : (
@@ -348,6 +355,7 @@ export default function AdminDashboardClient({
                     </div>
                 </section>
             )}
+
 
             {/* Reports Section */}
             {activeTab === "reports" && (

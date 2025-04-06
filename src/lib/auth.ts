@@ -1,4 +1,4 @@
-import { authConfig } from "@/auth.config";
+import { authConfig } from "../../auth.config";
 import { fetchUser } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import bcrypt from "bcryptjs";

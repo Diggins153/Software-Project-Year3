@@ -3,10 +3,22 @@ import { auth } from "@/lib/auth";
 import query from "@/lib/database";
 import { deleteSession } from "@/lib/actions/sessions";
 
+/**
+ * Props type for DeleteSessionPage component
+ * @typedef {Object} DeleteSessionPageProps
+ * @property {Promise<{ sessionId?: string; campaignId?: string }>} searchParams - URL search parameters.
+ */
 type DeleteSessionPageProps = {
     searchParams: Promise<{ sessionId?: string; campaignId?: string }>;
 };
 
+/**
+ * Handles session deletion logic for a campaign
+ * Redirects users based on authentication and authorization checks
+ *
+ * @param {DeleteSessionPageProps} props - Component props
+ * @returns {Promise<void>} - This function does not return JSX, as it only handles redirection.
+ */
 export default async function DeleteSessionPage({ searchParams }: DeleteSessionPageProps) {
     const sessionData = await auth();
     const { sessionId, campaignId } = await searchParams;

@@ -20,6 +20,7 @@ export default async function JoinedCampaignsPage() {
                  JOIN campaign c ON cc.campaign_id = c.id
                  JOIN \`user\` u ON u.id = c.dungeon_master_id
         WHERE cc.character_id IN (SELECT id FROM \`character\` WHERE owner_id = ?)
+          AND cc.status = 'joined'
     `, user.id);
 
 

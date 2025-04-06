@@ -7,33 +7,35 @@ INSERT INTO user (id, display_name, email, password, role, gdpr_consent) VALUES
                                                                              (6, 'Brick', 'Brick@gmail.com', '$2a$12$57LZiiL09iLk.b/0rYOzquJqkne5jIR0ZL5DZygppn7NsRVSIU3nG', 'user', '2025-02-26 15:24:10'),
                                                                              (7, 'Meepo', 'Meepo@gmail.com', '$2a$12$.edi/VdkYCWXMEx/OhwQ8uiRXhQvVe0MEahtnCNlf98h3p4Cr6JPu', 'user', '2025-02-27 22:56:06');
 
-INSERT INTO race (id, name) VALUES
-                                (2, 'Goliath'),
-                                (3, 'Elf'),
-                                (4, 'Human'),
-                                (5, 'Half-Orc'),
-                                (6, 'Dwarf'),
-                                (7, 'Tiefling'),
-                                (8, 'Halfling'),
-                                (9, 'Dragonborn'),
-                                (10, 'Gnome'),
-                                (11, 'Half-Elf'),
-                                (12, 'Orc'),
-                                (13, 'Goblin');
+INSERT INTO race (id, name, description) VALUES
+                                (1, 'Goliath', 'Towering and strong, goliaths are a hardy people of the mountains.'),
+                                (2, 'Elf','Graceful, keen, and long-lived, elves possess a natural affinity for magic.'),
+                                (3, 'Human','Versatile and ambitious, humans are found in every corner of the world.'),
+                                (4, 'Half-Orc','Strong and tough, half-orcs combine human determination with orcish might.'),
+                                (5, 'Dwarf','Sturdy and resilient, dwarves are known for their craftsmanship and combat prowess.'),
+                                (6, 'Tiefling', 'Descendants of infernal heritage, tieflings possess a mysterious and charismatic nature.'),
+                                (7, 'Halfling', 'Small and nimble, halflings are resourceful and cheerful.'),
+                                (8, 'Dragonborn','Born of draconic lineage, dragonborn combine honor with elemental power.'),
+                                (9, 'Gnome','Inventive and quirky, gnomes have an innate knack for magic and engineering.'),
+                                (10, 'Half-Elf','Blending human versatility with elven grace, half-elves are charismatic and adaptable.'),
+                                (11, 'Orc','Orcs are equipped with gifts to help them wander great plains, vast caverns, and churning seas.'),
+                                (12, 'Goblin','Many goblins pursue their own destinies, escaping the plots of both archfey and gods.'),
+                                (13, 'Aarakocra', 'Avian humanoids that soar through the skies with grace and agility.'),
+                                (14, 'Genasi', 'Born of the elemental planes, Genasi carry the essence of air, earth, fire, or water.');
 
-INSERT INTO class (id, name) VALUES
-                                 (1, 'Barbarian'),
-                                 (2, 'Rogue'),
-                                 (3, 'Wizard'),
-                                 (4, 'Paladin'),
-                                 (5, 'Fighter'),
-                                 (6, 'Warlock'),
-                                 (7, 'Sorcerer'),
-                                 (8, 'Ranger'),
-                                 (9, 'Monk'),
-                                 (10, 'Artificer'),
-                                 (11, 'Bard'),
-                                 (12, 'Druid');
+INSERT INTO class (id, name, description) VALUES
+                                 (1, 'Barbarian', 'A fierce warrior who can enter a battle rage.'),
+                                 (2, 'Rogue', 'A scoundrel who uses stealth and trickery to overcome obstacles and enemies.'),
+                                 (3, 'Wizard', 'A scholarly magic-user capable of manipulating the structures of reality.'),
+                                 (4, 'Paladin', 'A holy warrior bound to a sacred oath.'),
+                                 (5, 'Fighter', 'A master of martial combat, skilled with a variety of weapons and armor.'),
+                                 (6, 'Warlock', 'A wielder of magic derived from a bargain with an extraplanar entity.'),
+                                 (7, 'Sorcerer', 'A spellcaster who draws on inherent magic from a gift or bloodline.'),
+                                 (8, 'Ranger', 'A warrior who uses martial prowess and nature magic to combat threats.'),
+                                 (9, 'Monk', 'A master of martial arts, harnessing the power of the body and mind.'),
+                                 (10, 'Artificer', 'Masters of invention, artificers use ingenuity and magic to unlock extraordinary capabilities in objects.'),
+                                 (11, 'Bard', 'An inspiring magician whose power echoes the music of creation.'),
+                                 (12, 'Druid', 'A priest of the Old Faith, wielding the powers of nature and adopting animal forms.');
 
 INSERT INTO `character` (id, name, handle, class_id, level, race_id, image, owner_id) VALUES
                                                                          (13, 'Grog the Mighty', 'handle:Grog the Mighty', 1, 1, 2, 'https://placehold.co/75.png', 7),
@@ -45,11 +47,11 @@ INSERT INTO `character` (id, name, handle, class_id, level, race_id, image, owne
                                                                          (19, 'Grog the Mighty', 1, 1, '@Grog the Mighty', 2, 'https://placehold.co/75.png', 6),
                                                                          (20, 'Grog the Mighty', 1, 1, '@Grog the Mighty', 2, '', 7);
 
-INSERT INTO campaign (id, name, signups_open, dungeon_master_id, max_players, banner, outline) VALUES
-                                                                                                   (3, 'The Lost Caverns', 1, 2, 5, '', 'Explore the deep mysteries of the lost caverns.'),
-                                                                                                   (4, 'Forest of Whispers', 1, 3, 4, '', 'Uncover secrets in a magical forest.'),
-                                                                                                   (5, 'Dreadhold Escape', 1, 4, 6, '', 'Break out from the high-security fortress Dreadhold.'),
-                                                                                                   (6, 'Desert of Shadows', 1, 5, 8, '', 'Survive the treacherous sands of the Desert of Shadows.');
+INSERT INTO campaign (id, name, signups_open, dungeon_master_id, max_players, outline) VALUES
+                                                                                                   (3, 'The Lost Caverns', 1, 2, 5, 'Explore the deep mysteries of the lost caverns.'),
+                                                                                                   (4, 'Forest of Whispers', 1, 3, 4, 'Uncover secrets in a magical forest.'),
+                                                                                                   (5, 'Dreadhold Escape', 1, 4, 6, 'Break out from the high-security fortress Dreadhold.'),
+                                                                                                   (6, 'Desert of Shadows', 1, 5, 8, 'Survive the treacherous sands of the Desert of Shadows.');
 
 INSERT INTO campaign_characters (campaign_id, character_id, status) VALUES
                                                                        (3, 13, 'joined'),

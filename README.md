@@ -22,7 +22,7 @@ pnpm install
 
 **Populate database info:**
 
-1. Copy and Paste the `.env.example` naming it `.env`
+1. Copy and Paste the `.env.local.template` naming it `.env.local`
 2. Fill in the data
 
 ---

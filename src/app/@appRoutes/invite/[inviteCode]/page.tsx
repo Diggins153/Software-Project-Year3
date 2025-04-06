@@ -12,6 +12,13 @@ import Link from "next/link";
 import { redirect, RedirectType } from "next/navigation";
 import { ReactNode } from "react";
 
+/**
+ * Page that handles joining a campaign via an invite code.
+ * Users can select one of their available characters to join.
+ *
+ * @param {{ params: Promise<{ inviteCode: string }> }} props - The invite code passed in the URL.
+ * @returns {JSX.Element} - The campaign invitation page UI.
+ */
 export default async function InvitePage({ params }: { params: Promise<{ inviteCode: string }> }) {
     const { user } = await ensureSession();
     const { inviteCode } = await params;

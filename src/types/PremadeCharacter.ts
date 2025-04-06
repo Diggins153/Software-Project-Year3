@@ -9,7 +9,7 @@ export type PremadeCharacter = {
 
     class_id: number;
 
-    class_name: string;
+    class_name?: string;
 
     description: string;
 

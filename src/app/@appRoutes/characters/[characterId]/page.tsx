@@ -9,6 +9,14 @@ import { Race } from "@/types/Race";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
+
+/**
+ * CharacterPage component displays character details including name, race, classes,
+ * and associated campaigns Provides an action dropdown for the owner
+ *
+ * @param {{ params: Promise<{ characterId: number; }> }} props - Component props
+ * @returns {Promise<JSX.Element>} - The character page component
+ */
 export default async function CharacterPage({ params }: { params: Promise<{ characterId: number; }> }) {
     const session = await auth();
     const characterId = (await params).characterId;

@@ -1,56 +1,59 @@
+import TopBar from "@/components/TopBar";
+import { auth } from "@/lib/auth";
+import query from "@/lib/database";
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { Character } from "@/types/Character";
+import { CharacterCard, EmptyCharacterCard } from "@/components/characters/CharacterCard";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+    title: "Characters",
+};
+
+/**
+ * Characters page that displays the user's created characters
+ * Users can view their characters or create a new on
+ *
+ * @returns {Promise<JSX.Element>} - The characters page ui
+ */
 export default async function CharactersPage() {
-    return (
-        <main>
+    const session = await auth();
 
-            <div className="p-6 flex flex-col items-center gap-6">
-                <h1 className="text-3xl font-bold text-center">Create Your Character</h1>
+    if (!session || !session.user) {
+        redirect("/");
+    }
 
-                <div className="flex gap-6 justify-center">
-                    <Link href="/characters/pre-made">
-                        <div className="w-[300px] h-[750px] p-6 bg-yellow-200 rounded-lg shadow-lg border border-gray-200 transition-all duration-200 hover:shadow-2xl hover:scale-105 hover:border-gray-400 active:scale-95 cursor-pointer flex flex-col">
-                            <div className="mt-4 text-center">
-                                <h2 className="text-xl font-bold text-gray-800">Choose a Premade Character</h2>
-                            </div>
-                            <div className="flex-grow flex items-center justify-center">
-                                <p className="text-gray-600 text-center">
-                                    Browse a selection of pre-built characters, ready for adventure.
-                                    Perfect for those who want to jump into the game quickly!
-                                </p>
-                            </div>
-                        </div>
-                    </Link>
+    const characters = await query<Character[]>(`
+        SELECT c.*,
+               cl.name AS class_name
+        FROM \`character\` c
+                 JOIN class cl ON cl.id = c.class_id
+        WHERE c.owner_id = ?
+    `, session.user.id);
 
-                    <Link href="/characters/create">
-                        <div className="w-[300px] h-[750px] p-6 bg-yellow-200 rounded-lg shadow-lg border border-gray-200 transition-all duration-200 hover:shadow-2xl hover:scale-105 hover:border-gray-400 active:scale-95 cursor-pointer flex flex-col">
-                            <div className="mt-4 text-center">
-                                <h2 className="text-xl font-bold text-gray-800">Make It Your Way</h2>
-                            </div>
-                            <div className="flex-grow flex items-center justify-center">
-                                <p className="text-gray-600 text-center">
-                                    Design your own character from scratch with complete creative freedom.
-                                    Choose your race, class, abilities, and more!
-                                </p>
-                            </div>
-                        </div>
-                    </Link>
-
-                    <Link href="/characters/your_characters">
-                        <div className="w-[300px] h-[750px] p-6 bg-yellow-200 rounded-lg shadow-lg border border-gray-200 transition-all duration-200 hover:shadow-2xl hover:scale-105 hover:border-gray-400 active:scale-95 cursor-pointer flex flex-col">
-                            <div className="mt-4 text-center">
-                                <h2 className="text-xl font-bold text-gray-800">View Your Characters</h2>
-                            </div>
-                            <div className="flex-grow flex items-center justify-center">
-                                <p className="text-gray-600 text-center">
-                                    See a detailed list of all your created characters and manage them.
-                                </p>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-
+    return <main>
+        <TopBar title="Your Characters"/>
+        <div className="space-y-4 p-1.5">
+            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+                <Link href="/characters/create">
+                    <CharacterCard
+                        character={ {
+                            id: "create",
+                            name: "Create a new Character",
+                            image: "/icons/plus.png",
+                        } as any as Character }
+                    />
+                </Link>
+                { characters.length > 0
+                    ? characters.map(character =>
+                        <Link key={ character.id } href={ `/characters/${ character.id }` }>
+                            <CharacterCard
+                                character={ character }
+                            />
+                        </Link>)
+                    : <EmptyCharacterCard message={ "Oh no! You don't have any characters" }/> }
             </div>
-        </main>
-    );
+        </div>
+    </main>;
 }

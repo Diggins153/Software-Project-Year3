@@ -2,6 +2,12 @@ import query from "@/lib/database";
 import { Campaign } from "@/types/Campaign";
 import Image from "next/image";
 
+/**
+ * CampaignCard component displays campaign details including the next session date
+ *
+ * @param {{ campaign: Campaign }} props - The campaign object
+ * @returns {JSX.Element} - The campaign card UI
+ */
 export default async function CampaignCard({ campaign }: { campaign: Campaign }) {
     const nextSessionDate = (await query<{ session_date?: Date }[]>(`
         SELECT session_date
@@ -20,7 +26,7 @@ export default async function CampaignCard({ campaign }: { campaign: Campaign })
                         alt=""
                         width={ 1500 }
                         height={ 500 }
-                        className="object-center"
+                        className="campaign-banner"
                     />
                     : <div className="aspect-[3/1] bg-white"></div>
                 }

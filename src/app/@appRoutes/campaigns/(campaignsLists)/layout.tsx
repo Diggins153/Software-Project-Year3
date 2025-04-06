@@ -1,5 +1,6 @@
 "use client";
 
+import TopBar from "@/components/TopBar";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -25,12 +26,14 @@ export default function CampaignsLayout({ children }: { children: Readonly<React
     ];
 
     return <>
-        <div className="flex justify-between p-2 items-center">
-            <h2 className="text-3xl">Your Campaigns</h2>
-            <Link className={ cn(buttonVariants()) } href="/campaigns/create">
-                Create Campaign
-            </Link>
-        </div>
+        <TopBar
+            title="Campaigns"
+            endContent={
+                <Link className={ cn(buttonVariants()) } href="/campaigns/create">
+                    Create Campaign
+                </Link>
+            }
+        />
         <div className="mx-auto flex gap-2 mb-4">
             {/* Styles from shadcn/tabs */ }
             <div className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">

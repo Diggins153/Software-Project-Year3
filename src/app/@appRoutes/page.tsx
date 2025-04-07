@@ -16,7 +16,7 @@ export default async function AuthenticatedHome() {
         ORDER BY s.session_date
     `, user.id);
 
-    return <main>
+    return <main className="content">
         <TopBar title={`Welcome, ${user.display_name}`}/>
         <div className="w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto p-1.5">
             <div>

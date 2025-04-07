@@ -18,7 +18,9 @@ import { Character } from "@/types/Character";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -27,7 +29,6 @@ interface EditCharacterFormProps {
     character: Character;
     races: Race[];
     classes: Class[];
-    isEditForm: boolean;
 
     onSubmit?(): void;
 }
@@ -46,6 +47,7 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
             level: character.level,
         },
     });
+    const [ imageUrl, setImageUrl ] = useState<string>();
 
     const imageRef = form.register("image");
 
@@ -60,6 +62,22 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
         }
     }
 
+    useEffect(() => {
+        // Is this an edit form?
+        if (!!form.formState.defaultValues?.image) {
+            setImageUrl(form.formState.defaultValues.image);
+        }
+        // No Image
+        else {
+            setImageUrl(undefined);
+        }
+
+        return () => {
+            if (imageUrl && imageUrl?.startsWith("blob:"))
+                URL.revokeObjectURL(imageUrl);
+        };
+    }, [ form.formState.defaultValues?.image ]);
+
     return <Form { ...form }>
         <form onSubmit={ form.handleSubmit(handleUpdateCharacter) } className="space-y-8">
             <FormField
@@ -68,10 +86,31 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
                 render={ () =>
                     <FormItem>
                         <FormLabel>Image</FormLabel>
-                        <FormControl>
-                            <Input type="file" { ...imageRef }/>
-                        </FormControl>
-                        <FormMessage></FormMessage>
+                        <div className="flex flex-col bg-background rounded-md px-2 border">
+                            <div className="flex items-center">
+                                <FormControl>
+                                    <Input
+                                        type="file"
+                                        accept="image/png,image/jpeg" { ...imageRef }
+                                        className="border-none file:border file:border-solid file:active:border-accent file:rounded-md file:px-4 px-0"
+                                        onChange={ e => {
+                                            const file = e.target.files?.[0];
+                                            setImageUrl(file ? URL.createObjectURL(file) : undefined);
+                                        } }
+                                    />
+                                </FormControl>
+                            </div>
+                            { imageUrl &&
+                                <Image
+                                    src={ imageUrl }
+                                    alt="File Input Preview"
+                                    width={ 75 }
+                                    height={ 75 }
+                                    className="character-image mx-auto mb-2 mt-1"
+                                />
+                            }
+                        </div>
+                        <FormMessage/>
                     </FormItem>
                 }
             />

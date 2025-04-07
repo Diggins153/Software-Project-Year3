@@ -180,7 +180,7 @@ export async function deleteCharacter(characterId: number): Promise<
     // Session check
     if (!session || !session.user) return redirect("/characters");
 
-    const character = (await query<Character[]>("SELECT name, owner_id FROM `character` WHERE id = ?", characterId))[0] || null;
+    const character = (await query<Character[]>("SELECT name, owner_id, image FROM `character` WHERE id = ?", characterId))[0] || null;
 
     // Check the character exists
     if (!character) return { ok: false, message: "Could not find that character." };
@@ -188,6 +188,10 @@ export async function deleteCharacter(characterId: number): Promise<
     // Check the current user owns that character
     if (character.owner_id.toString() != session.user.id)
         return { ok: false, message: "Sorry, you are not allowed to delete someone else's character." };
+
+    // Delete character image
+    if (character.image)
+        await del(character.image);
 
     // Delete character
     await query("DELETE FROM campaign_characters WHERE character_id = ?", characterId);

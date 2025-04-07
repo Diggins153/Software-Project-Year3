@@ -107,7 +107,7 @@ export default function CharacterActionsDropdown({ character, races, classes, ch
                                         { characterCampaigns.map(campaign =>
                                             <li key={ campaign.id }>{ campaign.name }</li>) }
                                     </ul>
-                                    <p className="font-bold">The character will be removed and you will loose access to the campaign.</p>
+                                    <span className="font-bold">The character will be removed and you will loose access to the campaign.</span>
                                 </p>
                             }
                             <Alert variant="destructive" className="mt-4">

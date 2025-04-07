@@ -1,14 +1,48 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import query from "@/lib/database";
-import { EditCharacterFormSchema } from "@/lib/formSchemas";
+import { EditCharacterFormSchema, ZImage } from "@/lib/formSchemas";
 import { Character } from "@/types/Character";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { fetchUser } from "@/lib/actions/authentication";
-import { auth } from "@/lib/auth";
+import { del, put } from "@vercel/blob";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+
+async function setCharacterImage(characterId: number, banner: File | File[]): Promise<boolean> {
+    // If file array is provided, get only the first element
+    if (Array.isArray(banner)) {
+        banner = banner[0];
+    }
+    const bannerParse = await ZImage.safeParseAsync(banner);
+    if (!bannerParse.success || typeof bannerParse.data === "undefined") return false;
+
+    // Get image file extension
+    const fileExt = (() => {
+        const fragments = banner.name.split(".");
+        if (fragments.length < 2) return "";
+        else return fragments[1];
+    })();
+    // Get file contents
+    const bannerBody = await banner.bytes();
+
+    // Naming convention: /characters/$characterId.$fileExtension
+    try {
+        const uploadResult = await put(`/characters/${ characterId }.${ fileExt }`, Buffer.from(bannerBody), { access: "public" });
+        await query(`
+            UPDATE \`character\`
+            SET image = ?
+            WHERE id = ?
+        `, uploadResult.url, characterId);
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+
+    return true;
+}
 
 export async function createCharacter(
     name: string,

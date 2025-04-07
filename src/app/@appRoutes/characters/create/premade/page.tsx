@@ -33,13 +33,13 @@ export default function PremadeCharactersPage() {
         }
     }, [ premadeCharacters ]);
 
-    if (loading) return <main className="flex items-center justify-center gap-4 min-h-screen">
+    if (loading) return <main className="content flex items-center justify-center gap-4 min-h-screen">
         <Loader2 className="animate-spin ease-in-out" size={ 48 }/>
         <h3 className="text-xl">Loading Characters</h3>
     </main>;
 
     return (
-        <main>
+        <main className="content">
             <TopBar title="Choose from Premade Characters" backText="Characters" backLink="/characters"/>
             <div className="p-6 grid grid-cols-4 gap-2 ml-36">
                 { premadeCharacters.map((character) => (

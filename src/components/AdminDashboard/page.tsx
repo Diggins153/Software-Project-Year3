@@ -104,7 +104,7 @@ export default function AdminDashboardClient({
     }
 
     return (
-        <main className="p-6">
+        <main className="content p-6">
             {/* Navbar */}
             <nav className="mb-8 border-b pb-4">
                 <ul className="flex justify-center space-x-6">

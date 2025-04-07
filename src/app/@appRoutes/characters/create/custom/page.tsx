@@ -90,7 +90,7 @@ export default function CreateCharacter() {
     </main>;
 
     return (
-        <main>
+        <main className="content">
             <TopBar title="Create Your Character" backText="Characters" backLink="/characters"/>
             <div className="relative p-8 min-h-screen">
                 {/* Pagination Navigation with Arrow Buttons, Labels, and Hover Effects */ }

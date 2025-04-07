@@ -32,7 +32,7 @@ export default async function CharactersPage() {
         WHERE c.owner_id = ?
     `, session.user.id);
 
-    return <main>
+    return <main className="content">
         <TopBar title="Your Characters"/>
         <div className="space-y-4 p-1.5">
             <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">

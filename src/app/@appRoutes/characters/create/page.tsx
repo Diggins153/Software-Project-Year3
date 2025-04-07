@@ -8,7 +8,7 @@ import Link from "next/link";
  */
 export default async function CharactersPage() {
     return (
-        <main>
+        <main className="content">
 
             <div className="p-6 flex flex-col items-center gap-6">
                 <h1 className="text-3xl font-bold text-center">Create Your Character</h1>

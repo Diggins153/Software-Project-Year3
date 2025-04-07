@@ -61,7 +61,7 @@ export default async function ManageCampaignPage({ params }: { params: Promise<{
         return string[0].toUpperCase() + string.substring(1);
     }
 
-    return <main>
+    return <main className="content">
         <TopBar
             title={ "Manage" }
             backText={ campaign.name }

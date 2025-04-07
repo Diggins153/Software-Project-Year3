@@ -25,7 +25,7 @@ export default function CampaignsLayout({ children }: { children: Readonly<React
         { title: "Public Campaigns", url: "/campaigns/public" },
     ];
 
-    return <>
+    return <div className="content">
         <TopBar
             title="Campaigns"
             endContent={
@@ -59,5 +59,5 @@ export default function CampaignsLayout({ children }: { children: Readonly<React
         <div className="p-1.5">
             { children }
         </div>
-    </>;
+    </div>;
 }

@@ -49,7 +49,7 @@ export default async function SessionCreatePage({ params }: SessionCreatePagePro
     }
 
     return (
-        <main className="p-6">
+        <main className="content p-6">
             <h1 className="text-3xl font-bold mb-4">Create Session for Campaign {campaignId}</h1>
             <CreateSessionForm campaignId={campaignId} />
         </main>

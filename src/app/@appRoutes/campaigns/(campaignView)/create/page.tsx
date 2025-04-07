@@ -10,7 +10,7 @@ import TopBar from "@/components/TopBar";
  * @returns {JSX.Element} The rendered CreateCampaignPage component
  */
 export default function CreateCampaignPage() {
-    return <main>
+    return <main className="content">
         <TopBar title={ "Create Campaign" } backText={ "Campaigns" } backLink={ "/campaigns" }/>
         <div className="w-full md:w-1/2 mx-auto">
             <CampaignForm/>

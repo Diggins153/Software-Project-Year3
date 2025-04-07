@@ -3,10 +3,10 @@
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
 import { EditCharacterFormSchema, ZImage } from "@/lib/formSchemas";
+import { ensureSession } from "@/lib/utils";
 import { Character } from "@/types/Character";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
-import { fetchUser } from "@/lib/actions/authentication";
 import { del, put } from "@vercel/blob";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -50,11 +50,7 @@ export async function createCharacter(
     charClass: string,
     level: number,
 ) {
-    const session = await auth();
-    if (!session || !session.user) return redirect("/");
-
-    const user = await fetchUser(session.user.email!);
-    if (!user) return { ok: false };
+    const { user } = await ensureSession();
 
     // Retrieve the Race entity with id and name.
     const dbRace = (await query<Race[]>("SELECT id, name FROM race WHERE name = ?", race))[0] || null;
@@ -72,12 +68,11 @@ export async function createCharacter(
         dbRace.id,
         dbClass.id,
         level,
-        session.user.id,
+        user.id,
     );
 
     return redirect("/characters");
 }
-
 
 export async function createPremadeCharacter(name: string, raceId: number, classId: number, level: number) {
     const session = await auth();

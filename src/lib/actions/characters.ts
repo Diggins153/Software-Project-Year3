@@ -100,7 +100,6 @@ export async function createPremadeCharacter(name: string, raceId: number, class
     return redirect("/characters");
 }
 
-
 export async function updateCharacter(characterId: number, formData: z.infer<typeof EditCharacterFormSchema>): Promise<
     { ok: false, message: string } |
     { ok: true }
@@ -122,34 +121,39 @@ export async function updateCharacter(characterId: number, formData: z.infer<typ
     if (character.owner_id.toString() !== session.user.id)
         return { ok: false, message: "Sorry, you are not allowed to update someone else's character." };
 
-    if (formData.id != characterId) {
-        console.error(`Cannot update character (characterId = ${ characterId }) with formData (formData.id = ${ formData.id }). ID mismatch`);
+    const { image, name, id, classId, raceId, level, handle } = formData;
+    if (id != characterId) {
+        console.error(`Cannot update character (characterId = ${ characterId }) with formData (formData.id = ${ id }). ID mismatch`);
         return { ok: false, message: "Something went wrong." };
     }
 
     // Construct update
     const parametrizedKeys: string[] = [];
     const params = [];
-    if (formData.name !== character.name) {
+    if (name !== character.name) {
         parametrizedKeys.push("name = ?");
-        params.push(formData.name);
+        params.push(name);
     }
-    if (formData.handle !== character.handle) {
+    if (handle !== character.handle) {
         parametrizedKeys.push("handle = ?");
-        params.push(formData.handle);
+        params.push(handle);
     }
-    // TODO: Image
-    if (formData.raceId !== character.race_id) {
+    if (!!image && (Array.isArray(image) && image.length > 0)) {
+        if (character.image)
+            await del(character.image);
+        await setCharacterImage(characterId, image[0]);
+    }
+    if (raceId !== character.race_id) {
         parametrizedKeys.push("race_id = ?");
-        params.push(formData.raceId);
+        params.push(raceId);
     }
-    if (formData.classId !== character.class_id) {
+    if (classId !== character.class_id) {
         parametrizedKeys.push("class_id = ?");
-        params.push(formData.classId);
+        params.push(classId);
     }
-    if (formData.level !== character.level) {
+    if (level !== character.level) {
         parametrizedKeys.push("level = ?");
-        params.push(formData.level);
+        params.push(level);
     }
 
     // Do update

@@ -18,7 +18,7 @@ import { z } from "zod";
  * @returns boolean - True if banner has been uploaded and saved to the campaign. False if validation failed or otherwise.
  */
 async function setCampaignBanner(campaignId: number, banner: File | File[]): Promise<boolean> {
-    // If by any chance the file is an array, get only the first element
+    // If file array is provided, get only the first element
     if (Array.isArray(banner)) {
         banner = banner[0];
     }
@@ -44,6 +44,7 @@ async function setCampaignBanner(campaignId: number, banner: File | File[]): Pro
         `, uploadResult.url, campaignId);
     } catch (e) {
         console.error(e);
+        return false;
     }
 
     return true;

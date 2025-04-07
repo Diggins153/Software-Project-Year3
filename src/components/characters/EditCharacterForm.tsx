@@ -18,17 +18,22 @@ import { Character } from "@/types/Character";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export default function EditCharacterForm({ character, races, onSubmit, classes }: {
-    character: Character,
-    races: Race[],
-    onSubmit?(): void,
-    classes: Class[],
-}) {
+interface EditCharacterFormProps {
+    character: Character;
+    races: Race[];
+    classes: Class[];
+
+    onSubmit?(): void;
+}
+
+export default function EditCharacterForm({ character, races, onSubmit, classes }: EditCharacterFormProps) {
     const router = useRouter();
     const form = useForm<z.infer<typeof EditCharacterFormSchema>>({
         resolver: zodResolver(EditCharacterFormSchema),
@@ -36,14 +41,15 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
             id: character.id,
             name: character.name,
             handle: character.handle,
-            image: "https://placehold.co/75.png",
+            image: character.image,
             raceId: character.race_id,
             classId: character.class_id,
             level: character.level,
         },
     });
+    const [ imageUrl, setImageUrl ] = useState<string>();
 
-    // const imageRef = form.register("image");
+    const imageRef = form.register("image");
 
     async function handleUpdateCharacter(data: z.infer<typeof EditCharacterFormSchema>) {
         const response = await updateCharacter(character.id, data);
@@ -56,8 +62,59 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
         }
     }
 
+    useEffect(() => {
+        // Is this an edit form?
+        if (!!form.formState.defaultValues?.image) {
+            setImageUrl(form.formState.defaultValues.image);
+        }
+        // No Image
+        else {
+            setImageUrl(undefined);
+        }
+
+        return () => {
+            if (imageUrl && imageUrl?.startsWith("blob:"))
+                URL.revokeObjectURL(imageUrl);
+        };
+    }, [ form.formState.defaultValues?.image ]);
+
     return <Form { ...form }>
         <form onSubmit={ form.handleSubmit(handleUpdateCharacter) } className="space-y-8">
+            <FormField
+                control={ form.control }
+                name="image"
+                render={ () =>
+                    <FormItem>
+                        <FormLabel>Image</FormLabel>
+                        <div className="flex flex-col bg-background rounded-md px-2 border">
+                            <div className="flex items-center">
+                                <FormControl>
+                                    <Input
+                                        type="file"
+                                        accept="image/png,image/jpeg" { ...imageRef }
+                                        className="border-none file:border file:border-solid file:active:border-accent file:rounded-md file:px-4 px-0"
+                                        onChange={ e => {
+                                            const file = e.target.files?.[0];
+                                            setImageUrl(file ? URL.createObjectURL(file) : undefined);
+                                        } }
+                                    />
+                                </FormControl>
+                            </div>
+                            { imageUrl &&
+                                <Image
+                                    src={ imageUrl }
+                                    alt="File Input Preview"
+                                    width={ 75 }
+                                    height={ 75 }
+                                    className="character-image mx-auto mb-2 mt-1"
+                                />
+                            }
+                        </div>
+                        <FormMessage/>
+                    </FormItem>
+                }
+            />
+
             <FormField
                 control={ form.control }
                 name="name"
@@ -157,20 +214,6 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
                     </FormItem>
                 }
             />
-
-            {/*<FormField*/ }
-            {/*    control={ form.control }*/ }
-            {/*    name="image"*/ }
-            {/*    render={ () =>*/ }
-            {/*        <FormItem>*/ }
-            {/*            <FormLabel>Image</FormLabel>*/ }
-            {/*            <FormControl>*/ }
-            {/*                <Input type="file" { ...imageRef }/>*/ }
-            {/*            </FormControl>*/ }
-            {/*            <FormMessage></FormMessage>*/ }
-            {/*        </FormItem>*/ }
-            {/*    }*/ }
-            {/*/>*/ }
 
             <div className="flex justify-end">
                 <Button type="submit">Save Changes</Button>

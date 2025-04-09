@@ -20,10 +20,12 @@ export default async function ViewCampaignLayout({ children, params }: ViewCampa
     }
 
     const characters = await query<Character[]>(`
-        SELECT *
-        FROM \`character\`
-        WHERE owner_id = ?
-    `, user.id);
+        SELECT c.*
+        FROM campaign_characters cc
+        JOIN \`character\` c ON c.id = cc.character_id
+        WHERE cc.campaign_id = ?
+        AND owner_id = ?
+    `, campaignId, user.id);
 
     return <div className="w-full">
         <ResizablePanelGroup direction="horizontal" autoSaveId={ campaignId.toString() }>

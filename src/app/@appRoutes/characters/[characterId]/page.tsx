@@ -40,7 +40,7 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
     const races = await query<Race[]>("SELECT * FROM race");
     const characterCampaigns = await query<Campaign[]>("SELECT campaign.* FROM campaign JOIN campaign_characters cc ON campaign.id = cc.campaign_id WHERE cc.character_id = ?", characterId);
 
-    return <main>
+    return <main className="content">
         <TopBar
             title={ character.name }
             backText="Characters"

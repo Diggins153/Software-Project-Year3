@@ -1,4 +1,4 @@
-import CampaignChat from "@/components/campaigns/CampaignChat";
+import CampaignChat from "@/components/campaign-chat/CampaignChat";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import query from "@/lib/database";
 import { ensureSession } from "@/lib/utils";

@@ -105,16 +105,16 @@ export default function AdminDashboardClient({
     }
 
     // New: delete campaign
-    // async function handleDeleteCampaign(campaignId: number) {
-    //     if (!confirm("Are you sure you want to delete this campaign?")) return;
-    //     const response = await deleteCampaign(campaignId);
-    //     if (response.ok) {
-    //         toast.success(response.message);
-    //         router.refresh();
-    //     } else {
-    //         toast.error(response.message);
-    //     }
-    // }
+    async function handleDeleteCampaign(campaignId: number) {
+        if (!confirm("Are you sure you want to delete this campaign?")) return;
+        const response = await deleteCampaign(campaignId);
+        if (response.ok) {
+            toast.success(response.message);
+            router.refresh();
+        } else {
+            toast.error(response.message);
+        }
+    }
 
     return (
         <main className="content p-6">
@@ -315,7 +315,7 @@ export default function AdminDashboardClient({
                                                 </li>
                                                 <li
                                                     className="px-4 py-2 hover:bg-gray-100 text-black cursor-pointer"
-                                                    // onClick={() => handleDeleteCampaign(c.id)}
+                                                    onClick={() => handleDeleteCampaign(c.id)}
                                                 >
                                                     Delete
                                                 </li>

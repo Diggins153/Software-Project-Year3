@@ -187,53 +187,49 @@ export async function deleteCampaign(
         return { ok: false, message: "You are not logged in." };
     }
 
-    // 2) Retrieve the campaign to ensure it exists and check ownership
-    const [ campaign ] = await query<Campaign[]>(
+    // 2) Load the campaign
+    const [campaign] = await query<Campaign[]>(
         "SELECT * FROM campaign WHERE id = ?",
-        [ campaignId ],
+        [campaignId],
     );
     if (!campaign) {
         return { ok: false, message: "Campaign not found." };
     }
 
-    // 3) Verify the user is the DM
-    if (campaign.dungeon_master_id.toString() !== session.user.id) {
+    // 3) Only DM or admin may delete
+    const isDM = campaign.dungeon_master_id.toString() === session.user.id;
+    const isAdmin = session.user.role === "admin";
+    if (!isDM && !isAdmin) {
         return { ok: false, message: "You are not authorized to delete this campaign." };
     }
 
-    // 4) Clean up related data (if you don’t have ON DELETE CASCADE)
+    // 4a) Delete dependent data
+    await query("DELETE FROM messages WHERE campaign_id = ?", [campaignId]);
+    await query("DELETE FROM campaign_characters WHERE campaign_id = ?", [campaignId]);
+    await query(
+        `DELETE sc
+     FROM session_characters sc
+     JOIN session s ON s.id = sc.session_id
+     WHERE s.campaign_id = ?`,
+        [campaignId],
+    );
+    await query("DELETE FROM session WHERE campaign_id = ?", [campaignId]);
 
-    // 4a) Delete messages tied to this campaign
-    await query("DELETE FROM messages WHERE campaign_id = ?", [ campaignId ]);
+    // 4b) Try to delete banner if present (gracefully catch any blob errors)
+    if (campaign.banner) {
+        try {
+            await del(campaign.banner);
+        } catch (err) {
+            console.warn("Banner deletion skipped:", err);
+        }
+    }
 
-    // 4b) Delete from campaign_characters bridging table
-    await query("DELETE FROM campaign_characters WHERE campaign_id = ?", [ campaignId ]);
+    // 5) Delete the campaign itself
+    await query("DELETE FROM campaign WHERE id = ?", [campaignId]);
 
-    // 4c) Delete from session_characters
-    //     (but first find all sessions for this campaign)
-    //     We join session_characters (sc) to session (s) on session_id
-    //     and delete only rows that belong to the campaign
-    await query(`
-        DELETE sc
-        FROM session_characters sc
-                 JOIN session s ON s.id = sc.session_id
-        WHERE s.campaign_id = ?
-    `, [ campaignId ]);
-
-    // 4d) Delete sessions themselves
-    await query("DELETE FROM session WHERE campaign_id = ?", [ campaignId ]);
-
-    // Delete the campaign banner
-    if (campaign.banner)
-        await del(campaign.banner);
-
-    // 5) Finally, delete the campaign
-    await query("DELETE FROM campaign WHERE id = ?", [ campaignId ]);
-
-    // 6) Return success
     return {
         ok: true,
-        message: `Campaign "${ campaign.name }" deleted successfully.`,
+        message: `Campaign "${campaign.name}" deleted successfully.`,
         redirect: "/campaigns",
     };
 }

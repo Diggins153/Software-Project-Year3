@@ -15,6 +15,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import {deleteCharacter} from "@/lib/actions/characters";
+import {deleteCampaign} from "@/lib/actions/campaigns";
 
 type RaceUsage = {
     name: string;
@@ -102,6 +103,18 @@ export default function AdminDashboardClient({
             router.refresh();
         } else toast.error("Error in Ignoring report");
     }
+
+    // New: delete campaign
+    // async function handleDeleteCampaign(campaignId: number) {
+    //     if (!confirm("Are you sure you want to delete this campaign?")) return;
+    //     const response = await deleteCampaign(campaignId);
+    //     if (response.ok) {
+    //         toast.success(response.message);
+    //         router.refresh();
+    //     } else {
+    //         toast.error(response.message);
+    //     }
+    // }
 
     return (
         <main className="content p-6">
@@ -265,7 +278,9 @@ export default function AdminDashboardClient({
             {/* Campaigns Section */}
             {activeTab === "campaigns" && (
                 <section className="mb-8">
-                    <h2 className="text-3xl font-bold mb-4 text-center">Campaign List</h2>
+                    <h2 className="text-3xl font-bold mb-4 text-center">
+                        Campaign List
+                    </h2>
                     <div className="overflow-x-auto">
                         <table className="min-w-full border-collapse">
                             <thead>
@@ -277,11 +292,13 @@ export default function AdminDashboardClient({
                             </tr>
                             </thead>
                             <tbody>
-                            {campaigns.map((campaign: Campaign) => (
-                                <tr key={campaign.id}>
-                                    <td className="border px-4 py-2 text-center">{campaign.id}</td>
-                                    <td className="border px-4 py-2">{campaign.name}</td>
-                                    <td className="border px-4 py-2">{campaign.dungeon_master_name}</td>
+                            {campaigns.map((c) => (
+                                <tr key={c.id}>
+                                    <td className="border px-4 py-2 text-center">{c.id}</td>
+                                    <td className="border px-4 py-2">{c.name}</td>
+                                    <td className="border px-4 py-2">
+                                        {c.dungeon_master_name}
+                                    </td>
                                     <td className="border px-4 py-2 text-center">
                                         <details className="inline-block">
                                             <summary className="cursor-pointer px-2 py-1 bg-gray-200 rounded text-black">
@@ -289,12 +306,17 @@ export default function AdminDashboardClient({
                                             </summary>
                                             <ul className="mt-1 bg-white border rounded shadow">
                                                 <li className="px-4 py-2 hover:bg-gray-100 text-black">
-                                                    Edit
+                                                    <Link
+                                                        href={`/campaigns/${c.id}`}
+                                                        className="block w-full h-full"
+                                                    >
+                                                        View
+                                                    </Link>
                                                 </li>
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
-                                                    View
-                                                </li>
-                                                <li className="px-4 py-2 hover:bg-gray-100 text-black">
+                                                <li
+                                                    className="px-4 py-2 hover:bg-gray-100 text-black cursor-pointer"
+                                                    // onClick={() => handleDeleteCampaign(c.id)}
+                                                >
                                                     Delete
                                                 </li>
                                             </ul>

@@ -12,9 +12,12 @@ export default function ChatMessage({ message, showAuthor = true }: ChatMessageP
 
     return <div className="">
         { showAuthor &&
-            <Link href={ `/characters/${ author_id }` } className="text-sm text-muted-foreground mt-7">
-                { author_name }
-            </Link>
+            <>
+                <div className="mt-2"></div>
+                <Link href={ `/characters/${ author_id }` } className="text-sm text-muted-foreground">
+                    { author_name }
+                </Link>
+            </>
         }
         <div className="bg-yellow-200 text-black py-1 px-2 rounded-lg flex justify-between items-end flex-wrap">
             { text }<span className="text-xs text-muted ms-auto">{ formatter.format(sent_at) }</span>

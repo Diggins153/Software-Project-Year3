@@ -139,7 +139,7 @@ CREATE TABLE session_characters (
 -- MESSAGES
 CREATE TABLE messages (
                           id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                          message VARCHAR(256) NOT NULL,
+                          message TEXT NOT NULL,
                           sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                           campaign_id INT UNSIGNED NOT NULL,
                           author_id INT UNSIGNED NOT NULL,

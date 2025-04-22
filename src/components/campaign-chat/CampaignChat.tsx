@@ -27,7 +27,7 @@ export default function CampaignChat({ campaignId, characters, initialMessages }
     }
 
     return <aside className="flex flex-col flex-1 overflow-y-scroll">
-        <div className="flex-1 flex flex-col justify-end gap-1 p-1">
+        <div className="flex-1 flex flex-col justify-end p-1">
             { messages.map((message, index, array) => {
                 let showAuthor: boolean;
 

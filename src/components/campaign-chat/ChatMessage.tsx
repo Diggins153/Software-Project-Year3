@@ -12,6 +12,10 @@ export default function ChatMessage({ message, showAuthor = true }: ChatMessageP
     const formatter = new Intl.DateTimeFormat("en-UK", { dateStyle: "medium", timeStyle: "short" });
 
     return <>
+        <div className="bg-yellow-200 text-black py-1 px-2 rounded-lg flex justify-between items-end flex-wrap mb-1">
+            <pre className={ `text-wrap ${ artifika.className }` }>{ text }</pre>
+            <span className="text-xs text-muted ms-auto">{ formatter.format(sent_at) }</span>
+        </div>
         { showAuthor &&
             <>
                 <Link
@@ -22,9 +26,5 @@ export default function ChatMessage({ message, showAuthor = true }: ChatMessageP
                 </Link>
             </>
         }
-        <div className="bg-yellow-200 text-black py-1 px-2 rounded-lg flex justify-between items-end flex-wrap mb-1">
-            <pre className={ `text-wrap ${ artifika.className }` }>{ text }</pre>
-            <span className="text-xs text-muted ms-auto">{ formatter.format(sent_at) }</span>
-        </div>
     </>;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import ChatMessage from "@/components/campaign-chat/ChatMessage";
+import { INCOMING_MESSAGE_EVENT, pusherClient } from "@/lib/pusher";
 import { Message } from "@/types/Message";
 import { useEffect, useRef, useState } from "react";
 
@@ -14,7 +15,15 @@ export default function MessagesList({ campaignId, initialMessages }: MessagesLi
     const scrollDownRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
+        const channel = pusherClient.subscribe(`campaign-${ campaignId }`);
 
+        channel.bind(INCOMING_MESSAGE_EVENT, (message: Message) => {
+            setMessages(previousMessages => [ ...previousMessages, message ]);
+        });
+
+        return function () {
+            channel.unsubscribe();
+        };
     }, []);
 
     return <div className="flex-1 flex flex-col-reverse justify-start p-1">

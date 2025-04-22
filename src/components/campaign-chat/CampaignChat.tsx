@@ -28,7 +28,7 @@ export default async function CampaignChat({ campaignId }: CampaignChatProps) {
             FROM messages m
                      JOIN \`character\` c ON c.id = m.author_id
             WHERE campaign_id = ?
-            ORDER BY m.sent_at DESC 
+            ORDER BY m.sent_at DESC
         `, campaignId);
 
         await new Promise(resolve => setTimeout(resolve, 3000));
@@ -38,7 +38,7 @@ export default async function CampaignChat({ campaignId }: CampaignChatProps) {
 
 
     return <aside className="flex flex-col flex-1 overflow-y-scroll">
-        <MessagesList initialMessages={ await getMessages() ?? [] }/>
+        <MessagesList initialMessages={ await getMessages() ?? [] } campaignId={ campaignId.toString() }/>
         <MessageForm characters={ characters }/>
     </aside>;
 }

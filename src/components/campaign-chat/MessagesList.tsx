@@ -4,7 +4,12 @@ import ChatMessage from "@/components/campaign-chat/ChatMessage";
 import { Message } from "@/types/Message";
 import { useEffect, useRef, useState } from "react";
 
-export default function MessagesList({ initialMessages }: { initialMessages: Message[] }) {
+interface MessagesListProps {
+    campaignId: string;
+    initialMessages: Message[];
+}
+
+export default function MessagesList({ campaignId, initialMessages }: MessagesListProps) {
     const [ messages, setMessages ] = useState<Message[]>(initialMessages);
     const scrollDownRef = useRef<HTMLDivElement | null>(null);
 

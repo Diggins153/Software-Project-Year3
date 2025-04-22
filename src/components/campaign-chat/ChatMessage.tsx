@@ -8,7 +8,7 @@ interface ChatMessageProps {
 
 export default function ChatMessage({ message, showAuthor = true }: ChatMessageProps) {
     const { id, message: text, sent_at, campaign_id, author_id, author_name, author_handle } = message;
-    const formatter = new Intl.DateTimeFormat("en-UK");
+    const formatter = new Intl.DateTimeFormat("en-UK", { dateStyle: "medium", timeStyle: "short" });
 
     return <div className="">
         { showAuthor &&
@@ -16,8 +16,8 @@ export default function ChatMessage({ message, showAuthor = true }: ChatMessageP
                 { author_name }
             </Link>
         }
-        <div className="bg-yellow-200 text-black py-1 px-2 rounded-lg flex justify-between items-end flex-wrap ">
-            { text }<span className="text-xs text-muted">{ formatter.format(sent_at) }</span>
+        <div className="bg-yellow-200 text-black py-1 px-2 rounded-lg flex justify-between items-end flex-wrap">
+            { text }<span className="text-xs text-muted ms-auto">{ formatter.format(sent_at) }</span>
         </div>
     </div>;
 }

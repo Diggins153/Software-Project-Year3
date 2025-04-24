@@ -1,6 +1,8 @@
 "use server";
 
+import { deleteCampaign } from "@/lib/actions/campaigns";
 import { deleteCharacter } from "@/lib/actions/characters";
+import { deleteMessage } from "@/lib/actions/chat";
 import { deleteSession } from "@/lib/actions/sessions";
 import query from "@/lib/database";
 import { ReportContentFormSchema } from "@/lib/formSchemas";
@@ -51,17 +53,17 @@ export async function removeContent(reportId: number): Promise<
         case ContentType.USER:
             await banUser(reportId);
             break;
-        // case ContentType.CAMPAIGN:
-        //     await deleteCampaign(report.content_id);
-        //     break;
+        case ContentType.CAMPAIGN:
+            await deleteCampaign(report.content_id);
+            break;
         case ContentType.SESSION:
             const session = (await query<Session[]>("SELECT campaign_id FROM session WHERE id = ?"))[0] || null;
             if (session === null) return { ok: false, message: "Could not find session campaign" };
-            await deleteSession(report.content_id, session.id);
+            await deleteSession(report.content_id, session.campaign_id);
             break;
-        // case ContentType.MESSAGE:
-        //     await deleteMessage(report.content_id);
-        //     break;
+        case ContentType.MESSAGE:
+            await deleteMessage(report.content_id);
+            break;
         case ContentType.CHARACTER:
             await deleteCharacter(report.content_id);
             break;
@@ -102,7 +104,7 @@ export async function banUser(reportId: number): Promise<
             if (campaign === null) return { ok: false, message: "Could not find DM of campaign" };
             userId = campaign.dungeon_master_id;
             break;
-        case ContentType.SESSION:
+        case ContentType.SESSION: {
             const user = (await query<User[]>(`
                 SELECT u.id
                 FROM session s
@@ -115,9 +117,21 @@ export async function banUser(reportId: number): Promise<
             }
             userId = user.id;
             break;
-        case ContentType.MESSAGE:
-            userId = null;
+        }
+        case ContentType.MESSAGE: {
+            const user = (await query<User[]>(`
+                SELECT u.*
+                FROM messages m
+                         JOIN \`character\` c ON c.id = m.author_id
+                         JOIN user u ON c.owner_id = u.id
+                WHERE m.id = ?
+            `, report.content_id))?.[0] ?? null;
+            if (user == null) {
+                return { ok: false, message: "Could not find author of message" };
+            }
+            userId = user.id;
             break;
+        }
     }
 
     if (userId == null) return { ok: false, message: "Unexpected error" };

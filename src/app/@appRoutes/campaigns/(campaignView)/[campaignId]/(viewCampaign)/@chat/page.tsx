@@ -1,5 +1,6 @@
 import MessageForm from "@/components/campaign-chat/MessageForm";
 import MessagesList from "@/components/campaign-chat/MessagesList";
+import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
 import query from "@/lib/database";
 import { ensureSession } from "@/lib/utils";
 import { Character } from "@/types/Character";
@@ -19,7 +20,10 @@ export default async function CampaignChat({ params }: CampaignChatProps) {
                  JOIN \`character\` c ON c.id = cc.character_id
         WHERE cc.campaign_id = ?
           AND owner_id = ?
+          AND cc.status = 'joined'
     `, campaignId, user.id);
+
+    if (characters.length == 0) return null;
 
     const messages = await query<Message[]>(`
         SELECT m.*,
@@ -31,8 +35,19 @@ export default async function CampaignChat({ params }: CampaignChatProps) {
         ORDER BY m.sent_at DESC
     `, campaignId) ?? [];
 
-    return <aside className="flex flex-col flex-1 overflow-y-scroll">
-        <MessagesList initialMessages={ messages } campaignId={ campaignId.toString() }/>
-        <MessageForm characters={ characters } campaignId={ campaignId }/>
-    </aside>;
+    return <>
+        <ResizableHandle withHandle/>
+        <ResizablePanel
+            defaultSize={ 20 }
+            maxSize={ 30 }
+            minSize={ 15 }
+            collapsible
+            className="content ml-2"
+        >
+            <aside className="flex flex-col flex-1 overflow-y-scroll">
+                <MessagesList initialMessages={ messages } campaignId={ campaignId.toString() }/>
+                <MessageForm characters={ characters } campaignId={ campaignId }/>
+            </aside>
+        </ResizablePanel>
+    </>;
 }

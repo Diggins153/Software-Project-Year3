@@ -6,7 +6,7 @@ import { ReactNode, Suspense } from "react";
 
 interface ViewCampaignLayoutProps {
     children: Readonly<ReactNode>;
-    chat: ReactNode;
+    chat?: ReactNode;
     params: Promise<{ campaignId?: number }>;
 }
 
@@ -23,12 +23,9 @@ export default async function ViewCampaignLayout({ children, params, chat }: Vie
             <ResizablePanel defaultSize={ 80 } className="content">
                 { children }
             </ResizablePanel>
-            <ResizableHandle withHandle/>
-            <ResizablePanel defaultSize={ 20 } maxSize={ 30 } minSize={ 15 } collapsible className="content ml-2">
-                <Suspense fallback={ <LoadingChat/> }>
-                    { chat }
-                </Suspense>
-            </ResizablePanel>
+            <Suspense fallback={ <LoadingChat/> }>
+                { chat }
+            </Suspense>
         </ResizablePanelGroup>
     </div>;
 }

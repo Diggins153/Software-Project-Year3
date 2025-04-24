@@ -139,10 +139,12 @@ CREATE TABLE session_characters (
 -- MESSAGES
 CREATE TABLE messages (
                           id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                          message VARCHAR(256) NOT NULL,
+                          message TEXT NOT NULL,
                           sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                           campaign_id INT UNSIGNED NOT NULL,
-                          FOREIGN KEY (campaign_id) REFERENCES campaign(id) ON DELETE CASCADE
+                          author_id INT UNSIGNED NOT NULL,
+                          FOREIGN KEY (campaign_id) REFERENCES campaign(id) ON DELETE CASCADE,
+                          FOREIGN KEY (author_id) REFERENCES `character`(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- POSTS

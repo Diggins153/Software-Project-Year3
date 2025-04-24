@@ -14,6 +14,7 @@ import { Character } from "@/types/Character";
 import { ContentType } from "@/types/Report";
 import { Session } from "@/types/Session";
 import { ChevronsUpDown } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -33,6 +34,19 @@ type CampaignViewPageProps = {
     params: Promise<{ campaignId?: string }>;
 };
 
+export async function generateMetadata({ params }: CampaignViewPageProps): Promise<Metadata> {
+    const { campaignId } = await params;
+    const campaign = (await query<Campaign[]>(`
+        SELECT name
+        FROM campaign
+        WHERE id = ?
+    `, campaignId))?.[0];
+
+    return {
+        title: `${campaign.name} campaign`
+    }
+}
+
 /**
  * CampaignViewPage renders the view for a single campaign
  *
@@ -50,7 +64,6 @@ type CampaignViewPageProps = {
  * @param {CampaignViewPageProps} props - The component props containing params with campaignId
  * @returns {Promise<JSX.Element>} A React component displaying the campaign view
  */
-
 export default async function CampaignViewPage({ params }: CampaignViewPageProps) {
     const sessionData = await auth();
     const { campaignId } = await params;

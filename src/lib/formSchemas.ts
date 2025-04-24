@@ -243,3 +243,13 @@ export const UpdateUserFormSchema = z.object({
         });
     }
 });
+
+export const SendChatMessageSchema = z.object({
+    message: z.string(),
+    characterId: z
+        .coerce
+        .number(),
+    campaignId: z
+        .coerce
+        .number(),
+});

@@ -6,11 +6,12 @@ import { Character } from "@/types/Character";
 import { Message } from "@/types/Message";
 
 interface CampaignChatProps {
-    campaignId: number;
+    params: Promise<{ campaignId: number }>;
 }
 
-export default async function CampaignChat({ campaignId }: CampaignChatProps) {
+export default async function CampaignChat({ params }: CampaignChatProps) {
     const { user } = await ensureSession();
+    const { campaignId } = await params;
 
     const characters = await query<Character[]>(`
         SELECT c.*

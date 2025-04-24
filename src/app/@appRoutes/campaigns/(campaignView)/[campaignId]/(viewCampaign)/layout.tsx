@@ -1,4 +1,3 @@
-import CampaignChat from "@/components/campaign-chat/CampaignChat";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ensureSession } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
@@ -7,10 +6,11 @@ import { ReactNode, Suspense } from "react";
 
 interface ViewCampaignLayoutProps {
     children: Readonly<ReactNode>;
+    chat: ReactNode;
     params: Promise<{ campaignId?: number }>;
 }
 
-export default async function ViewCampaignLayout({ children, params }: ViewCampaignLayoutProps) {
+export default async function ViewCampaignLayout({ children, params, chat }: ViewCampaignLayoutProps) {
     await ensureSession();
     const { campaignId } = await params;
 
@@ -26,7 +26,7 @@ export default async function ViewCampaignLayout({ children, params }: ViewCampa
             <ResizableHandle withHandle/>
             <ResizablePanel defaultSize={ 20 } maxSize={ 30 } minSize={ 15 } collapsible className="content ml-2">
                 <Suspense fallback={ <LoadingChat/> }>
-                    <CampaignChat campaignId={ campaignId }/>
+                    { chat }
                 </Suspense>
             </ResizablePanel>
         </ResizablePanelGroup>

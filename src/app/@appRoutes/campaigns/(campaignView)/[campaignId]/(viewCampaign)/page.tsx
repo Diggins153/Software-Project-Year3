@@ -43,8 +43,8 @@ export async function generateMetadata({ params }: CampaignViewPageProps): Promi
     `, campaignId))?.[0];
 
     return {
-        title: `${campaign.name} campaign`
-    }
+        title: `${ campaign.name } campaign`,
+    };
 }
 
 /**
@@ -148,7 +148,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                 backLink={ "/campaigns" }
                 endContent={
                     /* DM-only controls */
-                    <div className="flex justify-end gap-2">
+                    <>
                         { currUserIsOwner && (<>
                             <Link
                                 href={ `/campaigns/${ campaign.id }/manage` }
@@ -181,7 +181,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                             ><Button type="submit" variant="destructive">Leave</Button></form>
                         }
                         <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
-                    </div>
+                    </>
                 }
             />
 

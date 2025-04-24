@@ -31,7 +31,7 @@ export default async function CampaignChat({ campaignId }: CampaignChatProps) {
     `, campaignId) ?? [];
 
     return <aside className="flex flex-col flex-1 overflow-y-scroll">
-        <MessageForm characters={ characters }/>
         <MessagesList initialMessages={ messages } campaignId={ campaignId.toString() }/>
+        <MessageForm characters={ characters } campaignId={ campaignId }/>
     </aside>;
 }

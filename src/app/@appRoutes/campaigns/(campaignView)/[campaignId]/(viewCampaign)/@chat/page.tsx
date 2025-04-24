@@ -38,13 +38,15 @@ export default async function CampaignChat({ params }: CampaignChatProps) {
     return <>
         <ResizableHandle withHandle/>
         <ResizablePanel
+            id="chat"
+            order={2}
             defaultSize={ 20 }
             maxSize={ 30 }
             minSize={ 15 }
             collapsible
             className="content ml-2"
         >
-            <aside className="flex flex-col flex-1 overflow-y-scroll">
+            <aside className="flex flex-col flex-1 overflow-y-scroll max-w-[30vw]">
                 <MessagesList initialMessages={ messages } campaignId={ campaignId.toString() }/>
                 <MessageForm characters={ characters } campaignId={ campaignId }/>
             </aside>

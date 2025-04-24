@@ -12,23 +12,28 @@ interface MessagesListProps {
 
 export default function MessagesList({ campaignId, initialMessages }: MessagesListProps) {
     const [ messages, setMessages ] = useState<Message[]>(initialMessages);
-    const scrollDownRef = useRef<HTMLDivElement | null>(null);
+    const scrollDownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const channel = pusherClient.subscribe(`campaign-${ campaignId }`);
+        function incomingMessageHandler(message: Message) {
+            message.sent_at = new Date(message.sent_at);
+            setMessages(previousMessages => [ message, ...previousMessages ]);
+        }
 
-        channel.bind(INCOMING_MESSAGE_EVENT, (message: Message) => {
-            setMessages(previousMessages => [ ...previousMessages, message ]);
-        });
+        scrollDownRef.current?.scrollIntoView();
+
+        const channel = pusherClient.subscribe(`campaign-${ campaignId }`);
+        channel.bind(INCOMING_MESSAGE_EVENT, incomingMessageHandler);
 
         return function () {
+            channel.unbind(INCOMING_MESSAGE_EVENT, incomingMessageHandler);
             channel.unsubscribe();
         };
     }, []);
 
     return <div className="flex-1 flex flex-col-reverse justify-start p-1">
         <div ref={ scrollDownRef }></div>
-        { initialMessages.map((message, index, array) => {
+        { messages.map((message, index, array) => {
             let showAuthor: boolean;
 
             try {

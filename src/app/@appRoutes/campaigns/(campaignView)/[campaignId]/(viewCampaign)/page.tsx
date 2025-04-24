@@ -61,8 +61,8 @@ export async function generateMetadata({ params }: CampaignViewPageProps): Promi
  *  Renders the campaign header, details (collapsible section), character party and sessions list
  *  Displays DM-only controls (Manage Campaign, Create Session) and join options for non-DM users
  *
- * @param {CampaignViewPageProps} props - The component props containing params with campaignId
- * @returns {Promise<JSX.Element>} A React component displaying the campaign view
+ * @param props - The component props containing params with campaignId
+ * @returns A React component displaying the campaign view
  */
 export default async function CampaignViewPage({ params }: CampaignViewPageProps) {
     const sessionData = await auth();

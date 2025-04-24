@@ -7,7 +7,7 @@ import { sendMessage } from "@/lib/actions/chat";
 import { Character } from "@/types/Character";
 import { SendHorizonalIcon } from "lucide-react";
 import Form from "next/form";
-import { KeyboardEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface MessageFormProps {
@@ -16,9 +16,12 @@ interface MessageFormProps {
 }
 
 export default function MessageForm({ characters, campaignId }: MessageFormProps) {
-    function setHeight(e: KeyboardEvent<HTMLTextAreaElement>) {
-        e.currentTarget.style.height = "1px";
-        e.currentTarget.style.height = `calc(0.5rem + ${ e.currentTarget.scrollHeight }px)`;
+    const textarea = useRef<HTMLTextAreaElement>(null);
+    const [ shouldReset, setShouldReset ] = useState(false);
+
+    function setTextareaHeight(el: HTMLTextAreaElement) {
+        el.style.height = "1px";
+        el.style.height = `calc(0.5rem + ${ el.scrollHeight }px)`;
     }
 
     async function handleSendMessage(formData: FormData) {
@@ -32,16 +35,26 @@ export default function MessageForm({ characters, campaignId }: MessageFormProps
                 toast.error(response.message);
             }
         }
+
+        setShouldReset(true);
     }
+
+    useEffect(() => {
+        if (shouldReset && textarea.current) {
+            textarea.current.value = "";
+            setTextareaHeight(textarea.current);
+            setShouldReset(false);
+        }
+    }, [ shouldReset ]);
 
     return <Form className="sticky bottom-0 bg-theme/80 p-1 backdrop-blur-sm" action={ handleSendMessage }>
         <input type="hidden" name="campaignId" value={ campaignId }/>
-        {/*TODO: Set height on after submit*/}
         <Textarea
             id="chatInput"
             placeholder="Message"
             className="mb-1 resize-none max-h-[35dvh]"
-            onKeyUp={ e => setHeight(e) }
+            onChange={ (event) => setTextareaHeight(event.target) }
+            ref={ textarea }
             name="message"
             required
         ></Textarea>

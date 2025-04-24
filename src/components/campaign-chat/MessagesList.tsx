@@ -33,6 +33,9 @@ export default function MessagesList({ campaignId, initialMessages }: MessagesLi
 
     return <div className="flex-1 flex flex-col-reverse justify-start p-1">
         <div ref={ scrollDownRef }></div>
+        { messages.length == 0 &&
+            <p className="text-center mb-2">No messages have been sent yet</p>
+        }
         { messages.map((message, index, array) => {
             let showAuthor: boolean;
 

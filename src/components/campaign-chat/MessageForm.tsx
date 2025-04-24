@@ -1,8 +1,11 @@
-import ChatTextarea from "@/components/campaign-chat/ChatTextarea";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Character } from "@/types/Character";
 import { SendHorizonalIcon } from "lucide-react";
+import { KeyboardEvent } from "react";
 
 interface MessageFormProps {
     characters: Character[];
@@ -10,7 +13,17 @@ interface MessageFormProps {
 
 export default async function MessageForm({ characters }: MessageFormProps) {
     return <div className="sticky bottom-0 bg-theme/80 p-1 backdrop-blur-sm">
-        <ChatTextarea/>
+    function setHeight(e: KeyboardEvent<HTMLTextAreaElement>) {
+        e.currentTarget.style.height = "1px";
+        e.currentTarget.style.height = `calc(0.5rem + ${ e.currentTarget.scrollHeight }px)`;
+    }
+        <Textarea
+            id="chatInput"
+            placeholder="Message"
+            className="mb-1 resize-none max-h-[35dvh]"
+            onKeyUp={ e => setHeight(e) }
+            name="message"
+        ></Textarea>
         <div className="flex items-center">
             <div className="text-xs">As:</div>
             <Select disabled={ characters.length == 0 }>

@@ -126,7 +126,8 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
             WHERE c.owner_id = ?
               AND c.id IN (SELECT character_id
                            FROM campaign_characters
-                           WHERE campaign_id = ?)
+                           WHERE campaign_id = ?
+                             AND status = 'joined')
         `, sessionData.user.id, campaign.id);
     }
 
@@ -138,6 +139,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                  JOIN \`character\` c ON c.id = cc.character_id
                  JOIN class cl ON cl.id = c.class_id
         WHERE campaign_id = ?
+          AND status = 'joined'
     `, campaignId);
 
     return (

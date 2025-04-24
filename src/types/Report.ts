@@ -46,7 +46,7 @@ export function getReasons(type: ContentType): IIndexable<string> {
                 "harassment": "Harassment or Bullying",
                 "discrimination": "Hate Speech or Discrimination",
                 "violence": "Violence or Threatening Behavior",
-                "Other": "Other",
+                "other": "Other (Please describe)",
             };
         case ContentType.CHARACTER:
             return {
@@ -55,23 +55,28 @@ export function getReasons(type: ContentType): IIndexable<string> {
                 "bio-offensive": "Offensive Bio",
                 "bio-inappropriate": "Discriminatory or Inappropriate Bio",
                 "handle": "Offensive handle",
-                "other": "Other",
+                "other": "Other (Please describe)",
             };
         case ContentType.CAMPAIGN:
             return {
                 "name": "Offensive or Inappropriate Name",
                 "outline": "Offensive Outline",
                 "banner": "Offensive Banner",
-                "other": "Other",
+                "other": "Other (Please describe)",
             };
         case ContentType.SESSION:
             return {
                 "title": "Offensive or Inappropriate Title",
                 "excerpt": "Offensive or Inappropriate Excerpt",
                 "writeup": "Offensive or Inappropriate Writeup",
-                "other": "Other",
+                "other": "Other (Please describe)",
             };
         case ContentType.MESSAGE:
-            return {};
+            return {
+                "behaviour": "Inappropriate Behaviour",
+                "harassment": "Harassment or Bullying",
+                "discrimination": "Hate Speech or Discrimination",
+                "other": "Other (Please describe)",
+            };
     }
 }

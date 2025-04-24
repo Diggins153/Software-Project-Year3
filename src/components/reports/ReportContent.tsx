@@ -19,10 +19,18 @@ import { z } from "zod";
 type ReportCampaignProps = {
     contentType: ContentType;
     contentId: number;
-    discrete?: boolean
+    discrete?: boolean;
+    className?: string;
+    size?: "tiny" | "default";
 }
 
-export default function ReportContent({ contentType, contentId, discrete }: ReportCampaignProps) {
+export default function ReportContent({
+                                          contentType,
+                                          contentId,
+                                          discrete,
+                                          size = "default",
+                                          className,
+                                      }: ReportCampaignProps) {
     const [ isOpen, setOpen ] = useState(false);
     const form = useForm<z.infer<typeof ReportContentFormSchema>>({
         resolver: zodResolver(ReportContentFormSchema),
@@ -45,7 +53,13 @@ export default function ReportContent({ contentType, contentId, discrete }: Repo
     }
 
     return <Dialog open={ isOpen } onOpenChange={ open => setOpen(open) }>
-        <DialogTrigger className={ cn(buttonVariants({ variant: discrete ? "ghost" : "destructive" }), { "light": discrete }) }>
+        <DialogTrigger
+            className={ cn(
+                buttonVariants({ variant: discrete ? "ghost" : "destructive" }),
+                className,
+                { "light": discrete, "p-1 h-7": size == "tiny" },
+            ) }
+        >
             <FlagIcon/>
         </DialogTrigger>
         <DialogContent>

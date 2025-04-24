@@ -1,5 +1,7 @@
+import ReportContent from "@/components/reports/ReportContent";
 import { artifika } from "@/lib/fonts";
 import { Message } from "@/types/Message";
+import { ContentType } from "@/types/Report";
 import Link from "next/link";
 
 interface ChatMessageProps {
@@ -12,9 +14,17 @@ export default function ChatMessage({ message, showAuthor = true }: ChatMessageP
     const formatter = new Intl.DateTimeFormat("en-UK", { dateStyle: "medium", timeStyle: "short" });
 
     return <>
-        <div className="bg-yellow-200 text-black py-1 px-2 rounded-lg flex justify-between items-end flex-wrap mb-1">
+        <div className="bg-yellow-200 text-black py-1 px-2 rounded-lg flex justify-between items-center flex-wrap mb-1">
             <pre className={ `text-wrap ${ artifika.className }` }>{ text }</pre>
-            <span className="text-xs text-muted ms-auto">{ formatter.format(sent_at) }</span>
+            <div className="shrink ms-auto flex items-center gap-1">
+                <span className="text-xs text-muted ">{ formatter.format(sent_at) }</span>
+                <ReportContent
+                    contentId={ id }
+                    contentType={ ContentType.MESSAGE }
+                    className="text-muted bg-transparent hover:bg-accent hover:text-foreground"
+                    size="tiny"
+                />
+            </div>
         </div>
         { showAuthor &&
             <>

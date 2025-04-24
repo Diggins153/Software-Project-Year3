@@ -193,7 +193,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                         height={ 500 }
                         src={ campaign.banner }
                         alt={ `${ campaign.name } Banner` }
-                        className="rounded-lg max-w-[1000px] self-center campaign-banner"
+                        className="rounded-lg max-w-[1000px] self-center campaign-banner w-full"
                     />
                 ) }
                 <div className="w-full md:w-3/4 lg:w-1/2 mx-auto">

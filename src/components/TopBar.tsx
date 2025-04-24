@@ -1,5 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowLeftIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ArrowLeftIcon, EllipsisVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -20,6 +21,16 @@ export default function TopBar({ title, backLink, backText, endContent }: TopBar
             }
             <h1 className="text-2xl font-bold">{ title }</h1>
         </div>
-        <div>{ endContent && (endContent) }</div>
+        { endContent && <>
+            <div className="hidden lg:flex gap-1">
+                { endContent }
+            </div>
+            <Popover>
+                <PopoverTrigger className={ `lg:hidden ${ buttonVariants({ variant: "ghost" }) }` }><EllipsisVerticalIcon/></PopoverTrigger>
+                <PopoverContent className="flex flex-col gap-1">
+                    { endContent }
+                </PopoverContent>
+            </Popover>
+        </> }
     </div>;
 }

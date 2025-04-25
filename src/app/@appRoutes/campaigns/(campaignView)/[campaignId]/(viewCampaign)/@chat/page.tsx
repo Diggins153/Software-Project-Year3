@@ -35,8 +35,8 @@ export default async function CampaignChat({ params }: CampaignChatProps) {
         ORDER BY m.sent_at DESC
     `, campaignId) ?? [];
 
-    return <div className="hidden md:contents">
-        <ResizableHandle withHandle className="!order-2 md:mr-2 mr-0.5"/>
+    return <>
+        <ResizableHandle withHandle className="!order-2 md:mr-2 mr-0.5 hidden md:flex"/>
         <ResizablePanel
             id="chat"
             order={ 2 }
@@ -46,10 +46,10 @@ export default async function CampaignChat({ params }: CampaignChatProps) {
             collapsible
             className="content !order-3"
         >
-            <aside className="flex flex-col flex-1 overflow-y-scroll max-w-[30vw]">
+            <aside className="flex flex-col flex-1 overflow-y-scroll">
                 <MessagesList initialMessages={ messages } campaignId={ campaignId.toString() }/>
                 <MessageForm characters={ characters } campaignId={ campaignId }/>
             </aside>
         </ResizablePanel>
-    </div>;
+    </>;
 }

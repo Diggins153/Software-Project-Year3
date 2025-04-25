@@ -20,7 +20,7 @@ export default async function ViewCampaignLayout({ children, params, chat }: Vie
 
     return <>
         <ResizablePanelGroup direction="horizontal" autoSaveId={ campaignId.toString() } className="order-1 md:order-2">
-            <ResizablePanel id="campaign" order={1} defaultSize={ 80 } className="content !order-1">
+            <ResizablePanel id="campaign" order={ 1 } defaultSize={ 80 } className="content !order-1">
                 { children }
             </ResizablePanel>
             <Suspense fallback={ <LoadingChat/> }>

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default async function NoLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
     return <div className="flex flex-col h-dvh">
-        <header className="mx-1.5 mt-1.5 bg-theme p-1.5 rounded-lg">
+        <header className="rounded-lg mx-0.5 mt-0.5 bg-theme p-1.5 md:mx-1.5 md:mt-1.5">
             <nav className={ `flex justify-between items-center px-1 ${ artifika.className }` }>
                 <div className="flex items-center gap-5">
                     <p className={ `text-2xl font-bold select-none ${ alikeAngular.className }` }>BeyonD&D</p>
@@ -16,7 +16,7 @@ export default async function NoLayout({ children }: Readonly<{ children: React.
                 </div>
             </nav>
         </header>
-        <div className="content mr-0 mx-1.5 w-auto">
+        <div className="content !mx-0.5 !w-auto md:!mx-1.5">
             { children }
         </div>
     </div>;

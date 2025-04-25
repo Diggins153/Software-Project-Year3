@@ -35,21 +35,21 @@ export default async function CampaignChat({ params }: CampaignChatProps) {
         ORDER BY m.sent_at DESC
     `, campaignId) ?? [];
 
-    return <>
-        <ResizableHandle withHandle/>
+    return <div className="hidden md:contents">
+        <ResizableHandle withHandle className="!order-2 md:mr-2 mr-0.5"/>
         <ResizablePanel
             id="chat"
-            order={2}
+            order={ 2 }
             defaultSize={ 20 }
             maxSize={ 30 }
             minSize={ 15 }
             collapsible
-            className="content ml-2"
+            className="content !order-3"
         >
             <aside className="flex flex-col flex-1 overflow-y-scroll max-w-[30vw]">
                 <MessagesList initialMessages={ messages } campaignId={ campaignId.toString() }/>
                 <MessageForm characters={ characters } campaignId={ campaignId }/>
             </aside>
         </ResizablePanel>
-    </>;
+    </div>;
 }

@@ -12,7 +12,7 @@ interface TopBarParams {
 }
 
 export default function TopBar({ title, backLink, backText, endContent }: TopBarParams) {
-    return <div className="flex items-center justify-between p-2 sticky top-0 bg-theme z-50">
+    return <div className="flex items-center justify-between p-2 sticky top-0 bg-theme z-10">
         <div className="flex items-center gap-2 md:gap-4">
             { backText && backLink &&
                 <Link href={ backLink } className={ buttonVariants({ variant: "ghost" }) }>

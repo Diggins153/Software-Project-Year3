@@ -10,15 +10,15 @@ export default async function Sidebar() {
     const { user } = await ensureSession();
 
     return (
-        <div className="h-dvh flex flex-col gap-4 p-2.5">
-            <nav className="flex flex-col gap-5 h-full justify-center">
-                <div className="flex flex-col gap-1">
+        <div className="flex px-1 pt-2 pb-1 md:p-2.5 w-dvw md:w-min md:h-dvh order-2 md:order-1">
+            <nav className="flex flex-row justify-center w-full gap-1 md:h-full md:flex-col md:gap-5">
+                <div className="sidebar__item-group">
                     <TooltipProvider delayDuration={ 0 } disableHoverableContent={ true }>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Link
                                     href="/"
-                                    className={ `${ alikeAngular.className } text-4xl font-bold text-white bg-[#330F0A] rounded-lg text-center px-5 py-3 select-none border-2 border-white` }
+                                    className={ `${ alikeAngular.className } text-2xl md:text-4xl font-bold text-white bg-[#330F0A] rounded-lg px-5 md:py-3 pt-1.5 select-none border-2 border-white` }
                                 >
                                     B
                                 </Link>
@@ -32,11 +32,11 @@ export default async function Sidebar() {
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="sidebar__item-group">
                     <NavItem title="Campaigns" href="/campaigns" icon={ <SwordsIcon/> }/>
                     <NavItem title="Characters" href="/characters" icon={ <UsersIcon/> }/>
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="sidebar__item-group">
                     <NavItem title="Settings" href="/settings" icon={ <CogIcon/> }/>
                     { user.role === "admin" &&
                         <NavItem title="Admin" href="/admin" icon={ <ShieldIcon/> }/>

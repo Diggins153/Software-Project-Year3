@@ -18,16 +18,16 @@ export default async function ViewCampaignLayout({ children, params, chat }: Vie
         redirect("/");
     }
 
-    return <div className="w-full">
-        <ResizablePanelGroup direction="horizontal" autoSaveId={ campaignId.toString() }>
-            <ResizablePanel id="campaign" order={1} defaultSize={ 80 } className="content">
+    return <>
+        <ResizablePanelGroup direction="horizontal" autoSaveId={ campaignId.toString() } className="order-1 md:order-2">
+            <ResizablePanel id="campaign" order={1} defaultSize={ 80 } className="content !order-1">
                 { children }
             </ResizablePanel>
             <Suspense fallback={ <LoadingChat/> }>
                 { chat }
             </Suspense>
         </ResizablePanelGroup>
-    </div>;
+    </>;
 }
 
 function LoadingChat() {

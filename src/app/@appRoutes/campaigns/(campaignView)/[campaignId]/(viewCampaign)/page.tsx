@@ -143,7 +143,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
     `, campaignId);
 
     return (
-        <main className="content">
+        <main>
             <TopBar
                 title={ campaign.name }
                 backText={ "Campaigns" }

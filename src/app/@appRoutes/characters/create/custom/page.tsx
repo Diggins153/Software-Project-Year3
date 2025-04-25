@@ -84,7 +84,7 @@ export default function CreateCharacter() {
         }
     };
 
-    if (isLoading) return <main className="flex items-center justify-center gap-4 relative p-8 min-h-screen">
+    if (isLoading) return <main className="content flex items-center justify-center gap-4 relative p-8 min-h-screen">
         <Loader2 className="animate-spin ease-in-out" size={ 48 }/>
         <h3 className="text-xl">Loading Character Creator</h3>
     </main>;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -8,12 +9,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { register } from "@/lib/actions/authentication";
 import { RegisterFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon, CircleHelp } from "lucide-react";
+import { ArrowRightIcon, CircleHelp, EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function RegistrationForm() {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordCheck, setShowPasswordCheck] = useState(false);
+
     const form = useForm<z.infer<typeof RegisterFormSchema>>({
         resolver: zodResolver(RegisterFormSchema),
         defaultValues: {
@@ -92,7 +96,15 @@ export default function RegistrationForm() {
                             </TooltipProvider>
                         </div>
                         <FormControl>
-                            <Input type="password" { ...field }/>
+                            <div className="relative">
+                                <Input type={showPassword ? "text" : "password"}{...field} className="pr-10"/>
+                                <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="absolute right-2 top-1/2 -translate-y-1/2" tabIndex={-1}>
+                                    {showPassword ?
+                                        (<EyeOffIcon className="h-5 w-5" />):
+                                        (<EyeIcon className="h-5 w-5" />)
+                                    }
+                                </button>
+                            </div>
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -106,7 +118,15 @@ export default function RegistrationForm() {
                     <FormItem>
                         <FormLabel>Repeat Password</FormLabel>
                         <FormControl>
-                            <Input type="password" { ...field }/>
+                            <div className="relative">
+                                <Input type={showPasswordCheck ? "text" : "password"}{...field} className="pr-10"/>
+                                <button type="button" onClick={() => setShowPasswordCheck(prev => !prev)} className="absolute right-2 top-1/2 -translate-y-1/2" tabIndex={-1}>
+                                    {showPasswordCheck ?
+                                        (<EyeOffIcon className="h-5 w-5" />):
+                                        (<EyeIcon className="h-5 w-5" />)
+                                    }
+                                </button>
+                            </div>
                         </FormControl >
                         <FormMessage/>
                     </FormItem>

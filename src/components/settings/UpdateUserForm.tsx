@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -12,8 +13,13 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+
 
 export default function UpdateUserForm({ user }: { user: User }) {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordCheck, setShowPasswordCheck] = useState(false);
+
     const router = useRouter();
     const form = useForm<z.infer<typeof UpdateUserFormSchema>>({
         resolver: zodResolver(UpdateUserFormSchema),
@@ -80,7 +86,15 @@ export default function UpdateUserForm({ user }: { user: User }) {
                     <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input type="password" { ...field }/>
+                            <div className="relative">
+                                <Input type={showPassword ? "text" : "password"}{...field} className="pr-10"/>
+                                <button type="button" onClick={() => setShowPassword(prev => !prev)} className="absolute right-2 top-1/2 -translate-y-1/2" tabIndex={-1}>
+                                    {showPassword
+                                        ?(<EyeOffIcon className="h-5 w-5" />):
+                                        (<EyeIcon className="h-5 w-5" />)
+                                    }
+                                </button>
+                            </div>
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -94,13 +108,20 @@ export default function UpdateUserForm({ user }: { user: User }) {
                     <FormItem>
                         <FormLabel>Repeat Password</FormLabel>
                         <FormControl>
-                            <Input type="password" { ...field }/>
+                            <div className="relative">
+                                <Input type={showPasswordCheck ? "text" : "password"}{...field} className="pr-10"/>
+                                <button type="button" onClick={() => setShowPasswordCheck(prev => !prev)} className="absolute right-2 top-1/2 -translate-y-1/2" tabIndex={-1}>
+                                    {showPasswordCheck ?
+                                        (<EyeOffIcon className="h-5 w-5" />):
+                                        (<EyeIcon className="h-5 w-5" />)
+                                    }
+                                </button>
+                            </div>
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>
-                ) }
+                )}
             />
-
             <div className="flex justify-end">
                 <Button type="submit">Save Changes</Button>
             </div>

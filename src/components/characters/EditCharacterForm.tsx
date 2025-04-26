@@ -34,6 +34,7 @@ interface EditCharacterFormProps {
 }
 
 export default function EditCharacterForm({ character, races, onSubmit, classes }: EditCharacterFormProps) {
+    const mbInB = 1_048_576;
     const router = useRouter();
     const form = useForm<z.infer<typeof EditCharacterFormSchema>>({
         resolver: zodResolver(EditCharacterFormSchema),
@@ -46,6 +47,7 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
             classId: character.class_id,
             level: character.level,
         },
+        progressive: true,
     });
     const [ imageUrl, setImageUrl ] = useState<string>();
 
@@ -96,6 +98,10 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
                                         onChange={ e => {
                                             const file = e.target.files?.[0];
                                             setImageUrl(file ? URL.createObjectURL(file) : undefined);
+                                            form.clearErrors("image");
+                                            if ((e.target.files?.[0]?.size ?? (mbInB + 1)) > mbInB) {
+                                                form.setError("image", { message: "Maximum file size allowed is 1MB" });
+                                            }
                                         } }
                                     />
                                 </FormControl>
@@ -216,7 +222,7 @@ export default function EditCharacterForm({ character, races, onSubmit, classes 
             />
 
             <div className="flex justify-end">
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled={ !form.formState.isValid }>Save Changes</Button>
             </div>
         </form>
     </Form>;

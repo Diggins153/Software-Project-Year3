@@ -14,7 +14,7 @@ export async function updateUser(data: z.infer<typeof UpdateUserFormSchema>): Pr
     const { user } = await ensureSession();
     const result = await UpdateUserFormSchema.safeParseAsync(data);
     if (!result.success) return { ok: false, message: "Please check form" };
-    const { id, displayName, email, password, passwordCheck } = result.data;
+    const { id, displayName, email, currentPassword, password, passwordCheck } = result.data;
     if (id.toString() !== user.id) return { ok: false, message: "You can only update your own details" };
 
     const parametrizedKeys: string[] = [];
@@ -27,7 +27,7 @@ export async function updateUser(data: z.infer<typeof UpdateUserFormSchema>): Pr
         parametrizedKeys.push("email = ?");
         params.push(email);
     }
-    if (password && passwordCheck && password === passwordCheck && await bcrypt.compare(password, user.password)) {
+    if (currentPassword && password && passwordCheck && password === passwordCheck && await bcrypt.compare(currentPassword, user.password)) {
         parametrizedKeys.push("password = ?");
         params.push(await bcrypt.hash(password, await bcrypt.genSalt(12)));
     }

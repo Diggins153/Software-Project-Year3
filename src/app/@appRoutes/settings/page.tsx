@@ -1,6 +1,8 @@
 import DeleteAccountDialog from "@/components/settings/DeleteAccountDialog";
 import UpdateUserForm from "@/components/settings/UpdateUserForm";
 import TopBar from "@/components/TopBar";
+import { Button } from "@/components/ui/button";
+import { signOut } from "@/lib/auth";
 import { ensureSession } from "@/lib/utils";
 import { User } from "@/types/User";
 
@@ -12,7 +14,19 @@ export default async function SettingsPage() {
     const { user } = await ensureSession();
 
     return <main className="content">
-        <TopBar title="Settings"/>
+        <TopBar
+            title="Settings"
+            endContent={
+                <form
+                    action={ async () => {
+                        "use server";
+                        await signOut({ redirectTo: "/" });
+                    } }
+                >
+                    <Button variant="ghost" className="light">Log out</Button>
+                </form>
+            }
+        />
         <div className="p-1.5 w-full md:w-3/4 lg:w-1/2 xl:w-2/5 mx-auto space-y-4">
             <h2 className="text-xl font-bold">Update Details</h2>
             <UpdateUserForm user={ { ...user, id: Number(user.id) } as User }/>

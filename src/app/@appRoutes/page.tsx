@@ -39,7 +39,7 @@ function YourCampaigns({ campaigns }: { campaigns: Campaign[] }) {
     return <div>
         <h2 className="text-2xl font-bold mb-2">Your campaigns</h2>
         { campaigns.length == 0 &&
-            <p className="text-gray-400">You're not in any campaigns</p>
+            <p className="text-gray-400">You're not playing in any campaigns (yet)</p>
         }
         { campaigns.map(campaign =>
             <Link key={ campaign.id } href={ `/campaigns/${ campaign.id }` }>

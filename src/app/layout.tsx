@@ -6,11 +6,14 @@ import { Session } from "next-auth";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 
+// TODO: Monitor status of https://github.com/vercel/next.js/issues/59316
+//       and set titles when no longer cause issues
 export const metadata: Metadata = {
-    title: {
-        template: "%s ⩿ BD&D",
-        default: "BeyonD&D",
-    },
+    title: "BeyonD&D",
+    // title: {
+    //     template: "%s ⩿ BD&D",
+    //     default: "BeyonD&D",
+    // },
     applicationName: "BeyonD&D",
     appleWebApp: {
         capable: true,

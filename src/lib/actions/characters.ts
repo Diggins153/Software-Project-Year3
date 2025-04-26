@@ -62,7 +62,7 @@ export async function createCharacter(
 
     // Insert the new character with race_id, class_id, and level.
     await query(
-        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, 'https://placehold.co/75.png', ?)",
+        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, NULL, ?)",
         name,
         `@${ name }`,
         dbRace.id,
@@ -88,7 +88,7 @@ export async function createPremadeCharacter(name: string, raceId: number, class
     }
 
     await query(
-        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, 'https://placehold.co/75.png', ?)",
+        "INSERT INTO `character` (name, handle, race_id, class_id, level, image, owner_id) VALUE (?, ?, ?, ?, ?, NULL, ?)",
         name,
         `@${ name }`,
         dbRace.id,

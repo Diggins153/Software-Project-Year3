@@ -82,9 +82,9 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
                 </div>
             </div>
             {/*Posts*/ }
-            <div className="text-center mt-4 text-xl">
-                Here be posts...
-            </div>
+            {/*<div className="text-center mt-4 text-xl">*/}
+            {/*    Here be posts...*/}
+            {/*</div>*/}
         </div>
     </main>;
 }

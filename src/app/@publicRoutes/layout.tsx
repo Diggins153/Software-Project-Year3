@@ -57,7 +57,7 @@ export default function NoLayout({ children }: Readonly<{ children: React.ReactN
                 }
             </nav>
         </header>
-        <div className={ cn("content mx-0.5 md:mx-1.5") }>
+        <div className={ "content mx-0.5 md:mx-1.5 md:max-w-[calc(100dvw-0.375rem-0.375rem)]" }>
             { children }
         </div>
     </div>;

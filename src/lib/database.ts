@@ -7,7 +7,6 @@ let mysql: ServerlessMysql = require("serverless-mysql")({
         database: process.env.MYSQL_DB,
         user: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
-        connectionLimit: 1,
     },
 } satisfies Config);
 

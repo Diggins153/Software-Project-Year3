@@ -9,16 +9,15 @@ import { UpdateUserFormSchema } from "@/lib/formSchemas";
 import { User } from "@/types/User";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
-
 export default function UpdateUserForm({ user }: { user: User }) {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showPasswordCheck, setShowPasswordCheck] = useState(false);
+    const [ showCurrentPassword, setShowCurrentPassword ] = useState(false);
+    const [ showPassword, setShowPassword ] = useState(false);
+    const [ showPasswordCheck, setShowPasswordCheck ] = useState(false);
 
     const router = useRouter();
     const form = useForm<z.infer<typeof UpdateUserFormSchema>>({
@@ -27,6 +26,7 @@ export default function UpdateUserForm({ user }: { user: User }) {
             id: user.id,
             displayName: user.display_name,
             email: user.email,
+            currentPassword: "",
             password: "",
             passwordCheck: "",
         },
@@ -38,9 +38,7 @@ export default function UpdateUserForm({ user }: { user: User }) {
         if (response.ok) {
             toast.success("Updated");
             if (form.getValues("password") !== "") {
-                useEffect(() => {
-                    setTimeout(() => window.location.reload(), 3000);
-                }, []);
+                setTimeout(window.location.reload, 3000);
             } else {
                 router.refresh();
             }
@@ -81,10 +79,37 @@ export default function UpdateUserForm({ user }: { user: User }) {
 
             <FormField
                 control={ form.control }
+                name="currentPassword"
+                render={ ({ field }) => (
+                    <FormItem>
+                        <FormLabel>Current password</FormLabel>
+                        <FormControl>
+                            <div className="relative">
+                                <Input type={ showCurrentPassword ? "text" : "password" } { ...field }/>
+                                <button
+                                    type="button"
+                                    onClick={ () => setShowCurrentPassword(!showCurrentPassword) }
+                                    className="absolute right-2 top-1/2 -translate-y-1/2"
+                                    tabIndex={ -1 }
+                                >
+                                    { showCurrentPassword
+                                        ? <EyeOffIcon className="h-5 w-5"/>
+                                        : <EyeIcon className="h-5 w-5"/>
+                                    }
+                                </button>
+                            </div>
+                        </FormControl>
+                        <FormMessage/>
+                    </FormItem>
+                ) }
+            />
+
+            <FormField
+                control={ form.control }
                 name="password"
                 render={ ({ field }) => (
                     <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>New Password</FormLabel>
                         <FormControl>
                             <div className="relative">
                                 <Input type={showPassword ? "text" : "password"}{...field} className="pr-10"/>
@@ -106,7 +131,7 @@ export default function UpdateUserForm({ user }: { user: User }) {
                 name="passwordCheck"
                 render={ ({ field }) => (
                     <FormItem>
-                        <FormLabel>Repeat Password</FormLabel>
+                        <FormLabel>Repeat New Password</FormLabel>
                         <FormControl>
                             <div className="relative">
                                 <Input type={showPasswordCheck ? "text" : "password"}{...field} className="pr-10"/>
@@ -118,9 +143,9 @@ export default function UpdateUserForm({ user }: { user: User }) {
                                 </button>
                             </div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage/>
                     </FormItem>
-                )}
+                ) }
             />
             <div className="flex justify-end">
                 <Button type="submit">Save Changes</Button>

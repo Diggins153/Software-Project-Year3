@@ -206,6 +206,9 @@ export const UpdateUserFormSchema = z.object({
         .email("Please enter an email address")
         .max(64, "Email can only be 60 characters long")
         .optional(),
+    currentPassword: z
+        .string()
+        .optional(),
     password: z
         .string()
         .optional()

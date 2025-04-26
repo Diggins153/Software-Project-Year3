@@ -128,11 +128,11 @@ export default function CreateCharacter() {
                 { currentPage === 0 && (
                     <section className="mt-8">
                         <h2 className="text-2xl font-bold text-center mb-4">Choose Your Race</h2>
-                        <div className="grid grid-cols-4 gap-2 ml-36">
+                        <div className="p-2 md:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-2">
                             { races.map((race) => (
                                 <div
                                     key={ race.name }
-                                    className="relative w-[300px] h-[500px] group"
+                                    className="h-[400px] group"
                                     style={ { perspective: "1000px" } }
                                     onClick={ () => setSelectedRace(race.name) }
                                 >
@@ -163,11 +163,11 @@ export default function CreateCharacter() {
                 { currentPage === 1 && (
                     <section className="mt-8">
                         <h2 className="text-2xl font-bold text-center mb-4">Choose Your Class</h2>
-                        <div className="grid grid-cols-4 gap-2 ml-36">
+                        <div className="p-2 md:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-2">
                             { classes.map((cls) => (
                                 <div
                                     key={ cls.name }
-                                    className="relative w-[300px] h-[500px] group"
+                                    className="h-[400px] group"
                                     style={ { perspective: "1000px" } }
                                     onClick={ () => setSelectedClass(cls.name) }
                                 >

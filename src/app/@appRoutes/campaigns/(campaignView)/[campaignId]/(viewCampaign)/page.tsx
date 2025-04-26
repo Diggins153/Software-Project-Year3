@@ -19,6 +19,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Fragment } from "react";
 
 type SessionSignup = {
     session_id: number;
@@ -144,7 +145,7 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
     `, campaignId);
 
     return (
-        <main>
+        <main className="overflow-y-auto pb-6">
             <TopBar
                 title={ campaign.name }
                 backText={ "Campaigns" }
@@ -202,15 +203,26 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                         className="rounded-lg max-w-[1000px] self-center campaign-banner w-full"
                     />
                 ) }
+                <h2 className="text-2xl mb-2 w-full md:w-3/4 lg:w-1/2 px-2">Party</h2>
+                <div className="w-full flex flex-row gap-2 overflow-y-auto px-2">
+                    { charactersInCampaign.length > 0
+                        ? charactersInCampaign.map(character => (
+                            <div key={ character.id } className="w-[250px] shrink-0">
+                                <CharacterCard character={ character } showReport/>
+                            </div>
+                        ))
+                        : <div className="mx-auto"><EmptyCharacterCard message="The party is empty"/></div>
+                    }
+                </div>
                 <div className="w-full md:w-3/4 lg:w-1/2 mx-auto">
                     <Collapsible>
                         <CollapsibleTrigger
                             className={ cn("flex items-center gap-2 mb-4", buttonVariants({ variant: "ghost" })) }
                         >
-                            Details
+                            Campaign Details
                             <ChevronsUpDown size={ 16 }/>
                         </CollapsibleTrigger>
-                        <CollapsibleContent className="space-y-4">
+                        <CollapsibleContent className="space-y-4 px-2 mb-6">
                             <div className="flex items-center">
                                 <strong className="mr-1">Dungeon Master:</strong>
                                 { campaign.dungeon_master_name }
@@ -223,19 +235,6 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                                 </div>
                             </div>
                             <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
-                            <div>
-                                <h2 className="text-xl mb-2">Party</h2>
-                                <div className="grid grid-cols-2 gap-2">
-                                    { charactersInCampaign.length > 0
-                                        ? charactersInCampaign.map(character => (
-                                            <div key={ character.id } className="basis-1/2">
-                                                <CharacterCard character={ character } showReport/>
-                                            </div>
-                                        ))
-                                        : <EmptyCharacterCard message="The party is empty"/>
-                                    }
-                                </div>
-                            </div>
                         </CollapsibleContent>
                     </Collapsible>
                 </div>

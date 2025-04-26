@@ -2,7 +2,7 @@ import LoginForm from "@/components/forms/LoginForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Log into BYonD&D",
+    title: "Login",
 };
 
 export default function LoginPage() {

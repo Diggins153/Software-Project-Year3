@@ -11,13 +11,12 @@ import { ensureSession, generateCampaignInviteCode } from "@/lib/utils";
 import { Campaign } from "@/types/Campaign";
 import { CharacterStatus } from "@/types/CampaignCharacters";
 import { Character } from "@/types/Character";
-import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 
-export const metadata: Metadata = {
-    title: "Manage Campaign",
-};
+// export const metadata: Metadata = {
+//     title: "Manage Campaign",
+// };
 
 /**
  * ManageCampaignPage is the main page component for managing a campaign

@@ -2,7 +2,7 @@ import RegistrationForm from "@/components/forms/RegistrationForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Register into BYonD&D",
+    title: "Register",
 };
 
 export default function RegisterPage() {

@@ -11,6 +11,11 @@ export const metadata: Metadata = {
         template: "%s ⩿ BD&D",
         default: "BeyonD&D",
     },
+    applicationName: "BeyonD&D",
+    appleWebApp: {
+        capable: true,
+        title: "BeyonD&D",
+    },
 };
 
 export const viewport: Viewport = {

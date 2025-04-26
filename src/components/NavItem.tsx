@@ -1,6 +1,7 @@
 "use client";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +9,7 @@ import { PropsWithoutRef } from "react";
 
 export default function NavItem({ title, href, icon }: PropsWithoutRef<{ title: string, href?: string, icon?: any }>) {
     const pathname = usePathname();
+    const isMobile = useIsMobile();
 
     return <>
         <TooltipProvider delayDuration={ 0 } disableHoverableContent={ true }>
@@ -35,7 +37,10 @@ export default function NavItem({ title, href, icon }: PropsWithoutRef<{ title: 
                         </button>
                     }
                 </TooltipTrigger>
-                <TooltipContent side="right" className="bg-green-800 text-white text-md select-none">
+                <TooltipContent
+                    side={ isMobile ? "top" : "right" }
+                    className="bg-green-800 text-white text-md select-none"
+                >
                     <p>{ title }</p>
                 </TooltipContent>
             </Tooltip>

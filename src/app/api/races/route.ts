@@ -7,6 +7,7 @@ export async function GET() {
     const races = await query<Race[]>(`
         SELECT *
         FROM race
+        ORDER BY name
     `);
     return Response.json(races);
 }

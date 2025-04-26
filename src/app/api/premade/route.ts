@@ -11,6 +11,7 @@ export async function GET() {
         FROM premade_character pc
                  JOIN class c ON c.id = pc.class_id
                  JOIN race r ON r.id = pc.race_id
+        ORDER BY rand()
     `);
     return Response.json(characters);
 }

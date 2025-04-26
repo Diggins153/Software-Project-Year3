@@ -41,11 +41,11 @@ export default function PremadeCharactersPage() {
     return (
         <main className="content">
             <TopBar title="Choose from Premade Characters" backText="Characters" backLink="/characters"/>
-            <div className="p-6 grid grid-cols-4 gap-2 ml-36">
+            <div className="p-2 md:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-2">
                 { premadeCharacters.map((character) => (
                     <div
                         key={ character.id }
-                        className="relative w-[300px] h-[500px] group"
+                        className="h-[400px] group"
                         style={ { perspective: "1000px" } }
                         onClick={ async () =>
                             await createPremadeCharacter(character.name, character.race_id, character.class_id, 3)

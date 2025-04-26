@@ -41,14 +41,6 @@ export default async function Sidebar() {
                     { user.role === "admin" &&
                         <NavItem title="Admin" href="/admin" icon={ <ShieldIcon/> }/>
                     }
-                    <form
-                        action={ async () => {
-                            "use server";
-                            await signOut({ redirectTo: "/" });
-                        } }
-                    >
-                        <NavItem title="Sign Out" icon={ <LogOutIcon size={ 22 }/> }/>
-                    </form>
                 </div>
             </nav>
         </div>

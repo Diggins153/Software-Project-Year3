@@ -1,19 +1,30 @@
 import { auth } from "@/lib/auth";
 import { alikeAngular, artifika } from "@/lib/fonts";
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Session } from "next-auth";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 
+export const metadata: Metadata = {
+    title: {
+        template: "%s ⩿ BD&D",
+        default: "BeyonD&D",
+    },
+    applicationName: "BeyonD&D",
+    appleWebApp: {
+        capable: true,
+        title: "BeyonD&D",
+    },
+};
+
 export const viewport: Viewport = {
     colorScheme: "dark",
 };
 
-export default async function RootLayout({ appRoutes, publicRoutes }: Readonly<{
+export default async function RootLayout({ appRoutes, children }: Readonly<{
     children: ReactNode,
-    appRoutes: ReactNode,
-    publicRoutes: ReactNode
+    appRoutes: ReactNode
 }>) {
     let session: Session | null;
     try {
@@ -30,7 +41,7 @@ export default async function RootLayout({ appRoutes, publicRoutes }: Readonly<{
         {
             !!session?.user
                 ? appRoutes
-                : publicRoutes
+                : children
         }
         <Toaster richColors={ true }/>
         </body>

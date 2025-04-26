@@ -1,4 +1,4 @@
-import NoLayout from "@/app/@publicRoutes/layout";
+import NoLayout from "@/app/(public)/layout";
 import { buttonVariants } from "@/components/ui/button";
 import { alikeAngular } from "@/lib/fonts";
 import Link from "next/link";

@@ -2,18 +2,8 @@
 
 import EditCharacterForm from "@/components/characters/EditCharacterForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -93,35 +83,32 @@ export default function CharacterActionsDropdown({ character, races, classes, ch
                 </DialogContent>
             </Dialog>
 
-            <AlertDialog open={ isDeleteOpen } onOpenChange={ open => setDeleteOpen(open) }>
-                <AlertDialogContent className="bg-theme">
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Do you really want to delete { character.name }?</AlertDialogTitle>
-                        <AlertDialogDescription className="space-y-4">
-                            { characterCampaigns.length > 0 &&
-                                <p className="space-y-2">
-                                    <p>The character is playing
-                                        in { characterCampaigns.length == 1 ? "this campaign" : "these campaigns" }:
-                                    </p>
-                                    <ul className="list-disc list-inside">
-                                        { characterCampaigns.map(campaign =>
-                                            <li key={ campaign.id }>{ campaign.name }</li>) }
-                                    </ul>
-                                    <span className="font-bold">The character will be removed and you will loose access to the campaign.</span>
-                                </p>
-                            }
-                            <Alert variant="destructive" className="mt-4">
-                                <AlertCircle className="size-4"/>
-                                <AlertDescription>This cannot be undone!</AlertDescription>
-                            </Alert>
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={ handleDelete }>Delete my character</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            <Dialog open={ isDeleteOpen } onOpenChange={ open => setDeleteOpen(open) }>
+                <DialogContent className="bg-theme">
+                    <DialogHeader>
+                        <DialogTitle>Do you really want to delete { character.name }?</DialogTitle>
+                    </DialogHeader>
+                    { characterCampaigns.length > 0 &&
+                        <>
+                            The character is playing
+                            in { characterCampaigns.length == 1 ? "this campaign" : "these campaigns" }:
+                            <ul className="list-disc list-inside">
+                                { characterCampaigns.map(campaign =>
+                                    <li key={ campaign.id }>{ campaign.name }</li>) }
+                            </ul>
+                            <span className="font-bold">The character will be removed and you can loose access to the campaign.</span>
+                        </>
+                    }
+                    <Alert variant="destructive" className="light">
+                        <AlertCircle className="size-4"/>
+                        <AlertDescription>This cannot be undone!</AlertDescription>
+                    </Alert>
+                    <div className="flex gap-4 justify-end">
+                        <DialogClose>Cancel</DialogClose>
+                        <Button onClick={ handleDelete } variant="destructive">Delete my character</Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </DropdownMenu>
     </>;
 }

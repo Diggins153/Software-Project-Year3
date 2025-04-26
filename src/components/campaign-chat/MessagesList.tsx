@@ -15,19 +15,20 @@ export default function MessagesList({ campaignId, initialMessages }: MessagesLi
     const scrollDownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        pusherClient.subscribe(`campaign-${ campaignId }`);
+        scrollDownRef.current?.scrollIntoView();
+
         function incomingMessageHandler(message: Message) {
             message.sent_at = new Date(message.sent_at);
             setMessages(previousMessages => [ message, ...previousMessages ]);
         }
 
-        scrollDownRef.current?.scrollIntoView();
+        pusherClient.bind(INCOMING_MESSAGE_EVENT, incomingMessageHandler);
 
-        const channel = pusherClient.subscribe(`campaign-${ campaignId }`);
-        channel.bind(INCOMING_MESSAGE_EVENT, incomingMessageHandler);
 
         return function () {
-            channel.unbind(INCOMING_MESSAGE_EVENT, incomingMessageHandler);
-            channel.unsubscribe();
+            pusherClient.unbind(INCOMING_MESSAGE_EVENT, incomingMessageHandler);
+            pusherClient.unsubscribe(`campaign-${ campaignId }`);
         };
     }, []);
 

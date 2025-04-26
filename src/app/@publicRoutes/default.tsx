@@ -1,10 +1,7 @@
 import NoLayout from "@/app/@publicRoutes/layout";
 import { buttonVariants } from "@/components/ui/button";
 import { alikeAngular } from "@/lib/fonts";
-import { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = { title: "Unauthorized" };
 
 export default function PublicRoutesDefault() {
     return <NoLayout>

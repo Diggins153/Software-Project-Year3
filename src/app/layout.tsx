@@ -1,17 +1,10 @@
 import { auth } from "@/lib/auth";
 import { alikeAngular, artifika } from "@/lib/fonts";
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
 import "./globals.css";
 import { Session } from "next-auth";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
-
-export const metadata: Metadata = {
-    title: {
-        template: "%s ⩿ BD&D",
-        default: "BeyonD&D",
-    },
-};
 
 export const viewport: Viewport = {
     colorScheme: "dark",

@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+    title: "BeyonD&D",
+    applicationName: "BeyonD&D",
+    appleWebApp: {
+        capable: true,
+        title: "BeyonD&D",
+    },
+};
 
 export default function RootPage() {
     return <>

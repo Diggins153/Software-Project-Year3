@@ -11,18 +11,28 @@ import { cn } from "@/lib/utils";
 import { ContentType, getContentTypeDialogName, getReasons } from "@/types/Report";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FlagIcon, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-type ReportCampaignProps = {
+type ReportContentProps = {
     contentType: ContentType;
     contentId: number;
-    discrete?: boolean
+    discrete?: boolean;
+    className?: string;
+    size?: "tiny" | "default";
+    children?: ReactNode
 }
 
-export default function ReportContent({ contentType, contentId, discrete }: ReportCampaignProps) {
+export default function ReportContent({
+                                          contentType,
+                                          contentId,
+                                          discrete,
+                                          size = "default",
+                                          className,
+                                          children,
+                                      }: ReportContentProps) {
     const [ isOpen, setOpen ] = useState(false);
     const form = useForm<z.infer<typeof ReportContentFormSchema>>({
         resolver: zodResolver(ReportContentFormSchema),
@@ -45,8 +55,18 @@ export default function ReportContent({ contentType, contentId, discrete }: Repo
     }
 
     return <Dialog open={ isOpen } onOpenChange={ open => setOpen(open) }>
-        <DialogTrigger className={ cn(buttonVariants({ variant: discrete ? "ghost" : "destructive" }), { "light": discrete }) }>
-            <FlagIcon/>
+        <DialogTrigger
+            className={ cn(
+                buttonVariants({ variant: discrete ? "ghost" : "destructive" }),
+                className,
+                { "light": discrete, "p-1 h-7": size == "tiny" },
+            ) }
+        >
+            {
+                typeof children == "undefined"
+                    ? <FlagIcon/>
+                    : children
+            }
         </DialogTrigger>
         <DialogContent>
             <DialogHeader>

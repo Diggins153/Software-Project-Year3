@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
                 search: "",
                 pathname: "**",
             },
+            {
+                protocol: "https",
+                hostname: "yubybchcsxgpqpc6.public.blob.vercel-storage.com",
+                pathname: "**"
+            },
+            {
+                protocol: "https",
+                hostname: "4sgclolcbaiwfoot.public.blob.vercel-storage.com",
+                pathname: "**"
+            }
         ],
     },
 };

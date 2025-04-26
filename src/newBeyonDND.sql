@@ -36,13 +36,15 @@ CREATE TABLE `user` (
 -- RACES
 CREATE TABLE race (
                       id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                      name VARCHAR(40) NOT NULL
+                      name VARCHAR(40) NOT NULL,
+                      description VARCHAR(256) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CLASSES
 CREATE TABLE `class` (
                          id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                         name VARCHAR(40) NOT NULL
+                         name VARCHAR(40) NOT NULL,
+                         description VARCHAR(256) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CHARACTERS
@@ -96,7 +98,7 @@ CREATE TABLE campaign (
                           signups_open BOOL NOT NULL DEFAULT FALSE,
                           dungeon_master_id INT UNSIGNED NOT NULL,
                           max_players INT NOT NULL DEFAULT 4,
-                          banner VARCHAR(255) NOT NULL,
+                          banner VARCHAR(255) NULL,
                           outline TEXT NOT NULL,
                           public BOOL DEFAULT FALSE,
                           invite VARCHAR(7) DEFAULT NULL,
@@ -137,10 +139,12 @@ CREATE TABLE session_characters (
 -- MESSAGES
 CREATE TABLE messages (
                           id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                          message VARCHAR(256) NOT NULL,
+                          message TEXT NOT NULL,
                           sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                           campaign_id INT UNSIGNED NOT NULL,
-                          FOREIGN KEY (campaign_id) REFERENCES campaign(id) ON DELETE CASCADE
+                          author_id INT UNSIGNED NOT NULL,
+                          FOREIGN KEY (campaign_id) REFERENCES campaign(id) ON DELETE CASCADE,
+                          FOREIGN KEY (author_id) REFERENCES `character`(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- POSTS

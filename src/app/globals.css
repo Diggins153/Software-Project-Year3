@@ -19,7 +19,25 @@ body {
 }
 
 .content {
-    @apply flex flex-col flex-1 bg-theme text-white max-h-[calc(100dvh-0.5rem-0.5rem)] my-2 mr-2 rounded-lg overflow-y-scroll overflow-x-clip;
+    /* The calc: For desktop = full viewport height - margin top - margin bottom (my-2 = 0.5rem) */
+    /* The calc: For mobile = full viewport width - margin left - margin right (my-2 = 0.125rem) */
+    @apply flex flex-col h-full md:max-h-[calc(100dvh-0.5rem-0.5rem)] md:w-full w-[calc(100dvw-0.125rem-0.125rem)] bg-theme text-white m-0.5 md:my-2 md:mr-2 md:ml-0 rounded-lg overflow-y-auto overflow-x-clip order-1 md:order-2;
+}
+
+.sidebar__item-group {
+    @apply flex md:flex-col gap-1;
+}
+
+.sidebar__item {
+
+}
+
+.campaign-banner {
+    @apply object-center object-scale-down aspect-[3] bg-white;
+}
+
+.character-image {
+    @apply object-center object-cover aspect-square rounded-full bg-white;
 }
 
 @layer base {

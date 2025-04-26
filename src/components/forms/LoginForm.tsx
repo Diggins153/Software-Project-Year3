@@ -1,18 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { login } from "@/lib/actions/authentication";
 import { LoginFormSchema } from "@/lib/formSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 export default function LoginForm() {
+    const [showPassword, setShowPassword] = useState(false);
     const form = useForm<z.infer<typeof LoginFormSchema>>({
         resolver: zodResolver(LoginFormSchema),
         defaultValues: {
@@ -38,7 +40,7 @@ export default function LoginForm() {
                 <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                        <Input { ...field }/>
+                        <Input type="email" { ...field }/>
                     </FormControl>
                     <FormMessage/>
                 </FormItem>
@@ -50,7 +52,15 @@ export default function LoginForm() {
                 <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                        <Input type="password" { ...field }/>
+                        <div className="relative">
+                            <Input type={showPassword ? "text" : "password"}{...field} className="pr-10"/>
+                            <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="absolute right-2 top-1/2 -translate-y-1/2" tabIndex={-1}>
+                                {showPassword ?
+                                    (<EyeOffIcon className="h-5 w-5" />) :
+                                    (<EyeIcon className="h-5 w-5" />)
+                                }
+                            </button>
+                        </div>
                     </FormControl>
                     <FormMessage/>
                 </FormItem>

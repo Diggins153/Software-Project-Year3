@@ -1,8 +1,10 @@
 // app/campaigns/view/page.tsx
 import { CharacterCard, EmptyCharacterCard } from "@/components/characters/CharacterCard";
 import ReportContent from "@/components/reports/ReportContent";
+import TopBar from "@/components/TopBar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { leaveCampaign } from "@/lib/actions/campaigns";
 import { auth } from "@/lib/auth";
 import query from "@/lib/database";
@@ -12,7 +14,7 @@ import { Campaign } from "@/types/Campaign";
 import { Character } from "@/types/Character";
 import { ContentType } from "@/types/Report";
 import { Session } from "@/types/Session";
-import { ArrowLeft, ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, EllipsisIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -32,6 +34,19 @@ type CampaignViewPageProps = {
     params: Promise<{ campaignId?: string }>;
 };
 
+// export async function generateMetadata({ params }: CampaignViewPageProps): Promise<Metadata> {
+//     const { campaignId } = await params;
+//     const campaign = (await query<Campaign[]>(`
+//         SELECT name
+//         FROM campaign
+//         WHERE id = ?
+//     `, campaignId))?.[0];
+//
+//     return {
+//         title: `${ campaign.name } campaign`,
+//     };
+// }
+
 /**
  * CampaignViewPage renders the view for a single campaign
  *
@@ -46,10 +61,9 @@ type CampaignViewPageProps = {
  *  Renders the campaign header, details (collapsible section), character party and sessions list
  *  Displays DM-only controls (Manage Campaign, Create Session) and join options for non-DM users
  *
- * @param {CampaignViewPageProps} props - The component props containing params with campaignId
- * @returns {Promise<JSX.Element>} A React component displaying the campaign view
+ * @param props - The component props containing params with campaignId
+ * @returns A React component displaying the campaign view
  */
-
 export default async function CampaignViewPage({ params }: CampaignViewPageProps) {
     const sessionData = await auth();
     const { campaignId } = await params;
@@ -112,7 +126,8 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
             WHERE c.owner_id = ?
               AND c.id IN (SELECT character_id
                            FROM campaign_characters
-                           WHERE campaign_id = ?)
+                           WHERE campaign_id = ?
+                             AND status = 'joined')
         `, sessionData.user.id, campaign.id);
     }
 
@@ -124,58 +139,56 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                  JOIN \`character\` c ON c.id = cc.character_id
                  JOIN class cl ON cl.id = c.class_id
         WHERE campaign_id = ?
+          AND status = 'joined'
     `, campaignId);
 
     return (
-        <main>
-            <div className="flex justify-between items-center mb-4 sticky top-0 bg-theme p-4">
-                <div className="flex gap-4">
-                    <Link
-                        href="/campaigns"
-                        className={ buttonVariants({ variant: "ghost" }) }
-                    >
-                        <ArrowLeft/><span className="hidden lg:inline">Campaigns</span>
-                    </Link>
-                    <h1 className="text-2xl font-bold text-center">
-                        { campaign.name }
-                    </h1>
-                </div>
-                {/* DM-only controls */ }
-                <div className="flex justify-end gap-2">
-                    { currUserIsOwner && (<>
-                        <Link
-                            href={ `/campaigns/${ campaign.id }/manage` }
-                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                        >
-                            Manage Campaign
-                        </Link>
-                        <Link
-                            href={ `/campaigns/${ campaign.id }/sessions/create` }
-                            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                        >
-                            Create Session
-                        </Link>
-                    </>) }
-                    {/* For non-DM users who are not campaign members, display a join campaign button */ }
-                    {/*{ !currUserIsOwner && userCharacters.length === 0 && (*/ }
-                    {/*    <Link*/ }
-                    {/*        href={ `/campaigns/join?campaignId=${ campaign.id }` }*/ }
-                    {/*        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"*/ }
-                    {/*    >*/ }
-                    {/*        Join Campaign*/ }
-                    {/*    </Link>*/ }
-                    {/*) }*/ }
-                    { !currUserIsOwner && userCharacters.length > 0 &&
-                        <form
-                            action={ async () => {
-                                "use server";
-                                await leaveCampaign(campaign.id);
-                            } }
-                        ><Button type="submit" variant="destructive">Leave</Button></form>
-                    }
-                    <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
-                </div>
-            </div>
+        <main className="overflow-y-auto pb-6">
+            <TopBar
+                title={ campaign.name }
+                backText={ "Campaigns" }
+                backLink={ "/campaigns" }
+                endContent={
+                    <Popover>
+                        <PopoverTrigger className={ buttonVariants({ variant: "ghost" }) }><EllipsisIcon/></PopoverTrigger>
+                        <PopoverContent className="flex">
+                            {/* DM-only controls */ }
+                            { currUserIsOwner && (<>
+                                <Link
+                                    href={ `/campaigns/${ campaign.id }/manage` }
+                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                    Manage Campaign
+                                </Link>
+                                <Link
+                                    href={ `/campaigns/${ campaign.id }/sessions/create` }
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                >
+                                    Create Session
+                                </Link>
+                            </>) }
+                            {/* For non-DM users who are not campaign members, display a join campaign button */ }
+                            {/*{ !currUserIsOwner && userCharacters.length === 0 && (*/ }
+                            {/*    <Link*/ }
+                            {/*        href={ `/campaigns/join?campaignId=${ campaign.id }` }*/ }
+                            {/*        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"*/ }
+                            {/*    >*/ }
+                            {/*        Join Campaign*/ }
+                            {/*    </Link>*/ }
+                            {/*) }*/ }
+                            { !currUserIsOwner && userCharacters.length > 0 &&
+                                <form
+                                    action={ async () => {
+                                        "use server";
+                                        await leaveCampaign(campaign.id);
+                                    } }
+                                ><Button type="submit" variant="destructive">Leave</Button></form>
+                            }
+                            <ReportContent contentId={ campaign.id } contentType={ ContentType.CAMPAIGN }/>
+                        </PopoverContent>
+                    </Popover>
+                }
+            />
 
             {/* Campaign details */ }
             <div className="space-y-4 flex flex-col items-start">
@@ -185,18 +198,29 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                         height={ 500 }
                         src={ campaign.banner }
                         alt={ `${ campaign.name } Banner` }
-                        className="rounded-lg max-w-[1000px] self-center"
+                        className="rounded-lg max-w-[1000px] self-center campaign-banner w-full"
                     />
                 ) }
+                <h2 className="text-2xl mb-2 w-full md:w-3/4 lg:w-1/2 px-2">Party</h2>
+                <div className="w-full flex flex-row gap-2 overflow-y-auto px-2">
+                    { charactersInCampaign.length > 0
+                        ? charactersInCampaign.map(character => (
+                            <div key={ character.id } className="w-[250px] shrink-0">
+                                <CharacterCard character={ character } showReport/>
+                            </div>
+                        ))
+                        : <div className="mx-auto"><EmptyCharacterCard message="The party is empty"/></div>
+                    }
+                </div>
                 <div className="w-full md:w-3/4 lg:w-1/2 mx-auto">
                     <Collapsible>
                         <CollapsibleTrigger
                             className={ cn("flex items-center gap-2 mb-4", buttonVariants({ variant: "ghost" })) }
                         >
-                            Details
+                            Campaign Details
                             <ChevronsUpDown size={ 16 }/>
                         </CollapsibleTrigger>
-                        <CollapsibleContent className="space-y-4">
+                        <CollapsibleContent className="space-y-4 px-2 mb-6">
                             <div className="flex items-center">
                                 <strong className="mr-1">Dungeon Master:</strong>
                                 { campaign.dungeon_master_name }
@@ -209,19 +233,6 @@ export default async function CampaignViewPage({ params }: CampaignViewPageProps
                                 </div>
                             </div>
                             <pre className={ `w-full text-wrap ${ artifika.className }` }>{ campaign.outline }</pre>
-                            <div>
-                                <h2 className="text-xl mb-2">Party</h2>
-                                <div className="grid grid-cols-2 gap-2">
-                                    { charactersInCampaign.length > 0
-                                        ? charactersInCampaign.map(character => (
-                                            <div key={ character.id } className="basis-1/2">
-                                                <CharacterCard character={ character } showReport/>
-                                            </div>
-                                        ))
-                                        : <EmptyCharacterCard message="The party is empty"/>
-                                    }
-                                </div>
-                            </div>
                         </CollapsibleContent>
                     </Collapsible>
                 </div>

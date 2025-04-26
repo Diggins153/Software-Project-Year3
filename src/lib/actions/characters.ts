@@ -1,14 +1,48 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import query from "@/lib/database";
-import { EditCharacterFormSchema } from "@/lib/formSchemas";
+import { EditCharacterFormSchema, ZImage } from "@/lib/formSchemas";
+import { ensureSession } from "@/lib/utils";
 import { Character } from "@/types/Character";
 import { Class } from "@/types/Class";
 import { Race } from "@/types/Race";
-import { fetchUser } from "@/lib/actions/authentication";
-import { auth } from "@/lib/auth";
+import { del, put } from "@vercel/blob";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+
+async function setCharacterImage(characterId: number, banner: File | File[]): Promise<boolean> {
+    // If file array is provided, get only the first element
+    if (Array.isArray(banner)) {
+        banner = banner[0];
+    }
+    const bannerParse = await ZImage.safeParseAsync(banner);
+    if (!bannerParse.success || typeof bannerParse.data === "undefined") return false;
+
+    // Get image file extension
+    const fileExt = (() => {
+        const fragments = banner.name.split(".");
+        if (fragments.length < 2) return "";
+        else return fragments[1];
+    })();
+    // Get file contents
+    const bannerBody = await banner.bytes();
+
+    // Naming convention: /characters/$characterId.$fileExtension
+    try {
+        const uploadResult = await put(`/characters/${ characterId }.${ fileExt }`, Buffer.from(bannerBody), { access: "public" });
+        await query(`
+            UPDATE \`character\`
+            SET image = ?
+            WHERE id = ?
+        `, uploadResult.url, characterId);
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+
+    return true;
+}
 
 export async function createCharacter(
     name: string,
@@ -16,11 +50,7 @@ export async function createCharacter(
     charClass: string,
     level: number,
 ) {
-    const session = await auth();
-    if (!session || !session.user) return redirect("/");
-
-    const user = await fetchUser(session.user.email!);
-    if (!user) return { ok: false };
+    const { user } = await ensureSession();
 
     // Retrieve the Race entity with id and name.
     const dbRace = (await query<Race[]>("SELECT id, name FROM race WHERE name = ?", race))[0] || null;
@@ -38,27 +68,21 @@ export async function createCharacter(
         dbRace.id,
         dbClass.id,
         level,
-        session.user.id,
+        user.id,
     );
 
     return redirect("/characters");
 }
 
-
-export async function createPremadeCharacter(
-    name: string,
-    race: string,
-    charClass: string,
-    level: number,
-) {
+export async function createPremadeCharacter(name: string, raceId: number, classId: number, level: number) {
     const session = await auth();
     if (!session || !session.user) return redirect("/");
 
-    const dbRace = (await query<Race[]>("SELECT id, name FROM race WHERE name = ?", race))[0] || null;
+    const dbRace = (await query<Race[]>("SELECT id FROM race WHERE id = ?", raceId))[0] || null;
     if (dbRace == null) {
         return { ok: false, message: "Invalid race" };
     }
-    const dbClass = (await query<Class[]>("SELECT id, name FROM `class` WHERE name = ?", charClass))[0] || null;
+    const dbClass = (await query<Class[]>("SELECT id FROM `class` WHERE id = ?", classId))[0] || null;
     if (dbClass == null) {
         return { ok: false, message: "Invalid class" };
     }
@@ -75,7 +99,6 @@ export async function createPremadeCharacter(
 
     return redirect("/characters");
 }
-
 
 export async function updateCharacter(characterId: number, formData: z.infer<typeof EditCharacterFormSchema>): Promise<
     { ok: false, message: string } |
@@ -98,34 +121,39 @@ export async function updateCharacter(characterId: number, formData: z.infer<typ
     if (character.owner_id.toString() !== session.user.id)
         return { ok: false, message: "Sorry, you are not allowed to update someone else's character." };
 
-    if (formData.id != characterId) {
-        console.error(`Cannot update character (characterId = ${ characterId }) with formData (formData.id = ${ formData.id }). ID mismatch`);
+    const { image, name, id, classId, raceId, level, handle } = formData;
+    if (id != characterId) {
+        console.error(`Cannot update character (characterId = ${ characterId }) with formData (formData.id = ${ id }). ID mismatch`);
         return { ok: false, message: "Something went wrong." };
     }
 
     // Construct update
     const parametrizedKeys: string[] = [];
     const params = [];
-    if (formData.name !== character.name) {
+    if (name !== character.name) {
         parametrizedKeys.push("name = ?");
-        params.push(formData.name);
+        params.push(name);
     }
-    if (formData.handle !== character.handle) {
+    if (handle !== character.handle) {
         parametrizedKeys.push("handle = ?");
-        params.push(formData.handle);
+        params.push(handle);
     }
-    // TODO: Image
-    if (formData.raceId !== character.race_id) {
+    if (!!image && (Array.isArray(image) && image.length > 0)) {
+        if (character.image)
+            await del(character.image);
+        await setCharacterImage(characterId, image[0]);
+    }
+    if (raceId !== character.race_id) {
         parametrizedKeys.push("race_id = ?");
-        params.push(formData.raceId);
+        params.push(raceId);
     }
-    if (formData.classId !== character.class_id) {
+    if (classId !== character.class_id) {
         parametrizedKeys.push("class_id = ?");
-        params.push(formData.classId);
+        params.push(classId);
     }
-    if (formData.level !== character.level) {
+    if (level !== character.level) {
         parametrizedKeys.push("level = ?");
-        params.push(formData.level);
+        params.push(level);
     }
 
     // Do update
@@ -152,7 +180,7 @@ export async function deleteCharacter(characterId: number): Promise<
     // Session check
     if (!session || !session.user) return redirect("/characters");
 
-    const character = (await query<Character[]>("SELECT name, owner_id FROM `character` WHERE id = ?", characterId))[0] || null;
+    const character = (await query<Character[]>("SELECT name, owner_id, image FROM `character` WHERE id = ?", characterId))[0] || null;
 
     // Check the character exists
     if (!character) return { ok: false, message: "Could not find that character." };
@@ -160,6 +188,10 @@ export async function deleteCharacter(characterId: number): Promise<
     // Check the current user owns that character
     if (character.owner_id.toString() != session.user.id)
         return { ok: false, message: "Sorry, you are not allowed to delete someone else's character." };
+
+    // Delete character image
+    if (character.image)
+        await del(character.image);
 
     // Delete character
     await query("DELETE FROM campaign_characters WHERE character_id = ?", characterId);

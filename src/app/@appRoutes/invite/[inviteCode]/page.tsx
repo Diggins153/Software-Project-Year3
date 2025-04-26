@@ -56,7 +56,7 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
 
     if (characterCount >= campaign!.max_players) return <MaxPlayers><CampaignCard campaign={ campaign }/></MaxPlayers>;
 
-    return <main className="space-y-4 pt-2 px-2">
+    return <main className="content space-y-4 pt-2 px-2">
         <div className="flex flex-col items-center">
             <h3 className="text-2xl font-bold">You are invited to</h3>
             <CampaignCard campaign={ campaign }/>
@@ -90,7 +90,7 @@ export default async function InvitePage({ params }: { params: Promise<{ inviteC
 }
 
 function SignupsClosed({ children }: { children: Readonly<ReactNode> }) {
-    return <main className="h-full flex flex-col items-center justify-center gap-4">
+    return <main className="content h-full flex flex-col items-center justify-center gap-4">
         { children }
         <h3 className="text-xl font-bold">Signups for this campaigns have closed.</h3>
         <p>Contact the DM if you wish to join.</p>
@@ -99,7 +99,7 @@ function SignupsClosed({ children }: { children: Readonly<ReactNode> }) {
 }
 
 function MaxPlayers({ children }: { children: Readonly<ReactNode> }) {
-    return <main className="h-full flex flex-col items-center justify-center gap-4">
+    return <main className="content h-full flex flex-col items-center justify-center gap-4">
         { children }
         <h3 className="text-xl font-bold">This campaign is full.</h3>
         <p>If you wish to join, contact the DM so they can increase the player size.</p>
@@ -108,7 +108,7 @@ function MaxPlayers({ children }: { children: Readonly<ReactNode> }) {
 }
 
 function CampaignNotFound() {
-    return <main className="h-full flex flex-col items-center justify-center gap-4">
+    return <main className="content h-full flex flex-col items-center justify-center gap-4">
         <h3 className="text-xl font-bold">This invite is invalid</h3>
         <p>The invite code may have changed</p>
         <Link href="/campaigns" className={ buttonVariants({ variant: "default" }) }>Go back to campaigns</Link>

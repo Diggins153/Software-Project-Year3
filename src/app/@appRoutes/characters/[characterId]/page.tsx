@@ -36,8 +36,8 @@ export default async function CharacterPage({ params }: { params: Promise<{ char
 
     const { owner_id, image = "", name, race_name, class_name, level } = character;
     const currUserIsOwner = owner_id.toString() === session.user.id;
-    const classes = await query<Class[]>("SELECT * FROM `class`");
-    const races = await query<Race[]>("SELECT * FROM race");
+    const classes = await query<Class[]>("SELECT * FROM `class` ORDER BY name");
+    const races = await query<Race[]>("SELECT * FROM race ORDER BY name");
     const characterCampaigns = await query<Campaign[]>("SELECT campaign.* FROM campaign JOIN campaign_characters cc ON campaign.id = cc.campaign_id WHERE cc.character_id = ?", characterId);
 
     return <main className="content">
